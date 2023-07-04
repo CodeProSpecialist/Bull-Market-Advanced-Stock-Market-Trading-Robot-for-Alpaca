@@ -1,10 +1,9 @@
 import alpaca_trade_api as tradeapi
+import yfinance as yf
 from datetime import datetime
 import pytz
 import time
 import os
-import sys
-import yfinance as yf
 
 APIKEYID = os.getenv('APCA_API_KEY_ID')
 APISECRETKEY = os.getenv('APCA_API_SECRET_KEY')
@@ -34,7 +33,7 @@ class AlpacaBot:
 
             print("\nCurrent Prices:")
             for symbol, price in prices.items():
-                print(f"Symbol: {symbol}, Price: {price}")
+                print(f"Symbol: {symbol}, Price: {price:.2f}")
 
             if self.is_market_open():
                 self.buy_signals()
@@ -53,20 +52,20 @@ class AlpacaBot:
         # Place your logic here for bullish signal
         # Example: Check if the stock's price is above a certain moving average
         # You can add your own conditions based on your trading strategy
-        bars = yf.download(symbol, period="10d")
+        bars = yf.download(symbol, period="1d")
         current_price = bars['Close'].iloc[-1]
         moving_average = bars['Close'].mean()
-
+        
         return current_price > moving_average
 
     def bearish(self, symbol):
         # Place your logic here for bearish signal
         # Example: Check if the stock's price is below a certain moving average
         # You can add your own conditions based on your trading strategy
-        bars = yf.download(symbol, period="10d")
+        bars = yf.download(symbol, period="1d")
         current_price = bars['Close'].iloc[-1]
         moving_average = bars['Close'].mean()
-
+        
         return current_price < moving_average
 
     def get_market_cap(self, symbol):
@@ -77,7 +76,7 @@ class AlpacaBot:
         # Place your logic here for RSI calculation
         # Example: Calculate the RSI using historical price data
         # You can add your own calculation method based on your trading strategy
-        bars = yf.download(symbol, period="14d")
+        bars = yf.download(symbol, period="1d")
         price_changes = bars['Close'].diff().dropna()
 
         up_moves = price_changes[price_changes > 0]
@@ -118,8 +117,8 @@ class AlpacaBot:
             return
 
         # Get the last closing price of the stock
-        barset = yf.download(symbol, period="1d")
-        price = barset['Close'].iloc[-1]
+        bars = yf.download(symbol, period="1d")
+        price = bars['Close'].iloc[-1]
 
         # Calculate the maximum number of shares we can buy
         num_shares = int(cash / price)
@@ -161,8 +160,8 @@ class AlpacaBot:
         prices = {}
 
         for symbol in self.symbols:
-            barset = yf.download(symbol, period="1d")
-            price = barset['Close'].iloc[-1]
+            ticker = yf.Ticker(symbol)
+            price = ticker.history(period="1d")['Close'].iloc[-1]
             prices[symbol] = price
 
         return prices
