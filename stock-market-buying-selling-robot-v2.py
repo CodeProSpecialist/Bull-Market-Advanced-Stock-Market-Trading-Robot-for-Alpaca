@@ -30,7 +30,7 @@ class AlpacaBot:
 
             print("\nPositions:")
             for position in positions:
-                print(f"Symbol: {position.symbol}, Quantity: {position.qty}, Avg Entry Price: {position.avg_entry_price:.2f}")
+                print(f"Symbol: {position.symbol}, Quantity: {position.qty}, Avg Entry Price: {float(position.avg_entry_price):.2f}")
 
             print("\nCurrent Prices:")
             for symbol, price in prices.items():
