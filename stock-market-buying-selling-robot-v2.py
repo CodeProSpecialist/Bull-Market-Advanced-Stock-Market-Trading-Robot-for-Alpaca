@@ -1,10 +1,16 @@
 import alpaca_trade_api as tradeapi
 from datetime import datetime
 import pytz
+import time
+import os, sys
+
+APIKEYID = os.getenv('APCA_API_KEY_ID')
+APISECRETKEY = os.getenv('APCA_API_SECRET_KEY')
+APIBASEURL = os.getenv('APCA_API_BASE_URL')
 
 class AlpacaBot:
     def __init__(self, symbols):
-        self.api = tradeapi.REST('<Alpaca Key ID>', '<Alpaca Secret Key>', base_url='https://paper-api.alpaca.markets')
+        self.api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
         self.symbols = symbols
 
     def run(self):
@@ -178,3 +184,4 @@ if __name__ == "__main__":
 
     bot = AlpacaBot(symbols)
     bot.run()
+
