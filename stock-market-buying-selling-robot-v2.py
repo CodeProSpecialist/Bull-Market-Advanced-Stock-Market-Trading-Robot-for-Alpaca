@@ -17,10 +17,6 @@ class AlpacaBot:
         current_time = datetime.now(pytz.timezone('US/Eastern'))
         print(f"Current Eastern Time: {current_time.strftime('%Y-%m-%d %H:%M:%S')}")
 
-        if not self.is_market_open():
-            print("Waiting for the stock market to open to begin working.")
-            return
-
         while True:
             account = self.api.get_account()
             positions = self.api.list_positions()
@@ -38,8 +34,11 @@ class AlpacaBot:
             for symbol, price in prices.items():
                 print(f"Symbol: {symbol}, Price: {price}")
 
-            self.buy_signals()
-            self.sell_signals()
+            if self.is_market_open():
+                self.buy_signals()
+                self.sell_signals()
+            else:
+                print("Waiting for the stock market to open.")
 
             # Sleep for 1 minute before the next iteration
             time.sleep(60)
@@ -50,11 +49,23 @@ class AlpacaBot:
 
     def bullish(self, symbol):
         # Place your logic here for bullish signal
-        return False
+        # Example: Check if the stock's price is above a certain moving average
+        # You can add your own conditions based on your trading strategy
+        bars = self.api.get_barset(symbol, "day", limit=10).df
+        current_price = bars[symbol]['close'].iloc[-1]
+        moving_average = bars[symbol]['close'].mean()
+        
+        return current_price > moving_average
 
     def bearish(self, symbol):
         # Place your logic here for bearish signal
-        return False
+        # Example: Check if the stock's price is below a certain moving average
+        # You can add your own conditions based on your trading strategy
+        bars = self.api.get_barset(symbol, "day", limit=10).df
+        current_price = bars[symbol]['close'].iloc[-1]
+        moving_average = bars[symbol]['close'].mean()
+        
+        return current_price < moving_average
 
     def get_market_cap(self, symbol):
         asset = self.api.get_asset(symbol)
@@ -62,11 +73,21 @@ class AlpacaBot:
 
     def calculate_RSI(self, symbol):
         # Place your logic here for RSI calculation
-        return 0
+        # Example: Calculate the RSI using historical price data
+        # You can add your own calculation method based on your trading strategy
+        bars = self.api.get_barset(symbol, "day", limit=14).df
+        price_changes = bars[symbol]['close'].diff().dropna()
 
-    def moving_volume(self, symbol):
-        # Place your logic here for moving volume calculation
-        return 0
+        up_moves = price_changes[price_changes > 0]
+        down_moves = price_changes[price_changes < 0]
+
+        avg_up = up_moves.mean()
+        avg_down = abs(down_moves.mean())
+
+        relative_strength = avg_up / avg_down
+        rsi = 100 - (100 / (1 + relative_strength))
+
+        return rsi
 
     def buy_signals(self):
         for symbol in self.symbols:
@@ -96,7 +117,7 @@ class AlpacaBot:
 
         # Get the last closing price of the stock
         barset = self.api.get_barset(symbol, "day", limit=1)
-        bar = barset[symbols][0]
+        bar = barset[symbol][0]
         price = bar.c
 
         # Calculate the maximum number of shares we can buy
@@ -184,4 +205,3 @@ if __name__ == "__main__":
 
     bot = AlpacaBot(symbols)
     bot.run()
-
