@@ -1,7 +1,7 @@
 # Stock-Market-Robot-Version-2
 
-This code is so brand new that it is still being written and developed, so it is still in the beta testing phase right now. 
-It still might work, though. 
+This code is so brand new that it is still in the beta testing phase right now. 
+It still might mostly work, though. 
 
 Stock Market Robot This is a stock market portfolio management application that helps minimize losses and maximize profits.
 This works with the Alpaca stock market trading broker. 
