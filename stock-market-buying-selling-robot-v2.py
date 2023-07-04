@@ -135,7 +135,7 @@ class AlpacaBot:
             qty=num_shares,
             side='buy',
             type='market',
-            time_in_force='gtc'
+            time_in_force='day'
         )
         print(f"Submitted order to buy {num_shares} shares of {symbol}")
 
@@ -153,7 +153,7 @@ class AlpacaBot:
                 qty=position.qty,
                 side='sell',
                 type='market',
-                time_in_force='gtc'
+                time_in_force='day'
             )
             print(f"Submitted order to sell all shares of {position.symbol}")
 
