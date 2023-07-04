@@ -1,6 +1,6 @@
 # Stock-Market-Robot-Version-2
 
-This code is still being written and developed, so it is still in the beta testing phase right now. 
+This code is so brand new that it is still being written and developed, so it is still in the beta testing phase right now. 
 
 This is an Advanced buying and selling robot to monitor a stock market symbol that you type in. 
 
