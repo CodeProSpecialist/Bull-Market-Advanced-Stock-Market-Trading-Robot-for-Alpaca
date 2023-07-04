@@ -9,6 +9,7 @@ APIKEYID = os.getenv('APCA_API_KEY_ID')
 APISECRETKEY = os.getenv('APCA_API_SECRET_KEY')
 APIBASEURL = os.getenv('APCA_API_BASE_URL')
 
+
 class AlpacaBot:
     def __init__(self, symbols):
         self.api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
@@ -29,7 +30,7 @@ class AlpacaBot:
 
             print("\nPositions:")
             for position in positions:
-                print(f"Symbol: {position.symbol}, Quantity: {position.qty}, Avg Entry Price: {position.avg_entry_price}")
+                print(f"Symbol: {position.symbol}, Quantity: {position.qty}, Avg Entry Price: {position.avg_entry_price:.2f}")
 
             print("\nCurrent Prices:")
             for symbol, price in prices.items():
@@ -55,7 +56,7 @@ class AlpacaBot:
         bars = yf.download(symbol, period="1d")
         current_price = bars['Close'].iloc[-1]
         moving_average = bars['Close'].mean()
-        
+
         return current_price > moving_average
 
     def bearish(self, symbol):
@@ -65,7 +66,7 @@ class AlpacaBot:
         bars = yf.download(symbol, period="1d")
         current_price = bars['Close'].iloc[-1]
         moving_average = bars['Close'].mean()
-        
+
         return current_price < moving_average
 
     def get_market_cap(self, symbol):
