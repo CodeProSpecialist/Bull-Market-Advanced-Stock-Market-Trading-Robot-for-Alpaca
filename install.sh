@@ -1,27 +1,24 @@
 #!/bin/bash
 
-# Check if Python is installed
-if command -v python3 &>/dev/null; then
-    echo Python 3 is installed
-else
-    echo Python 3 is not installed
-    sudo apt-get update
-    sudo apt-get install python3-all
-    sudo apt-get install python3-pip
+echo "Starting setup..."
+
+# Check if python3 is installed
+if ! command -v python3 &> /dev/null
+then
+    echo "Python3 could not be found. Attempting to install..."
+    sudo apt update
+    sudo apt install -y python3
 fi
 
-# Check if pip is installed
-if command -v pip3 &>/dev/null; then
-    echo pip3 is installed
-else
-    echo pip3 is not installed
-    sudo apt install python3-pip
+# Check if pip3 is installed
+if ! command -v pip3 &> /dev/null
+then
+    echo "pip3 could not be found. Attempting to install..."
+    sudo apt update
+    sudo apt install -y python3-pip
 fi
 
-# Now we can install our Python 3 packages
-pip3 install --upgrade pip
+# Install the necessary python packages
+sudo pip3 install alpaca-trade-api yfinance pandas ta
 
-# Install necessary Python packages
-pip3 install alpaca-trade-api 
-pip3 install yfinance
-pip3 install pytz
+echo "Setup completed successfully."
