@@ -28,7 +28,7 @@ Do not be the root user. This installs from a regular user account.
 ***** The below install commands are ONLY for a Desktop or Laptop Computer x86_64 type of install. ***** 
 Open a command line terminal from this folder location and type: 
 
-sh install.sh
+sh install.sh ;
 sh desktop-computer-python3-TA-Lib-install.sh
 
 (do not use the Raspberry Pi 4 install script unless you are installing on a Raspbery Pi 4)
