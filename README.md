@@ -20,7 +20,7 @@ Remember that you just let the stockbot run for 24 hours. It watches the prices 
 
 After placing your alpaca keys at the bottom of /home/nameofyourhomefolderhere/.bashrc you simply run the command in a command terminal like:
 
-python3 stock-market-buying-selling-robot-v2.py
+python3 advanced-stock-market-trading-robot-v2.py
 
 
 
