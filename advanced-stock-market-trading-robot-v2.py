@@ -130,67 +130,67 @@ class AlpacaBot:
         )
         print(f"Submitted order to buy {num_shares} shares of {symbol}")
 
-        def sell_stock(self, position):
-            # Get account and check day trade count
-            account = self.api.get_account()
-            if account.daytrade_count >= 3:
-                print("Day trade limit reached. Not selling.")
-                return
+    def sell_stock(self, position):
+        # Get account and check day trade count
+        account = self.api.get_account()
+        if account.daytrade_count >= 3:
+            print("Day trade limit reached. Not selling.")
+            return
 
-            if position.qty > 0:
-                # Submit an order to sell all shares of this stock
-                self.api.submit_order(
-                    symbol=position.symbol,
-                    qty=position.qty,
-                    side='sell',
-                    type='market',
-                    time_in_force='day'
-                )
-                print(f"Submitted order to sell all shares of {position.symbol}")
+        if position.qty > 0:
+            # Submit an order to sell all shares of this stock
+            self.api.submit_order(
+                symbol=position.symbol,
+                qty=position.qty,
+                side='sell',
+                type='market',
+                time_in_force='day'
+            )
+            print(f"Submitted order to sell all shares of {position.symbol}")
 
-        def get_current_prices(self):
-            prices = {}
+    def get_current_prices(self):
+        prices = {}
 
-            for symbol in self.symbols:
-                ticker = yf.Ticker(symbol)
-                price = ticker.history(period="1d")['Close'].iloc[-1]
-                prices[symbol] = price
+        for symbol in self.symbols:
+            ticker = yf.Ticker(symbol)
+            price = ticker.history(period="1d")['Close'].iloc[-1]
+            prices[symbol] = price
 
-            return prices
+        return prices
 
-        if __name__ == "__main__":
-            symbols = []
-            while True:
-                symbol = input("Enter a stock symbol (or 'exit' to finish): ")
-                if symbol == "exit":
-                    break
-                symbols.append(symbol)
+if __name__ == "__main__":
+    symbols = []
+    while True:
+        symbol = input("Enter a stock symbol (or 'exit' to finish): ")
+        if symbol == "exit":
+            break
+        symbols.append(symbol)
 
-            print("\nSymbols Entered:")
+    print("\nSymbols Entered:")
+    for i, symbol in enumerate(symbols, 1):
+        print(f"{i}. {symbol}")
+
+    while True:
+        print("\nMenu:")
+        print("1. Continue")
+        print("2. Edit Symbol")
+        choice = input("Select an option: ")
+
+        if choice == "1":
+            break
+        elif choice == "2":
+            print("\nEdit Symbol:")
             for i, symbol in enumerate(symbols, 1):
                 print(f"{i}. {symbol}")
 
-            while True:
-                print("\nMenu:")
-                print("1. Continue")
-                print("2. Edit Symbol")
-                choice = input("Select an option: ")
+            symbol_number = int(input("Enter the symbol number to edit: "))
+            if symbol_number in range(1, len(symbols) + 1):
+                new_symbol = input("Enter the new symbol: ")
+                symbols[symbol_number - 1] = new_symbol
+            else:
+                print("Invalid symbol number. Please try again.")
+        else:
+            print("Invalid option. Please try again.")
 
-                if choice == "1":
-                    break
-                elif choice == "2":
-                    print("\nEdit Symbol:")
-                    for i, symbol in enumerate(symbols, 1):
-                        print(f"{i}. {symbol}")
-
-                    symbol_number = int(input("Enter the symbol number to edit: "))
-                    if symbol_number in range(1, len(symbols) + 1):
-                        new_symbol = input("Enter the new symbol: ")
-                        symbols[symbol_number - 1] = new_symbol
-                    else:
-                        print("Invalid symbol number. Please try again.")
-                else:
-                    print("Invalid option. Please try again.")
-
-            bot = AlpacaBot(symbols)
-            bot.run()
+    bot = AlpacaBot(symbols)
+    bot.run()
