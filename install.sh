@@ -7,7 +7,7 @@ if ! command -v python3 &> /dev/null
 then
     echo "Python3 could not be found. Attempting to install..."
     sudo apt update
-    sudo apt install -y python3
+    sudo apt install -y python3-all
 fi
 
 # Check if pip3 is installed
