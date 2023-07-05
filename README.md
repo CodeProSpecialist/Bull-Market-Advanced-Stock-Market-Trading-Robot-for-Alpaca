@@ -1,24 +1,22 @@
 # Stock-Market-Robot-Version-2
 
-This code is so brand new that it is still in the beta testing phase right now. 
-It still might mostly work, though. 
+This code is so brand new that it is still in the beta testing phase right now.  
 
 Stock Market Robot This is a stock market portfolio management application that helps minimize losses and maximize profits.
 This works with the Alpaca stock market trading broker. 
 Stock Market Robot only works Monday through Friday: 9:30am - 4:00pm Eastern Time.
 
-This is an Advanced buying and selling robot to monitor a stock market symbol that you type in. 
+This is an Advanced buying and selling robot to monitor a stock market symbol or a number of stock symbols that you type in. 
 
 It will automatically buy more stock of the symbol that you have selected when there is a bull market 
-or a price increase and it will automatically sell all shares of the same symbol when there is a bear market 
-or a price decrease. 
+or a price increase and it will automatically sell all shares of the same symbol when there is a bear market or a price decrease. 
 
 
 To install:
 
 Do not be the root user. This installs from a regular user account. Open a command line terminal from this folder location and type: sh install.sh
 
-Remember that you just let the stockbot run for 24 hours. It watches the prices of the stocks that you own in your alpaca account. It sells the stocks to prevent losing money. The python code named: sell-when-price-increases-or-decreases-stockbot.py will sell your stocks both during a price decrease and during a price increase to help you to not miss out on obtaining those rare profit opportunities that quickly take place in the stock market. If these fast price increases are not noticed quickly, then they are usually missed and then the price usually decreases afterwords.
+Remember that you just let the stockbot run for 24 hours. It watches the prices of the stocks that you own in your alpaca account. It sells the stocks to prevent losing money. This Python program will sell your stocks both during a price decrease and during a price increase to help you to not miss out on obtaining those rare profit opportunities that quickly take place in the stock market. If these fast price increases are not noticed quickly, then they are usually missed and then the price usually decreases afterwords.
 
 After placing your alpaca keys at the bottom of /home/nameofyourhomefolderhere/.bashrc you simply run the command in a command terminal like:
 
