@@ -3,11 +3,12 @@ import yfinance as yf
 import pandas as pd
 from talib import MACD, RSI, BBANDS
 from datetime import datetime, timedelta
+from datetime import time as time2
 import backtrader as bt
 import os
 import logging
 import pytz
-import time
+import time as time1
 import sys
 
 # Initialize the Alpaca API
@@ -16,9 +17,10 @@ APISECRETKEY = os.getenv('APCA_API_SECRET_KEY')
 APIBASEURL = os.getenv('APCA_API_BASE_URL')
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-current_time_zone = datetime.now(pytz.timezone('America/New_York'))
+eastern_zone = 'America/New_York'
+current_time_zone = datetime.now(pytz.timezone(eastern_zone))
 
-current_time = datetime.now(pytz.timezone('America/New_York')).strftime("%A, %b-%d-%Y %H:%M:%S")
+current_time = datetime.now(pytz.timezone(eastern_zone)).strftime("%A, %b-%d-%Y %H:%M:%S")
 
 # Set up logging
 logging.basicConfig(filename='stock_bot.log', level=logging.INFO, format='%(asctime)s %(message)s')
@@ -40,12 +42,12 @@ SYMBOLS = load_symbols('successful-stocks-list.txt')
 
 
 def get_current_time_zone():
-    current_time_zone = datetime.now(pytz.timezone('America/New_York'))
+    current_time_zone = datetime.now(pytz.timezone(eastern_zone))
     return current_time_zone
 
 
 def get_current_time():
-    current_time = datetime.now(pytz.timezone('America/New_York')).strftime("%A, %b-%d-%Y %H:%M:%S")
+    current_time = datetime.now(pytz.timezone(eastern_zone)).strftime("%A, %b-%d-%Y %H:%M:%S")
     return current_time
 
 
@@ -56,6 +58,7 @@ def print_account_info():
     # Print account information
     print("\nAccount Information:")
     print(f"{(current_time)}")
+    #print(account)  uncomment to view more account details
     print(f"Day Trade Count: {account.daytrade_count} out of 3 total Day Trades in 5 business days.")
     print(f"Current Account Cash: ${float(account.cash):.2f}")
     print("--------------------")
@@ -307,15 +310,47 @@ def sell_profitable_positions():
             )
             print(f"Sold {position.qty} shares of {position.symbol} with a {percent_change:.2f}% profit.")
 
+def stop_if_stock_market_is_closed():
+    # Check if the current time is within the stock market hours
+    # Set the stock market open and close times
+    market_open_time = time2(9, 30)
+    market_close_time = time2(16, 0)
+
+    while True:
+        # Get the current time in Eastern Time
+        eastern = pytz.timezone('US/Eastern')
+        now = datetime.now(eastern)
+        current_time = now.time()
+
+        # Check if the current time is within market hours
+        if now.weekday() <= 4 and market_open_time <= current_time <= market_close_time:
+            break
+
+        print('''
+           _____   __                   __             ____            __            __ 
+          / ___/  / /_  ____   _____   / /__          / __ \  ____    / /_   ____   / /_
+          \__ \  / __/ / __ \ / ___/  / //_/         / /_/ / / __ \  / __ \ / __ \ / __/
+         ___/ / / /_  / /_/ // /__   / ,<           / _, _/ / /_/ / / /_/ // /_/ // /_  
+        /____/  \__/  \____/ \___/  /_/|_|         /_/ |_|  \____/ /_.___/ \____/ \__/  
+         ''')
+        print(f'Current date & time (Eastern Time): {now.strftime("%A, %B %d, %Y, %H:%M:%S")}\n')
+        print("Stockbot only works Monday through Friday: 9:30am - 4:00pm Eastern Time. ")
+        print("Waiting until Stock Market Hours to begin the Stockbot Trading Program. ")
+        time1.sleep(60)  # Sleep for 1 minute and check again
+        #return
+
+def check_account_status():
+    account = api.get_account()
+    if account.trading_blocked:
+        print('Account is currently restricted from trading.')
+        time1.sleep(60 * 60 * 24)
+        sys.exit(0)
 
 def monitor_stocks():
     while True:
-        account = api.get_account()
+        stop_if_stock_market_is_closed()
 
-        if account.trading_blocked:
-            print('Account is currently restricted from trading.')
-            time.sleep(60 * 60 * 24)
-            sys.exit(0)
+        check_account_status()
 
         # earn money on selling stocks
         sell_profitable_positions()
@@ -333,7 +368,7 @@ def monitor_stocks():
             evaluate_stock(symbol)
 
         # Sleep for 1 minute before checking again
-        time.sleep(60)
+        time1.sleep(60)
 
 
 if __name__ == "__main__":
@@ -344,5 +379,5 @@ if __name__ == "__main__":
             print(f"Error: {e}")
             logging.error(f"Error: {e}")
             # Sleep for 5 seconds before restarting the program
-            time.sleep(5)
+            time1.sleep(5)
             continue
