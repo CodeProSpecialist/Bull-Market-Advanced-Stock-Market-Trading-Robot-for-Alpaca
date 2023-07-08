@@ -19,7 +19,7 @@ then
 fi
 
 # Install the necessary python packages
-sudo pip3 install alpaca-trade-api yfinance pandas backtrader 
+sudo pip3 install alpaca-trade-api yfinance pandas backtrader pytz
 
 # Check if build-essential is installed
 if ! command -v gcc &> /dev/null
