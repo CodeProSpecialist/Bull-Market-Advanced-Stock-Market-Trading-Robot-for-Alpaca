@@ -240,6 +240,26 @@ def sell_stock(self, position):
         )
         print(f"Submitted order to sell all shares of {position.symbol}")
 
+def sell_dropped_stocks():
+    # Get current positions
+    positions = api.list_positions()
+    account = api.get_account()
+    
+    for position in positions:
+        # Get the current price from the Position object
+        current_price = float(position.current_price)
+
+        # Check for 2.5% price decrease and sell
+        if float(position.avg_entry_price) * 0.975 > current_price:
+            # Check if there is at least 1 share to sell
+            if int(position.qty) > 0 and account.daytrade_count < 3:
+                api.submit_order(
+                    symbol=position.symbol,
+                    qty=position.qty,
+                    side='sell',
+                    type='market',
+                    time_in_force='day'
+                )
 
 def monitor_stocks():
     while True:
