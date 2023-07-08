@@ -55,7 +55,7 @@ def print_account_info():
 
     # Print account information
     print("\nAccount Information:")
-    print(f"{(current_time)}" )
+    print(f"{(current_time)}")
     print(f"Day Trade Count: {account.daytrade_count} out of 3 total Day Trades in 5 business days.")
     print(f"Current Account Cash: ${float(account.cash):.2f}")
     print("--------------------")
@@ -101,12 +101,16 @@ class MyStrategy(bt.Strategy):
     def next(self):
         if not self.position:
             # Buy condition
-            if self.data.close[0] > self.data.close[-1] * 1.09 and self.rsi < 30 and self.macd.macd > self.macd.signal and self.data.close < self.bbands.lines.bot:
-                self.buy()
+            if self.data.close[0] > self.data.close[
+                -1] * 1.09 and self.rsi < 30 and self.macd.macd > self.macd.signal and self.data.close < self.bbands.lines.bot:
+                cash = float(api.get_account().cash)
+                symbol = self.data._name
+                if not bearish(symbol):
+                    self.buy_stock(symbol, cash)
         else:
             # Sell condition
-            if self.rsi > 70 and self.macd.macd < self.macd.signal and self.data.close > self.bbands.lines.top:
-                self.sell()
+            if self.data.close[0] < self.data.close[-1] * 0.975:
+                self.sell_stock(self.position)
 
 
 def backtest(strategy, data):
@@ -169,7 +173,8 @@ def evaluate_stock(symbol):
     print(f"Evaluation results for {symbol}:")
     print(f"RSI: {df['RSI'].iloc[-1]:.2f}")
     print(f"MACD: {df['MACD'].iloc[-1]:.2f}")
-    print(f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
+    print(
+        f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
     print(f"Percentage change: {percent_change:.2f}%")
     print(f"Bullish: {bullish(symbol)}")
     print(f"Bearish: {bearish(symbol)}")
@@ -185,6 +190,7 @@ def evaluate_stock(symbol):
     logging.info(f"Bullish: {bullish(symbol)}")
     logging.info(f"Bearish: {bearish(symbol)}")
     logging.info("--------------------")
+
 
 def buy_stock(symbol, cash):
     # Get account and check day trade count
@@ -216,7 +222,7 @@ def buy_stock(symbol, cash):
     print(f"Submitted order to buy {num_shares} shares of {symbol}")
 
 
-def sell_stock(position):
+def sell_stock(self, position):
     # Get account and check day trade count
     account = api.get_account()
     if account.daytrade_count >= 3:
@@ -233,7 +239,6 @@ def sell_stock(position):
             time_in_force='day'
         )
         print(f"Submitted order to sell all shares of {position.symbol}")
-
 
 
 def monitor_stocks():
