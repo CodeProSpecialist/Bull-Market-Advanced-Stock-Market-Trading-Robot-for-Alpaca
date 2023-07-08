@@ -71,7 +71,7 @@ def print_account_info():
 def print_positions():
     # Get current positions
     positions = api.list_positions()
-
+    
     # Print current positions
     print("\nCurrent Positions:")
     for position in positions:
@@ -244,7 +244,7 @@ def sell_dropped_stocks():
     # Get current positions
     positions = api.list_positions()
     account = api.get_account()
-    
+
     for position in positions:
         # Get the current price from the Position object
         current_price = float(position.current_price)
@@ -268,6 +268,13 @@ def monitor_stocks():
 
         # Print current positions
         print_positions()
+
+        sell_dropped_stocks()
+        account = api.get_account()
+        if account.trading_blocked:
+            print('Account is currently restricted from trading.')
+            time.sleep(60 * 60 * 24)
+            sys.exit(0)
 
         # Evaluate and print monitored stocks
         for symbol in SYMBOLS:
