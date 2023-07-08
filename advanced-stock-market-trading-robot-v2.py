@@ -157,7 +157,7 @@ def bearish(symbol):
 
 
 def evaluate_stock(symbol):
-    df = yf.download(symbol, period="1mo")
+    df = yf.download(symbol, period="6mo")
     df["RSI"] = RSI(df["Close"], timeperiod=14)
     df["MACD"], _, _ = MACD(df["Close"], fastperiod=12, slowperiod=26, signalperiod=9)
     df["Upper Band"], df["Middle Band"], df["Lower Band"] = BBANDS(df["Close"], timeperiod=20)
@@ -178,28 +178,28 @@ def evaluate_stock(symbol):
 
     # Print evaluation results with bullish/bearish indication
     print(f"Evaluation results for {symbol}:")
-    print(f"Current Price: ${df['Close'].iloc[-1]:.2f}")
+    print(f"Current Price: ${current_price:.2f}")
     print(f"Previous Opening Price: ${df['Open'].iloc[-1]:.2f}")
-    print(f"Previous Closing Price: ${df['Close'].iloc[-2]:.2f}")
-    print(f"Price Change from Closing Price: {price_change:.2f}%")
+    print(f"Previous Closing Price: ${closing_price:.2f}")
+    print(f"Percentage Change: {price_change:.2f}%")
     print(f"RSI: {df['RSI'].iloc[-1]:.2f}")
     print(f"MACD: {df['MACD'].iloc[-1]:.2f}")
     print(f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
-    print(f"1 Month Percentage Change to identify Bullish or Bearish stocks: {percent_change:.2f}%")
+    print(f"6-Month Percentage Change to identify Bullish or Bearish stocks: {percent_change:.2f}%")
     print(f"Bullish: {bullish(symbol)}")
     print(f"Bearish: {bearish(symbol)}")
     print("--------------------")
 
     # Log evaluation results with bullish/bearish indication
     logging.info(f"Evaluation results for {symbol}:")
-    logging.info(f"Current Price: ${df['Close'].iloc[-1]:.2f}")
+    logging.info(f"Current Price: ${current_price:.2f}")
     logging.info(f"Previous Opening Price: ${df['Open'].iloc[-1]:.2f}")
-    logging.info(f"Previous Closing Price: ${df['Close'].iloc[-2]:.2f}")
+    logging.info(f"Previous Closing Price: ${closing_price:.2f}")
     logging.info(f"Percentage Change: {price_change:.2f}%")
     logging.info(f"RSI: {df['RSI'].iloc[-1]:.2f}")
     logging.info(f"MACD: {df['MACD'].iloc[-1]:.2f}")
     logging.info(f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
-    logging.info(f"Percentage Change: {percent_change:.2f}%")
+    logging.info(f"6-Month Percentage Change to identify Bullish or Bearish stocks: {percent_change:.2f}%")
     logging.info(f"Bullish: {bullish(symbol)}")
     logging.info(f"Bearish: {bearish(symbol)}")
     logging.info("--------------------")
