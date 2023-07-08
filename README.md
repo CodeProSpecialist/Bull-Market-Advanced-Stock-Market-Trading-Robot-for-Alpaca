@@ -17,6 +17,9 @@ Only place one stock symbol on each line.
 
 It will automatically buy more stock of the symbol that you have selected when there is a bull market 
 or a price increase and it will automatically sell all shares of the same symbol when there is a bear market or a price decrease. 
+It stops buying more stocks if you have a Daytrade Count of 2 days for you to use the 3rd Daytrade 
+to sell a stock that has a price that is decreasing. You may change this number in this Python code if you like, 
+although it is at the best setting for preventing loss of profit by default. 
 It maximizes your profits by trading with all of the available Cash Equity in your stock broker account. Here's more information: 
 
 Experience the power of Python 3's TA Library with our Advanced Stock Market Trading Bot. Turn data into insights, insights into decisions, and decisions into profit. Experience the future of trading with our Advanced Stock Market Trading Bot. 
