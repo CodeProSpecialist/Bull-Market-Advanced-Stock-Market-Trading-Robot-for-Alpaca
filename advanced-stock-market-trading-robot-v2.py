@@ -121,41 +121,43 @@ def backtest(strategy, data):
 
 
 def bullish(symbol):
-    # Place your logic here for bullish signal
-    # We are using Moving Average Convergence Divergence (MACD), Relative Strength Index (RSI), and Bollinger Bands as indicators for buying signals
+    # Download historical data
     bars = yf.download(symbol, period="1mo")
     close_prices = bars['Close']
-    macd, macdsignal, macdhist = MACD(close_prices)
-    rsi = RSI(close_prices)
-    upper, middle, lower = BBANDS(close_prices)
 
-    # Generate signals based on the indicators
-    macd_signal = macd[-1] > macdsignal[-1]  # MACD crosses above signal line
-    rsi_signal = rsi[-1] < 30  # RSI is below 30 (Oversold)
-    bollinger_signal = close_prices[-1] < lower[-1]  # Price crosses below lower Bollinger Band
+    # Calculate MACD, RSI, and Bollinger Bands
+    macd, _, _ = MACD(close_prices)
+    rsi = RSI(close_prices)
+    _, _, lower = BBANDS(close_prices)
+
+    # Check bullish conditions
+    macd_signal = macd[-1] > 0  # MACD is positive
+    rsi_signal = rsi[-1] < 30  # RSI is below 30 (oversold)
+    bollinger_signal = close_prices[-1] < lower[-1]  # Price is below lower Bollinger Band
 
     return macd_signal and rsi_signal and bollinger_signal
 
 
 def bearish(symbol):
-    # Place your logic here for bearish signal
-    # We are using Moving Average Convergence Divergence (MACD), Relative Strength Index (RSI), and Bollinger Bands as indicators for selling signals
+    # Download historical data
     bars = yf.download(symbol, period="1mo")
     close_prices = bars['Close']
-    macd, macdsignal, macdhist = MACD(close_prices)
-    rsi = RSI(close_prices)
-    upper, middle, lower = BBANDS(close_prices)
 
-    # Generate signals based on the indicators
-    macd_signal = macd[-1] < macdsignal[-1]  # MACD crosses below signal line
-    rsi_signal = rsi[-1] > 70  # RSI is above 70 (Overbought)
-    bollinger_signal = close_prices[-1] > upper[-1]  # Price crosses above upper Bollinger Band
+    # Calculate MACD, RSI, and Bollinger Bands
+    macd, _, _ = MACD(close_prices)
+    rsi = RSI(close_prices)
+    upper, _, _ = BBANDS(close_prices)
+
+    # Check bearish conditions
+    macd_signal = macd[-1] < 0  # MACD is negative
+    rsi_signal = rsi[-1] > 70  # RSI is above 70 (overbought)
+    bollinger_signal = close_prices[-1] > upper[-1]  # Price is above upper Bollinger Band
 
     return macd_signal and rsi_signal and bollinger_signal
 
 
 def evaluate_stock(symbol):
-    df = yf.download(symbol, period="1y")
+    df = yf.download(symbol, period="1mo")
     df["RSI"] = RSI(df["Close"], timeperiod=14)
     df["MACD"], _, _ = MACD(df["Close"], fastperiod=12, slowperiod=26, signalperiod=9)
     df["Upper Band"], df["Middle Band"], df["Lower Band"] = BBANDS(df["Close"], timeperiod=20)
@@ -169,24 +171,37 @@ def evaluate_stock(symbol):
     final_value = df["Close"].iloc[-1]
     percent_change = (final_value - initial_value) / initial_value * 100
 
+    # Calculate the percentage change between yesterday's closing price and the current price
+    closing_price = df["Close"].iloc[-2]
+    current_price = df["Close"].iloc[-1]
+    price_change = (current_price - closing_price) / closing_price * 100
+
     # Print evaluation results with bullish/bearish indication
     print(f"Evaluation results for {symbol}:")
+    print(f"Current Price: ${df['Close'].iloc[-1]:.2f}")
+    print(f"Previous Opening Price: ${df['Open'].iloc[-1]:.2f}")
+    print(f"Previous Closing Price: ${df['Close'].iloc[-2]:.2f}")
+    print(f"Percentage Change: {price_change:.2f}%")
     print(f"RSI: {df['RSI'].iloc[-1]:.2f}")
     print(f"MACD: {df['MACD'].iloc[-1]:.2f}")
     print(
         f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
-    print(f"Percentage change: {percent_change:.2f}%")
+    print(f"1 Month Percentage Change to identify Bullish or Bearish stocks: {percent_change:.2f}%")
     print(f"Bullish: {bullish(symbol)}")
     print(f"Bearish: {bearish(symbol)}")
     print("--------------------")
 
     # Log evaluation results with bullish/bearish indication
     logging.info(f"Evaluation results for {symbol}:")
+    logging.info(f"Current Price: ${df['Close'].iloc[-1]:.2f}")
+    logging.info(f"Previous Opening Price: ${df['Open'].iloc[-1]:.2f}")
+    logging.info(f"Previous Closing Price: ${df['Close'].iloc[-2]:.2f}")
+    logging.info(f"Percentage Change: {price_change:.2f}%")
     logging.info(f"RSI: {df['RSI'].iloc[-1]:.2f}")
     logging.info(f"MACD: {df['MACD'].iloc[-1]:.2f}")
     logging.info(
         f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
-    logging.info(f"Percentage change: {percent_change:.2f}%")
+    logging.info(f"Percentage Change: {percent_change:.2f}%")
     logging.info(f"Bullish: {bullish(symbol)}")
     logging.info(f"Bearish: {bearish(symbol)}")
     logging.info("--------------------")
