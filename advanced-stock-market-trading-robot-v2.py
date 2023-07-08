@@ -213,7 +213,7 @@ def evaluate_stock(symbol):
 def buy_stock(symbol, cash):
     # Get account and check day trade count
     account = api.get_account()
-    if account.daytrade_count >= 2:
+    if account.daytrade_count > 2:
         print("Day trade limit reached. Not buying.")
         return
 
@@ -248,7 +248,7 @@ def buy_stock(symbol, cash):
 def sell_stock(self, position):
     # Get account and check day trade count
     account = api.get_account()
-    if account.daytrade_count >= 3:
+    if account.daytrade_count > 3:
         print("Day trade limit reached. Not selling.")
         return
 
