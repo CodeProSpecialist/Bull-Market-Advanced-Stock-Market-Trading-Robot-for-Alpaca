@@ -47,6 +47,6 @@ then
 fi
 
 # Install TA-Lib python wrapper
-sudo pip3 install TA-Lib
+sudo pip3 install ta-lib
 
 echo "Setup completed successfully."
