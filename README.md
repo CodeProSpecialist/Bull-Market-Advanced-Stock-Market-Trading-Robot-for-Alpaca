@@ -1,6 +1,9 @@
 # Advanced-Stock-Market-Trading-Bot-Version-2 
 
 This code is so brand new that it is still in the beta testing phase right now.  
+On Saturday, July 8, 2023, the code is not 100% finished being written. 
+It is close to being finished. 
+***** This is a preview of the code before it is completely finished. ***** 
 
 Advanced Stock Market Trading Bot
 
