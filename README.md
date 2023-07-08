@@ -11,7 +11,9 @@ This is a stock market portfolio management application that helps minimize loss
 This works with the Alpaca stock market trading broker. 
 Advanced Stock Market Trading Bot only works Monday through Friday: 9:30am - 4:00pm Eastern Time.
 
-This is an Advanced buying and selling Python 3 Trading Robot to monitor a stock market symbol or a number of stock symbols that you type in. 
+This is an Advanced buying and selling Python 3 Trading Robot 
+to monitor a stock market symbol or a number of stock symbols that you place in the file "successful-stocks-list.txt". 
+Only place one stock symbol on each line. 
 
 It will automatically buy more stock of the symbol that you have selected when there is a bull market 
 or a price increase and it will automatically sell all shares of the same symbol when there is a bear market or a price decrease. 
