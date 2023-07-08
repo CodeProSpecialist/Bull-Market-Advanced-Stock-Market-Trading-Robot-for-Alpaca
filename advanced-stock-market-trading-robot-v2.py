@@ -184,7 +184,8 @@ def evaluate_stock(symbol):
     print(f"Percentage Change: {price_change:.2f}%")
     print(f"RSI: {df['RSI'].iloc[-1]:.2f}")
     print(f"MACD: {df['MACD'].iloc[-1]:.2f}")
-    print(f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
+    print(
+        f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
     print(f"6-Month Percentage Change to identify Bullish or Bearish stocks: {percent_change:.2f}%")
     print(f"Bullish: {bullish(symbol)}")
     print(f"Bearish: {bearish(symbol)}")
@@ -198,7 +199,8 @@ def evaluate_stock(symbol):
     logging.info(f"Percentage Change: {price_change:.2f}%")
     logging.info(f"RSI: {df['RSI'].iloc[-1]:.2f}")
     logging.info(f"MACD: {df['MACD'].iloc[-1]:.2f}")
-    logging.info(f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
+    logging.info(
+        f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
     logging.info(f"6-Month Percentage Change to identify Bullish or Bearish stocks: {percent_change:.2f}%")
     logging.info(f"Bullish: {bullish(symbol)}")
     logging.info(f"Bearish: {bearish(symbol)}")
@@ -281,20 +283,50 @@ def sell_dropped_stocks():
                 )
 
 
+def sell_profitable_positions():
+    # Get current positions
+    positions = api.list_positions()
+    account = api.get_account()
+
+    for position in positions:
+        # Get the current price from the Position object
+        current_price = float(position.current_price)
+        entry_price = float(position.avg_entry_price)
+
+        # Calculate the percentage change
+        percent_change = (current_price - entry_price) / entry_price * 100
+
+        # Sell if the price increases by 3% and we own more than 0 shares
+        if percent_change >= 3.0 and int(position.qty) > 0 and account.daytrade_count < 3:
+            api.submit_order(
+                symbol=position.symbol,
+                qty=position.qty,
+                side='sell',
+                type='market',
+                time_in_force='day'
+            )
+            print(f"Sold {position.qty} shares of {position.symbol} with a {percent_change:.2f}% profit.")
+
+
 def monitor_stocks():
     while True:
+        account = api.get_account()
+
+        if account.trading_blocked:
+            print('Account is currently restricted from trading.')
+            time.sleep(60 * 60 * 24)
+            sys.exit(0)
+
+        # earn money on selling stocks
+        sell_profitable_positions()
+
+        sell_dropped_stocks()
+
         # Print account information
         print_account_info()
 
         # Print current positions
         print_positions()
-
-        sell_dropped_stocks()
-        account = api.get_account()
-        if account.trading_blocked:
-            print('Account is currently restricted from trading.')
-            time.sleep(60 * 60 * 24)
-            sys.exit(0)
 
         # Evaluate and print monitored stocks
         for symbol in SYMBOLS:
