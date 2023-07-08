@@ -71,7 +71,7 @@ def print_account_info():
 def print_positions():
     # Get current positions
     positions = api.list_positions()
-    
+
     # Print current positions
     print("\nCurrent Positions:")
     for position in positions:
@@ -199,6 +199,11 @@ def buy_stock(symbol, cash):
         print("Day trade limit reached. Not buying.")
         return
 
+    # Prevent buying if stock is bearish
+    if bearish(symbol):
+        print(f"The stock {symbol} is bearish. Not buying.")
+        return
+
     # Get the last closing price of the stock
     bars = yf.download(symbol, period="1d")
     price = bars['Close'].iloc[-1]
@@ -240,6 +245,7 @@ def sell_stock(self, position):
         )
         print(f"Submitted order to sell all shares of {position.symbol}")
 
+
 def sell_dropped_stocks():
     # Get current positions
     positions = api.list_positions()
@@ -260,6 +266,7 @@ def sell_dropped_stocks():
                     type='market',
                     time_in_force='day'
                 )
+
 
 def monitor_stocks():
     while True:
