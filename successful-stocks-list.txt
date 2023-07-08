@@ -2,4 +2,4 @@ AAPL
 AMD
 INTC
 AMZN
-AAOI
+
