@@ -9,7 +9,7 @@ The error is not fixable as far as I know. If it is known, then it will be fixed
 The program is working just fine while reporting errors, though. Part of the reason that there is 
 a pandas error is that this program was designed to work even better than the pandas library 
 was ready for. So, yes it is true that this program was coded even better than the limits of the 
-pandas library was ready for. 
+pandas library. This program pushes the limits of the pandas library and so the error can be ignored. 
 
 Advanced Stock Market Trading Bot
 
