@@ -1,7 +1,9 @@
 # Advanced-Stock-Market-Trading-Bot-Version-2 
 
 This code is so brand new that it is still considered the "beta" version for about 14 days. 
-It seems to be working great so far. 
+It seems to be working great so far. There is an internal python library error from the 
+pandas package trying its best to reorganize all of the data, and this can be ignored because 
+the program is running just fine and this program needs pandas to work correctly. 
 
 Advanced Stock Market Trading Bot
 
