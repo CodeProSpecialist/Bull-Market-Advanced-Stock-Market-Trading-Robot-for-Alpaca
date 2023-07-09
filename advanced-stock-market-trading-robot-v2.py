@@ -202,8 +202,7 @@ def evaluate_stock(symbol):
     logging.info(f"Percentage Change: {price_change:.2f}%")
     logging.info(f"RSI: {df['RSI'].iloc[-1]:.2f}")
     logging.info(f"MACD: {df['MACD'].iloc[-1]:.2f}")
-    logging.info(
-        f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
+    logging.info(f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
     logging.info(f"6-Month Percentage Change to identify Bullish or Bearish stocks: {percent_change:.2f}%")
     logging.info(f"Bullish: {bullish(symbol)}")
     logging.info(f"Bearish: {bearish(symbol)}")
