@@ -39,7 +39,7 @@ Open a command line terminal from this folder location and type:
 sh install.sh ;
 sh desktop-computer-python3-TA-Lib-install.sh
 
-pip3 install TA-Lib
+sudo pip3 install ta-lib
 
 (do not use the Raspberry Pi 4 install script unless you are installing on a Raspbery Pi 4)
 
