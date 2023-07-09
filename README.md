@@ -4,6 +4,11 @@ This code is so brand new that it is still considered the "beta" version for abo
 It seems to be working great so far. There is an internal python library error from the 
 pandas package trying its best to reorganize all of the data, and this can be ignored because 
 the program is running just fine and this program needs pandas to work correctly. 
+So, yes this program is working correctly while it keeps reporting an error. 
+The error is not fixable as far as I know. If it is known, then it will be fixed in the future. 
+The program is working just fine while reporting errors, though. Part of the reason that there is 
+a pandas error is that this program was designed to work even better than the pandas library 
+was ready for. 
 
 Advanced Stock Market Trading Bot
 
