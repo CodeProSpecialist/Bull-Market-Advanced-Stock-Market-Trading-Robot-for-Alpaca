@@ -10,6 +10,17 @@ The program is working just fine while reporting errors, though. Part of the rea
 a pandas error is that this program was designed to work even better than the pandas library 
 was ready for. So, yes it is true that this program was coded even better than the limits of the 
 pandas library. This program pushes the limits of the pandas library and so the error can be ignored. 
+Instead, just enjoy the stock market trading profits and success with this profitable stock market robot. 
+I do not know of any other stock market robot that has been designed as well as this stock market robot 
+because the design uses backtrader with talib: Moving Average Convergence Divergence, Relative Strength Index, and Bollinger Bands that were designed in the busy 1980s era of the stock market to follow normal price flexibility. 
+Bollinger Bands can also help determine when it is time to sell stock when the stock reaches the 
+lower band level. 
+     I recommend to not select stocks that are valued less than 37.50 to have the stocks work well 
+with this stock bot because it is more worth your time to use your single or last few day trades 
+to generate a larger dollar amount of profit from a 3% profit before the stock is sold. 
+I also recommend only having this stock bot monitor your favorite top 2 or 3 stocks that you have 
+noticed increasing in price numbers. This will make this stock bot generate the most profit for 
+you in the least amount of time. 
 
 Advanced Stock Market Trading Bot
 
