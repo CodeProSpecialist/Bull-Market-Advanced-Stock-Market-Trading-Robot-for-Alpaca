@@ -215,12 +215,26 @@ def buy_stock(symbol, cash):
     account = api.get_account()
     if account.daytrade_count > 2:
         print("Day trade limit reached. Not buying.")
+        logging.info("Day trade limit reached. Not buying.")
         return
 
     # Prevent buying if stock is bearish
     if bearish(symbol):
         print(f"The stock {symbol} is bearish. Not buying.")
+        logging.info(f"The stock {symbol} is bearish. Not buying.")
         return
+
+    # A second important check to not buy if stock is bearish to prevent loss of profit
+    # Evaluate the stock to calculate the 6 month percent change
+    evaluate_stock(symbol)
+    percent_change = evaluate_stock.percent_change
+
+    # Check if the 6 month percent change is less than 25%, to not buy bearish stocks
+    if percent_change < 25:
+        print(f"The percent change for {symbol} is less than 25% for 6 months. Not buying bearish stock. ")
+        logging.info(f"The percent change for {symbol} is less than 25% for 6 months. Not buying bearish stock. ")
+        return
+
 
     # Get the last closing price of the stock
     bars = yf.download(symbol, period="1d")
@@ -232,6 +246,7 @@ def buy_stock(symbol, cash):
     # If we can't buy at least 1 share, then don't submit the order
     if num_shares < 1:
         print(f"Not enough cash to buy a single share of {symbol}")
+        logging.info(f"Not enough cash to buy a single share of {symbol}")
         return
 
     # Submit the order
@@ -243,13 +258,14 @@ def buy_stock(symbol, cash):
         time_in_force='day'
     )
     print(f"Submitted order to buy {num_shares} shares of {symbol}")
-
+    logging.info(f"Submitted order to buy {num_shares} shares of {symbol}")
 
 def sell_stock(self, position):
     # Get account and check day trade count
     account = api.get_account()
     if account.daytrade_count > 3:
         print("Day trade limit reached. Not selling.")
+        logging.info("Day trade limit reached. Not selling.")
         return
 
     if position.qty > 0:
@@ -262,6 +278,7 @@ def sell_stock(self, position):
             time_in_force='day'
         )
         print(f"Submitted order to sell all shares of {position.symbol}")
+        logging.info(f"Submitted order to sell all shares of {position.symbol}")
 
 
 def sell_dropped_stocks():
@@ -284,7 +301,8 @@ def sell_dropped_stocks():
                     type='market',
                     time_in_force='day'
                 )
-
+                print(f"Submitted order to sell all shares of {position.symbol}")
+                logging.info(f"Submitted order to sell all shares of {position.symbol}")
 
 def sell_profitable_positions():
     # Get current positions
@@ -309,6 +327,7 @@ def sell_profitable_positions():
                 time_in_force='day'
             )
             print(f"Sold {position.qty} shares of {position.symbol} with a {percent_change:.2f}% profit.")
+            logging.info(f"Sold {position.qty} shares of {position.symbol} with a {percent_change:.2f}% profit.")
 
 def stop_if_stock_market_is_closed():
     # Check if the current time is within the stock market hours
