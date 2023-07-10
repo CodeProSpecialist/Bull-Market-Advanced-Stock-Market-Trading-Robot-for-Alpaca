@@ -1,7 +1,6 @@
 # Advanced-Stock-Market-Trading-Bot-Version-2 
 
-This code is so brand new that it is still considered the "beta" version for a few days. 
-It seems to be working great so far. 
+This Advanced Stock Market Robot seems to be working great so far. 
 There is a known small error that is: Error: No objects to concatenate, and this error can be 
 ignored because it just simply reached the end of the text file and could not find any more 
 stock symbols to concatenate or evaluate. 
