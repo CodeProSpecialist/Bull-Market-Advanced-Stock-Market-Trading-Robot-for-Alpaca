@@ -1,6 +1,6 @@
 import alpaca_trade_api as tradeapi
 import yfinance as yf
-import pandas as pd
+# import pandas as pd
 from talib import MACD, RSI, BBANDS
 from datetime import datetime, timedelta
 from datetime import time as time2
@@ -8,7 +8,7 @@ import backtrader as bt
 import os
 import logging
 import pytz
-import time as time1
+import time
 import sys
 
 # Initialize the Alpaca API
@@ -19,6 +19,8 @@ api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
 eastern_zone = 'America/New_York'
 current_time_zone = datetime.now(pytz.timezone(eastern_zone))
+
+global current_time
 
 current_time = datetime.now(pytz.timezone(eastern_zone)).strftime("%A, %b-%d-%Y %H:%M:%S")
 
@@ -52,13 +54,14 @@ def get_current_time():
 
 
 def print_account_info():
+    current_time = datetime.now(pytz.timezone(eastern_zone)).strftime("%A, %b-%d-%Y %H:%M:%S")
     # Get account details
     account = api.get_account()
 
     # Print account information
     print("\nAccount Information:")
     print(f"{(current_time)}")
-    #print(account)  uncomment to view more account details
+    # print(account)  uncomment to view more account details
     print(f"Day Trade Count: {account.daytrade_count} out of 3 total Day Trades in 5 business days.")
     print(f"Current Account Cash: ${float(account.cash):.2f}")
     print("--------------------")
@@ -103,17 +106,36 @@ class MyStrategy(bt.Strategy):
 
     def next(self):
         if not self.position:
+            # Get the opening price of today
+            symbol = self.data._name
+            opening_price = self.get_opening_price(symbol)
+
             # Buy condition
-            if self.data.close[0] > self.data.close[
-                -1] * 1.09 and self.rsi < 30 and self.macd.macd > self.macd.signal and self.data.close < self.bbands.lines.bot:
+            if (
+                    self.data.close[0] > self.data.close[-1] * 1.09
+                    and self.rsi < 30
+                    and self.macd.macd > self.macd.signal
+                    and self.data.close[0] <= self.bbands.lines.bot[0]
+                    and self.data.close[0] > opening_price * 1.015
+            ):
                 cash = float(api.get_account().cash)
-                symbol = self.data._name
                 if not bearish(symbol):
-                    self.buy_stock(symbol, cash)
+                    buy_stock(symbol, cash)
         else:
             # Sell condition
-            if self.data.close[0] < self.data.close[-1] * 0.975:
-                self.sell_stock(self.position)
+            if (
+                    self.data.close[0] >= self.bbands.lines.top[0]
+                    and self.rsi > 70
+                    and self.macd.macd < self.macd.signal
+            ):
+                sell_stock(self.position)
+
+
+def get_opening_price(self, symbol):
+    # Fetch the opening price of today
+    bars = yf.download(symbol, period="1d")
+    opening_price = bars["Open"].iloc[0]
+    return opening_price
 
 
 def backtest(strategy, data):
@@ -165,10 +187,6 @@ def evaluate_stock(symbol):
     df["MACD"], _, _ = MACD(df["Close"], fastperiod=12, slowperiod=26, signalperiod=9)
     df["Upper Band"], df["Middle Band"], df["Lower Band"] = BBANDS(df["Close"], timeperiod=20)
 
-    data = bt.feeds.PandasData(dataname=df)
-
-    backtest(MyStrategy, data)
-
     # Calculate the percentage change from the initial value to the final value
     initial_value = df["Close"].iloc[0]
     final_value = df["Close"].iloc[-1]
@@ -202,7 +220,8 @@ def evaluate_stock(symbol):
     logging.info(f"Percentage Change: {price_change:.2f}%")
     logging.info(f"RSI: {df['RSI'].iloc[-1]:.2f}")
     logging.info(f"MACD: {df['MACD'].iloc[-1]:.2f}")
-    logging.info(f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
+    logging.info(
+        f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
     logging.info(f"6-Month Percentage Change to identify Bullish or Bearish stocks: {percent_change:.2f}%")
     logging.info(f"Bullish: {bullish(symbol)}")
     logging.info(f"Bearish: {bearish(symbol)}")
@@ -210,6 +229,16 @@ def evaluate_stock(symbol):
 
 
 def buy_stock(symbol, cash):
+    df = yf.download(symbol, period="6mo")
+    df["RSI"] = RSI(df["Close"], timeperiod=14)
+    df["MACD"], _, _ = MACD(df["Close"], fastperiod=12, slowperiod=26, signalperiod=9)
+    df["Upper Band"], df["Middle Band"], df["Lower Band"] = BBANDS(df["Close"], timeperiod=20)
+
+    # Calculate the percentage change from the initial value to the final value
+    initial_value = df["Close"].iloc[0]
+    final_value = df["Close"].iloc[-1]
+    percent_change = (final_value - initial_value) / initial_value * 100
+
     # Get account and check day trade count
     account = api.get_account()
     if account.daytrade_count > 2:
@@ -224,16 +253,11 @@ def buy_stock(symbol, cash):
         return
 
     # A second important check to not buy if stock is bearish to prevent loss of profit
-    # Evaluate the stock to calculate the 6 month percent change
-    evaluate_stock(symbol)
-    percent_change = evaluate_stock.percent_change
-
     # Check if the 6 month percent change is less than 25%, to not buy bearish stocks
     if percent_change < 25:
         print(f"The percent change for {symbol} is less than 25% for 6 months. Not buying bearish stock. ")
         logging.info(f"The percent change for {symbol} is less than 25% for 6 months. Not buying bearish stock. ")
         return
-
 
     # Get the last closing price of the stock
     bars = yf.download(symbol, period="1d")
@@ -258,6 +282,7 @@ def buy_stock(symbol, cash):
     )
     print(f"Submitted order to buy {num_shares} shares of {symbol}")
     logging.info(f"Submitted order to buy {num_shares} shares of {symbol}")
+
 
 def sell_stock(self, position):
     # Get account and check day trade count
@@ -303,30 +328,6 @@ def sell_dropped_stocks():
                 print(f"Submitted order to sell all shares of {position.symbol}")
                 logging.info(f"Submitted order to sell all shares of {position.symbol}")
 
-def sell_profitable_positions():
-    # Get current positions
-    positions = api.list_positions()
-    account = api.get_account()
-
-    for position in positions:
-        # Get the current price from the Position object
-        current_price = float(position.current_price)
-        entry_price = float(position.avg_entry_price)
-
-        # Calculate the percentage change
-        percent_change = (current_price - entry_price) / entry_price * 100
-
-        # Sell if the price increases by 3% and we own more than 0 shares
-        if percent_change >= 3.0 and int(position.qty) > 0 and account.daytrade_count < 3:
-            api.submit_order(
-                symbol=position.symbol,
-                qty=position.qty,
-                side='sell',
-                type='market',
-                time_in_force='day'
-            )
-            print(f"Sold {position.qty} shares of {position.symbol} with a {percent_change:.2f}% profit.")
-            logging.info(f"Sold {position.qty} shares of {position.symbol} with a {percent_change:.2f}% profit.")
 
 def stop_if_stock_market_is_closed():
     # Check if the current time is within the stock market hours
@@ -354,24 +355,23 @@ def stop_if_stock_market_is_closed():
         print(f'Current date & time (Eastern Time): {now.strftime("%A, %B %d, %Y, %H:%M:%S")}\n')
         print("Stockbot only works Monday through Friday: 9:30am - 4:00pm Eastern Time. ")
         print("Waiting until Stock Market Hours to begin the Stockbot Trading Program. ")
-        time1.sleep(60)  # Sleep for 1 minute and check again
-        #return
+        time.sleep(60)  # Sleep for 1 minute and check again
+        # return
+
 
 def check_account_status():
     account = api.get_account()
     if account.trading_blocked:
         print('Account is currently restricted from trading.')
-        time1.sleep(60 * 60 * 24)
+        time.sleep(60 * 60 * 24)
         sys.exit(0)
+
 
 def monitor_stocks():
     while True:
         stop_if_stock_market_is_closed()
 
         check_account_status()
-
-        # earn money on selling stocks
-        sell_profitable_positions()
 
         sell_dropped_stocks()
 
@@ -385,17 +385,19 @@ def monitor_stocks():
         for symbol in SYMBOLS:
             evaluate_stock(symbol)
 
-        # Sleep for 1 minute before checking again
-        time1.sleep(60)
+        #time.sleep(15)
 
 
 if __name__ == "__main__":
     while True:
         try:
             monitor_stocks()
+            time.sleep(2)
+
+
         except Exception as e:
             print(f"Error: {e}")
             logging.error(f"Error: {e}")
             # Sleep for 5 seconds before restarting the program
-            time1.sleep(5)
+            time.sleep(2)
             continue
