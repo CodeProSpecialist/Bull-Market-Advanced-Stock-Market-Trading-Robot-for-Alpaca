@@ -10,7 +10,7 @@ because the design uses backtrader with talib: Moving Average Convergence Diverg
 Relative Strength Index, and Bollinger Bands that were designed 
 in the busy 1980s era of the stock market to follow normal price flexibility. 
 Bollinger Bands can also help determine when it is time to sell stock when the stock reaches the 
-lower band level. 
+upper band level for a profit or the lower band level to prevent loss of profit. 
 
 This stock market robot is currently configured to buy and sell stock based on the 
 Bollinger Bands, RSI, and Moving Average Convergence Divergence. 
