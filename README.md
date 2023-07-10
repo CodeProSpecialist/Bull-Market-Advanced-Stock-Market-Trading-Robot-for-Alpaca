@@ -1,20 +1,22 @@
 # Advanced-Stock-Market-Trading-Bot-Version-2 
 
 This code is so brand new that it is still considered the "beta" version for about 14 days. 
-It seems to be working great so far. There is an internal python library error from the 
-pandas package trying its best to reorganize all of the data, and this can be ignored because 
-the program is running just fine and this program needs pandas to work correctly. 
-So, yes this program is working correctly while it keeps reporting an error. 
-The error is not fixable as far as I know. If it is known, then it will be fixed in the future. 
-The program is working just fine while reporting errors, though. Part of the reason that there is 
-a pandas error is that this program was designed to work even better than the pandas library 
-was ready for. So, yes it is true that this program was coded even better than the limits of the 
-pandas library. This program pushes the limits of the pandas library and so the error can be ignored. 
-Instead, just enjoy the stock market trading profits and success with this profitable stock market robot. 
+It seems to be working great so far. There is a known small error of not reading an input, 
+although the program seems to be working great so far, and I will be watching if the 
+program continues to work just fine anyways. 
+
 I do not know of any other stock market robot that has been designed as well as this stock market robot 
-because the design uses backtrader with talib: Moving Average Convergence Divergence, Relative Strength Index, and Bollinger Bands that were designed in the busy 1980s era of the stock market to follow normal price flexibility. 
+because the design uses backtrader with talib: Moving Average Convergence Divergence, 
+Relative Strength Index, and Bollinger Bands that were designed 
+in the busy 1980s era of the stock market to follow normal price flexibility. 
 Bollinger Bands can also help determine when it is time to sell stock when the stock reaches the 
 lower band level. 
+
+This stock market robot is currently configured to buy and sell stock based on the 
+Bollinger Bands, RSI, and Moving Average Convergence Divergence. 
+This is the best designed stock market robot that I know of that is using 
+the talib and these features. 
+
      I recommend to not select stocks that are valued less than 37.50 to have the stocks work well 
 with this stock bot because it is more worth your time to use your single or last few day trades 
 to generate a larger dollar amount of profit from a 3% profit before the stock is sold. 
