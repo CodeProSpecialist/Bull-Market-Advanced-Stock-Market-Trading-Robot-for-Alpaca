@@ -242,8 +242,10 @@ def buy_stock(symbol, cash):
     # Get account and check day trade count
     account = api.get_account()
     if account.daytrade_count >= 2:
-        print("Day trade limit reached. Not buying.")
-        logging.info("Day trade limit reached. Not buying.")
+        print(" Day trade limit would be reached if we tried to sell after buying today. "
+              " Not buying until Day Trade number is 1 or less. ")
+        logging.info("Day trade limit would be reached if we tried to sell after buying today. "
+                     " Not buying until Day Trade number is 1 or less. ") 
         return
 
     # Prevent buying if stock is bearish
