@@ -15,7 +15,7 @@ lower band level.
 This stock market robot is currently configured to buy and sell stock based on the 
 Bollinger Bands, RSI, and Moving Average Convergence Divergence. 
 This is the best designed stock market robot that I know of that is using 
-the talib and these features. 
+the talib and these features. This means that your chances of selling at a profit are increased. 
 
      I recommend to not select stocks that are valued less than 37.50 to have the stocks work well 
 with this stock bot because it is more worth your time to use your single or last few day trades 
