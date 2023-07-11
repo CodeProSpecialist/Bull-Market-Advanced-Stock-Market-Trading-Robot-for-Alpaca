@@ -284,9 +284,9 @@ def buy_stock(symbol, cash):
     )
     print(f"Submitted order to buy {num_shares} shares of {symbol}")
     logging.info(f"Submitted order to buy {num_shares} shares of {symbol}")
-    print("Waiting 12 minutes for the order to 100% finish updating in the account. ")
-    logging.info("Waiting 12 minutes for the order to 100% finish updating in the account. ") 
-    time.sleep(720)  # wait 12 minutes for the order to 100% finish updating in the account. 
+    print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
+    logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ") 
+    time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account. 
 
 
 def sell_stock(self, position):
