@@ -153,6 +153,12 @@ def evaluate_stock(symbol):
     current_price = df["Close"].iloc[-1]
     price_change = (current_price - closing_price) / closing_price * 100
 
+    # buy stock in your text file of successful stocks when the price increases 1.5%
+    if price_change > 1.5:
+        account = api.get_account()
+        cash = float(account.cash)
+        buy_stock(symbol, cash)
+
     # Print evaluation results with bullish/bearish indication
     print(f"Evaluation results for {symbol}:")
     print(f"Current Price: ${current_price:.2f}")
@@ -389,7 +395,7 @@ if __name__ == "__main__":
     while True:
         try:
             monitor_stocks()
-            
+
         except Exception as e:
             print(f"Error: {e}")
             logging.error(f"Error: {e}")
