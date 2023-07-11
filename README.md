@@ -9,40 +9,12 @@ The program seems to be working great without any problems.
 
 
 
-     I asked an artificial intelligence neural network to analyze this python program and this is what it said about this program's python code: 
+    
+   The Buy and Sell Functions: This python code includes buy_stock and sell_stock functions to perform trading actions based on the strategy. The functions consider account’s available cash and day trade limit, which is a good practice. Additionally, bearish conditions and the past 6-month performance are considered before buying a stock to avoid buying into a downtrending stock.
 
-Question: Is the Python script able to buy and sell by monitoring a stock price’s bollinger bands? 
-
-Answer: Yes, the provided script is designed to monitor a stock price’s Bollinger Bands and use this information as part of its decision-making process for buying and selling stocks. The script uses the ta-lib library to compute the Bollinger Bands, as well as other technical indicators such as RSI (Relative Strength Index) and MACD (Moving Average Convergence Divergence).
-
-For example, in the MyStrategy class within the next method, it checks whether the closing price is below the lower Bollinger Band for buying, and whether the closing price is above the upper Bollinger Band for selling. These checks are part of a larger set of conditions that have to be met before a buying or selling decision is made. 
-
-The script you’ve posted is quite comprehensive. It fetches real-time stock market data, calculates various technical indicators, and makes trading decisions based on these indicators. Let’s break down its components and evaluate them:
-
-      1.    Environment setup: Your script begins by importing necessary modules and initializing the Alpaca Trade API with the correct environment variables. This part is well set up.
-      2.    Loading symbols: The load_symbols function reads a list of stock symbols from a text file. This will be used to track a set of stocks for potential trading. It’s a good practice to separate this list in a file.
-      3.    Account Information and Current Positions: print_account_info and print_positions functions are designed to display and log current account details and positions, which is useful for tracking trading activities.
-      4.    Technical Analysis: You are using Bollinger Bands, RSI (Relative Strength Index), and MACD (Moving Average Convergence Divergence) indicators in your strategy, which are commonly used in technical analysis.
-      5.    Trading Strategy: In MyStrategy class, you buy a stock if the closing price has increased by at least 9% from the previous day, the RSI is less than 30 (oversold condition), MACD is above the signal line (indicating upward momentum), the current price is below the lower Bollinger Band (indicating the stock is undervalued), and the stock is not in a bearish condition (determined by the bearish function). You sell if the current price is above the upper Bollinger Band, RSI is greater than 70 (overbought condition), and the MACD is below the signal line (indicating downward momentum).
-      6.    Buy and Sell Functions: Your script includes buy_stock and sell_stock functions to perform trading actions based on the strategy. The functions consider account’s available cash and day trade limit, which is a good practice. Additionally, bearish conditions and the past 6-month performance are considered before buying a stock to avoid buying into a downtrending stock.
-
-
-I do not know of any other stock market robot that has been designed as well as this stock market robot 
-because the design uses backtrader with talib: Moving Average Convergence Divergence, 
-Relative Strength Index, and Bollinger Bands that were designed 
-in the busy 1980s era of the stock market to follow normal price flexibility. 
-Bollinger Bands can also help determine when it is time to sell stock when the stock reaches the 
-upper band level for a profit or the lower band level to prevent loss of profit. 
-
-This stock market robot is currently configured to buy and sell stock based on the 
-Bollinger Bands, RSI, and Moving Average Convergence Divergence. 
-This is the best designed stock market robot that I know of that is using 
-the talib and these features. 
-This means that your chances of selling at a profit are increased. 
-
-     I recommend to not select stocks that are valued less than 37.50 to have the stocks work well 
+     I recommend to not select stocks that are valued less than 200 dollars to have the stocks work well 
 with this stock bot because it is more worth your time to use your single or last few day trades 
-to generate a larger dollar amount of profit from a 3% profit before the stock is sold. 
+to generate a larger dollar amount of profit from a 2 percent profit before the stock is sold. 
 I also recommend only having this stock bot monitor your favorite top 2 or 3 stocks that you have 
 noticed increasing in price numbers. This will make this stock bot generate the most profit for 
 you in the least amount of time. 
