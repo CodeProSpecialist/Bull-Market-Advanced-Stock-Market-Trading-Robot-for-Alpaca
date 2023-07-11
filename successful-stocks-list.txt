@@ -1,5 +1,2 @@
-AAPL
-AMD
-INTC
-AMZN
+
 
