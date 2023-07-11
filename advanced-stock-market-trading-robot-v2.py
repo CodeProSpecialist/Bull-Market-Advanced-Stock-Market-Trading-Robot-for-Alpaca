@@ -1,10 +1,8 @@
 import alpaca_trade_api as tradeapi
 import yfinance as yf
-# import pandas as pd
 from talib import MACD, RSI, BBANDS
-from datetime import datetime, timedelta
+from datetime import datetime
 from datetime import time as time2
-import backtrader as bt
 import os
 import logging
 import pytz
@@ -83,52 +81,17 @@ def print_positions():
     for position in positions:
         symbol = position.symbol
         current_price = float(position.current_price)
-        closing_price = float(position.prev_close_price)
-        print(f"Symbol: {symbol}, Current Price: ${current_price:.2f}, Yesterday's Closing Price: ${closing_price:.2f}")
-    print("--------------------")
+        print(f"Symbol: {symbol}, Current Price: ${current_price:.2f}")
+        print("--------------------")
 
     # Log current positions
     logging.info("\nCurrent Positions:")
     for position in positions:
         symbol = position.symbol
         current_price = float(position.current_price)
-        closing_price = float(position.prev_close_price)
         logging.info(
-            f"Symbol: {symbol}, Current Price: ${current_price:.2f}, Yesterday's Closing Price: ${closing_price:.2f}")
+            f"Symbol: {symbol}, Current Price: ${current_price:.2f}")
     logging.info("--------------------")
-
-
-class MyStrategy(bt.Strategy):
-    def __init__(self):
-        self.rsi = bt.indicators.RSI(self.data.close, period=14)
-        self.macd = bt.indicators.MACD(self.data.close)
-        self.bbands = bt.indicators.BollingerBands(self.data.close)
-
-    def next(self):
-        if not self.position:
-            # Get the opening price of today
-            symbol = self.data._name
-            opening_price = self.get_opening_price(symbol)
-
-            # Buy condition
-            if (
-                    self.data.close[0] > self.data.close[-1] * 1.09
-                    and self.rsi < 30
-                    and self.macd.macd > self.macd.signal
-                    and self.data.close[0] <= self.bbands.lines.bot[0]
-                    and self.data.close[0] > opening_price * 1.015
-            ):
-                cash = float(api.get_account().cash)
-                if not bearish(symbol):
-                    buy_stock(symbol, cash)
-        else:
-            # Sell condition
-            if (
-                    self.data.close[0] >= self.bbands.lines.top[0]
-                    and self.rsi > 70
-                    and self.macd.macd < self.macd.signal
-            ):
-                sell_stock(self.position)
 
 
 def get_opening_price(self, symbol):
@@ -136,13 +99,6 @@ def get_opening_price(self, symbol):
     bars = yf.download(symbol, period="1d")
     opening_price = bars["Open"].iloc[0]
     return opening_price
-
-
-def backtest(strategy, data):
-    cerebro = bt.Cerebro()
-    cerebro.addstrategy(strategy)
-    cerebro.adddata(data)
-    cerebro.run()
 
 
 def bullish(symbol):
@@ -245,7 +201,7 @@ def buy_stock(symbol, cash):
         print(" Day trade limit would be reached if we tried to sell after buying today. "
               " Not buying until Day Trade number is 2 or less. ")
         logging.info("Day trade limit would be reached if we tried to sell after buying today. "
-                     " Not buying until Day Trade number is 2 or less. ") 
+                     " Not buying until Day Trade number is 2 or less. ")
         return
 
     # Prevent buying if stock is bearish
@@ -285,8 +241,8 @@ def buy_stock(symbol, cash):
     print(f"Submitted order to buy {num_shares} shares of {symbol}")
     logging.info(f"Submitted order to buy {num_shares} shares of {symbol}")
     print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
-    logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ") 
-    time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account. 
+    logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ")
+    time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
 
 
 def sell_stock(self, position):
@@ -310,7 +266,8 @@ def sell_stock(self, position):
         logging.info(f"Submitted order to sell all shares of {position.symbol}")
         print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
         logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ")
-        time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account. 
+        time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
+
 
 def sell_dropped_stocks():
     # Get current positions
@@ -336,7 +293,34 @@ def sell_dropped_stocks():
                 logging.info(f"Submitted order to sell all shares of {position.symbol}")
                 print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
                 logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ")
-                time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account. 
+                time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
+
+
+def sell_stocks_to_earn_money():
+    # Get current positions
+    positions = api.list_positions()
+    account = api.get_account()
+
+    for position in positions:
+        # Get the current price from the Position object
+        current_price = float(position.current_price)
+
+        # Check for 2.25% price increase and sell
+        if float(position.avg_entry_price) * 1.0225 < current_price:
+            # Check if there is at least 1 share to sell
+            if int(position.qty) > 0 and account.daytrade_count < 3:
+                api.submit_order(
+                    symbol=position.symbol,
+                    qty=position.qty,
+                    side='sell',
+                    type='market',
+                    time_in_force='day'
+                )
+                print(f"Submitted order to sell all shares of {position.symbol} to earn a profit. ")
+                logging.info(f"Submitted order to sell all shares of {position.symbol} to earn a profit. ")
+                print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
+                logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ")
+                time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
 
 
 def stop_if_stock_market_is_closed():
@@ -379,9 +363,12 @@ def check_account_status():
 
 def monitor_stocks():
     while True:
+        pass
         stop_if_stock_market_is_closed()
 
         check_account_status()
+
+        sell_stocks_to_earn_money()
 
         sell_dropped_stocks()
 
@@ -395,19 +382,17 @@ def monitor_stocks():
         for symbol in SYMBOLS:
             evaluate_stock(symbol)
 
-        #time.sleep(15)
+        time.sleep(8)
 
 
 if __name__ == "__main__":
     while True:
         try:
             monitor_stocks()
-            time.sleep(2)
-
-
+            
         except Exception as e:
             print(f"Error: {e}")
             logging.error(f"Error: {e}")
             # Sleep for 5 seconds before restarting the program
-            time.sleep(2)
+            time.sleep(8)
             continue
