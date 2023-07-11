@@ -1,15 +1,21 @@
 # Advanced-Stock-Market-Trading-Bot-Version-2 
 
 This Advanced Stock Market Robot seems to be working great so far. 
-There is a known small error that is: Error: No objects to concatenate, and this error can be 
-ignored because it just simply reached the end of 
-the text file "successful-stocks-list.txt" and could not find any more 
-stock symbols to concatenate or evaluate. 
+
+Important Instructions: 
+1. Place this program into "buy more stocks mode"
+    when you put stock symbols in the text file "successful-stocks-list.txt"
+    and the stock market trading robot keeps looking for chances to buy more stocks
+   from the list of stock symbols.
+
+2. Place this program into "sell stocks only mode" by deleting all of the
+   stock symbols in the text file called: "successful-stocks-list.txt. "
+   This includes when you want to try to sell stocks for a profit when the price of the stock
+   is increasing in value. 
+
+   
 The program seems to be working great without any problems. 
 
-
-
-    
    The Buy and Sell Functions: This python code includes buy_stock and sell_stock functions to perform trading actions based on the strategy. The functions consider account’s available cash and day trade limit, which is a good practice. Additionally, bearish conditions and the past 6-month performance are considered before buying a stock to avoid buying into a downtrending stock.
 
      I recommend to not select stocks that are valued less than 200 dollars to have the stocks work well 
