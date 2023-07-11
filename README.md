@@ -61,9 +61,9 @@ It will automatically buy more stock of the symbol that you have selected when t
 or a price increase and it will automatically sell all shares of the same symbol when there is a bear market or a price decrease. 
 It helps to prevent from buying bearish stocks with 2 bearish stock checks 
 and this feature will almost completely prevent buying the stocks that are losing price value. 
-It stops buying more stocks if you have a Daytrade Count of 2 days for you to use the 3rd Daytrade 
-to sell a stock that has a price that is decreasing. You may change this number in this Python code if you like, 
-although it is at the best setting for preventing loss of profit by default. 
+After buying or selling a stock, this Trading Robot waits for 10 minutes to resume working to wait for the 
+order to finish processing. This prevents numerous orders for the same stocks from being placed. 
+It stops buying more stocks if you have a Daytrade Count of 3 days to comply with the PDT or Pattern Daytrading Rules. 
 It maximizes your profits by trading with all of the available Cash Equity in your stock broker account. Here's more information: 
 
 Experience the power of Python 3's TA Library with our Advanced Stock Market Trading Bot. Turn data into insights, insights into decisions, and decisions into profit. Experience the future of trading with our Advanced Stock Market Trading Bot. 
