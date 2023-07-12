@@ -8,7 +8,7 @@ Important Instructions:
     and the stock market trading robot keeps looking for chances to buy more stocks
    from the list of stock symbols.
 
-2. This program will remove the stock symbol name
+2. This program will automatically remove the stock symbol name
    from the text file "successful-stocks-list.txt" after an order to buy stock has
    been placed. This will allow you to not have to do anything while the
    Stock Market Robot is working for you. 
