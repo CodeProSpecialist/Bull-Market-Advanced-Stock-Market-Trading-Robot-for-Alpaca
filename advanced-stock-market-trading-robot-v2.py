@@ -190,6 +190,21 @@ def evaluate_stock(symbol):
     logging.info("--------------------")
 
 
+# the python code below will remove the stock from the text file after the buy order is placed
+def remove_symbol(symbol, filename):
+    symbols = []
+    try:
+        with open(filename, 'r') as file:
+            symbols = [line.strip() for line in file.readlines() if line.strip() != symbol]
+    except FileNotFoundError:
+        print(f"Error: File '{filename}' not found.")
+        return
+    with open(filename, 'w') as file:
+        for s in symbols:
+            file.write(s + "\n")
+
+
+
 def buy_stock(symbol, cash):
     df = yf.download(symbol, period="6mo")
     df["RSI"] = RSI(df["Close"], timeperiod=14)
@@ -246,6 +261,15 @@ def buy_stock(symbol, cash):
     )
     print(f"Submitted order to buy {num_shares} shares of {symbol}")
     logging.info(f"Submitted order to buy {num_shares} shares of {symbol}")
+
+    time.sleep(15)  # waiting 15 seconds to remove the stock from the text file
+
+    # remove the symbol from the list file after successful order
+    remove_symbol(symbol, 'successful-stocks-list.txt')
+
+    print("The buy stock order has been submitted. The stock symbol has been removed from successful-stocks-list.txt to finish the order process.")
+    logging.info("The buy stock order has been submitted. The stock symbol has been removed from successful-stocks-list.txt to finish the order process.")
+
     print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
     logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ")
     time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
