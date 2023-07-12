@@ -8,7 +8,12 @@ Important Instructions:
     and the stock market trading robot keeps looking for chances to buy more stocks
    from the list of stock symbols.
 
-2. Place this program into "sell stocks only mode" by deleting all of the
+2. This program will remove the stock symbol name
+   from the text file "successful-stocks-list.txt" after an order to buy stock has
+   been placed. This will allow you to not have to do anything while the
+   Stock Market Robot is working for you. 
+
+4. Place this program into "sell stocks only mode" by deleting all of the
    stock symbols in the text file called: "successful-stocks-list.txt. "
    This includes when you want to try to sell stocks for a profit when the price of the stock
    is increasing in value. 
