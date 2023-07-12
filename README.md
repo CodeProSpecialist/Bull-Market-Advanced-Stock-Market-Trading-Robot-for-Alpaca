@@ -16,9 +16,20 @@ Important Instructions:
    
 The program seems to be working great without any problems. 
 
-   The Buy and Sell Functions: This python code includes buy_stock and sell_stock functions to perform trading actions based on the strategy. The functions consider account’s available cash and day trade limit, which is a good practice. Additionally, bearish conditions and the past 6-month performance are considered before buying a stock to avoid buying into a downtrending stock.
+   The Buy and Sell Functions: This python code includes buy_stock and sell_stock functions 
+to perform trading actions based on the strategy. The functions consider account’s available cash 
+and day trade limit, which is a good practice. Additionally, bearish conditions and 
+the past 6-month performance are considered before buying a stock to avoid buying into a downtrending stock.
 
-     I recommend to not select stocks that are valued less than 200 dollars to have the stocks work well 
+Never buy any stock less than 200 dollars with a stock robot 
+because the stock is too unstable to work very well with a stock robot. 
+More stable price increases will work the best with a stock robot 
+and that would be stock that is 200 dollars or more, 
+stock that is a strong buy bull stock, 
+and you want to buy stock that has been increasing in price since 
+the past 3 - 12 months. 
+
+   I also recommend to not select stocks that are valued less than 200 dollars to have the stocks work well 
 with this stock bot because it is more worth your time to use your single or last few day trades 
 to generate a larger dollar amount of profit from a 2 percent profit before the stock is sold. 
 I also recommend only having this stock bot monitor your favorite top 2 or 3 stocks that you have 
