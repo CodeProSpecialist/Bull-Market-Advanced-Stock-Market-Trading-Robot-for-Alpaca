@@ -308,9 +308,9 @@ def sell_dropped_stocks():
         # Get the current price from the Position object
         current_price = float(position.current_price)
 
-        # Check for 2.5% price decrease and sell
-        if float(position.avg_entry_price) * 0.975 > current_price:
-            # Check if there is at least 1 share to sell
+        # Check for any price decrease and sell during the 2023 stock market recession. 
+    if current_price < float(position.avg_entry_price):
+        # Check if there is at least 1 share to sell
             if int(position.qty) > 0 and account.daytrade_count < 3:
                 api.submit_order(
                     symbol=position.symbol,
