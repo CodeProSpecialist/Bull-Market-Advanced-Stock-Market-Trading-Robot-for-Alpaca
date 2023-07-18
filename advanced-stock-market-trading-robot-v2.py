@@ -326,33 +326,6 @@ def sell_dropped_stocks():
                 time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
 
 
-def sell_stocks_to_earn_money():
-    # Get current positions
-    positions = api.list_positions()
-    account = api.get_account()
-
-    for position in positions:
-        # Get the current price from the Position object
-        current_price = float(position.current_price)
-
-        # Check for 2.25% price increase and sell
-        if float(position.avg_entry_price) * 1.0225 < current_price:
-            # Check if there is at least 1 share to sell
-            if int(position.qty) > 0 and account.daytrade_count < 3:
-                api.submit_order(
-                    symbol=position.symbol,
-                    qty=position.qty,
-                    side='sell',
-                    type='market',
-                    time_in_force='day'
-                )
-                print(f"Submitted order to sell all shares of {position.symbol} to earn a profit. ")
-                logging.info(f"Submitted order to sell all shares of {position.symbol} to earn a profit. ")
-                print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
-                logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ")
-                time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
-
-
 def stop_if_stock_market_is_closed():
     # Check if the current time is within the stock market hours
     # Set the stock market open and close times
@@ -397,9 +370,7 @@ def monitor_stocks():
         stop_if_stock_market_is_closed()
 
         check_account_status()
-
-        sell_stocks_to_earn_money()
-
+        
         sell_dropped_stocks()
 
         # Print account information
