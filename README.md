@@ -22,7 +22,33 @@ Important Instructions:
    is increasing in value. 
 
    
-The program seems to be working great without any problems. 
+The code block sell_dropped_stocks() is a function that checks the current positions of stocks held by the account and performs several checks before deciding whether to sell any of the stocks.
+
+Here's a breakdown of what the code does:
+
+    Get current positions: It retrieves the current positions from the Alpaca API using api.list_positions() and assigns them to the positions variable.
+
+    Loop through each position: It iterates over each position in the positions list.
+
+    Get the current price: It retrieves the current price of the stock from the Position object and assigns it to the current_price variable.
+
+    Initialize variables: It initializes several variables related to trailing stop loss and consecutive price decreases. These variables include highest_price (the highest price the stock has reached since entry), stop_loss_percentage (the percentage below the highest price to set the stop loss price), stop_loss_price (the calculated stop loss price), stop_loss_triggered (a flag to indicate if the stop loss has been triggered), consecutive_decreases (the count of consecutive price decreases), and previous_price (the previous price for comparison).
+
+    Check if the price meets the sell conditions: It checks two conditions to determine if the stock should be sold:
+        If the current price is less than the average entry price minus 1 (dollar). This condition allows for selling if the price drops by more than 1 dollar from the average entry price.
+        If there are three or more consecutive price decreases. This condition allows for selling if the price has been decreasing for three consecutive intervals.
+
+    Sell the stock: If the sell conditions are met, it executes the sell operation. The code checks if the quantity of shares (position.qty) is greater than 0 and if the day trade count (account.daytrade_count) is less than 3 before submitting the order to sell the stock using api.submit_order() with the specified parameters.
+
+    Update trailing stop loss and consecutive price decreases: It updates the trailing stop loss and consecutive price decrease variables based on the current price. If the current price is higher than the previous highest price, the highest_price is updated, and the stop_loss_price is recalculated based on the new highest price. If the current price is lower than the previous price, the consecutive_decreases count is incremented. If the current price is higher or the same as the previous price, the consecutive_decreases count is reset to 0.
+
+    Check if stop loss is triggered: It compares the current price with the calculated stop loss price to check if the stop loss condition has been triggered. If the current price is lower than the stop loss price, the stop_loss_triggered flag is set to True.
+
+    Update previous price for the next iteration: It updates the previous_price variable with the current price, so it can be used for comparison in the next iteration.
+
+    Wait before repeating the process: It pauses the execution for 15 seconds before repeating the process, allowing for a delay between each iteration of the loop.
+
+Overall, the code evaluates the sell conditions, executes the sell operation if the conditions are met, and tracks trailing stop loss and consecutive price decreases to make informed decisions on when to sell the stocks. 
 
    The Buy and Sell Functions: This python code includes buy_stock and sell_stock functions 
 to perform trading actions based on the strategy. The functions consider account’s available cash 
