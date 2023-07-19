@@ -321,10 +321,10 @@ def sell_dropped_stocks():
         if current_price < float(position.avg_entry_price) - 1 or consecutive_decreases >= 3:
             # Sell the stock
             # Add your code here to execute the sell operation
-            if int(position.qty) > 0 and account.daytrade_count < 3:
+            if float(position.qty) > 0 and account.daytrade_count < 3:
                 api.submit_order(
                     symbol=position.symbol,
-                    qty=position.qty,
+                    qty=float(position.qty),
                     side='sell',
                     type='market',
                     time_in_force='day'
