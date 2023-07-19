@@ -302,15 +302,25 @@ def sell_stock(self, position):
 def sell_dropped_stocks():
     # Get current positions
     positions = api.list_positions()
-    account = api.get_account()
 
     for position in positions:
         # Get the current price from the Position object
         current_price = float(position.current_price)
 
-        # Check for any price decrease and sell during the 2023 stock market recession. 
-    if current_price < float(position.avg_entry_price):
-        # Check if there is at least 1 share to sell
+        # Variables for trailing stop loss
+        highest_price = float(position.avg_entry_price)  # Initialize highest price
+        stop_loss_percentage = 0.10  # Set stop loss percentage to 10%
+        stop_loss_price = highest_price * (1 - stop_loss_percentage)  # Calculate stop loss price
+        stop_loss_triggered = False
+
+        # Variables for consecutive price decreases
+        consecutive_decreases = 0
+        previous_price = current_price
+
+        # Check if the price meets the sell conditions
+        if current_price < float(position.avg_entry_price) - 1 or consecutive_decreases >= 3:
+            # Sell the stock
+            # Add your code here to execute the sell operation
             if int(position.qty) > 0 and account.daytrade_count < 3:
                 api.submit_order(
                     symbol=position.symbol,
@@ -324,6 +334,27 @@ def sell_dropped_stocks():
                 print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
                 logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ")
                 time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
+
+        # Update trailing stop loss and consecutive price decreases
+        if current_price > highest_price:
+            highest_price = current_price
+            stop_loss_price = highest_price * (1 - stop_loss_percentage)
+            consecutive_decreases = 0
+        else:
+            if current_price < previous_price:
+                consecutive_decreases += 1
+            else:
+                consecutive_decreases = 0
+
+        # Check if stop loss is triggered
+        if current_price < stop_loss_price:
+            stop_loss_triggered = True
+
+        # Update previous price for next iteration
+        previous_price = current_price
+
+        # Wait for 15 seconds before repeating the process
+        time1.sleep(15)
 
 
 def stop_if_stock_market_is_closed():
