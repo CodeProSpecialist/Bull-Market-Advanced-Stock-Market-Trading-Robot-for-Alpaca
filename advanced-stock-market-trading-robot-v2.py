@@ -301,6 +301,7 @@ def sell_stock(self, position):
 
 def sell_dropped_stocks():
     # Get current positions
+    account = api.get_account()
     positions = api.list_positions()
 
     for position in positions:
@@ -354,7 +355,7 @@ def sell_dropped_stocks():
         previous_price = current_price
 
         # Wait for 15 seconds before repeating the process
-        time1.sleep(15)
+        time.sleep(15)
 
 
 def stop_if_stock_market_is_closed():
