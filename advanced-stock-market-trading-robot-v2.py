@@ -166,7 +166,7 @@ def chandelier_exit_signal_sell_dropped_stocks():
     current_prices = {}
     for position in positions:
         symbol = position.symbol
-        last_trade = api.get_last_trade(symbol)
+        last_trade = api.get_last_trade_v2(symbol)  # Use get_last_trade_v2 instead of get_last_trade
         current_prices[symbol] = float(last_trade.price)
 
     for position in positions:
@@ -198,6 +198,7 @@ def chandelier_exit_signal_sell_dropped_stocks():
                 print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
                 logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ")
                 time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
+
 
 
 def bullish(symbol):
