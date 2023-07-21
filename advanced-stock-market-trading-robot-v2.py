@@ -415,7 +415,7 @@ def monitor_stocks():
         for symbol in SYMBOLS:
             evaluate_stock(symbol)
 
-        time.sleep(8)
+        time.sleep(3)
 
 
 if __name__ == "__main__":
@@ -427,5 +427,5 @@ if __name__ == "__main__":
             print(f"Error: {e}")
             logging.error(f"Error: {e}")
             # Sleep for 5 seconds before restarting the program
-            time.sleep(8)
+            time.sleep(3)
             continue
