@@ -1,3 +1,10 @@
+
+***** I am in the middle of fixing a code bug 
+in the Chandelier exit sell method. 
+ the error should be fixed within 24 hours. 
+ feel free to download a previously working 
+version of this code on github. 
+
 # Advanced-Stock-Market-Trading-Bot-Version-2 
 
 This Advanced Stock Market Robot seems to be working great. 
