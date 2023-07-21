@@ -2,7 +2,7 @@ import alpaca_trade_api as tradeapi
 import pandas as pd
 import tradingview_ta as ta
 import yfinance as yf
-from talib import MACD, RSI, BBANDS
+from talib import MACD, RSI, BBANDS, ATR  # Import ATR from talib
 from datetime import datetime
 from datetime import time as time2
 import os
@@ -96,7 +96,7 @@ def print_positions():
     logging.info("--------------------")
 
 
-def get_opening_price(self, symbol):
+def get_opening_price(symbol):
     # Fetch the opening price of today
     bars = yf.download(symbol, period="1d")
     opening_price = bars["Open"].iloc[0]
@@ -105,7 +105,8 @@ def get_opening_price(self, symbol):
 
 # Define the Chandelier Exit function
 def chandelier_exit(df, length=22, mult=3.0, show_labels=True, use_close=True, highlight_state=True):
-    atr = mult * ta.atr(df['high'], df['low'], df['close'], length)
+
+    atr = ATR(df['high'], df['low'], df['close'], timeperiod=length)  # Use ATR from talib
 
     if use_close:
         high_extremum = df['close'].rolling(length).max()
@@ -152,12 +153,14 @@ def chandelier_exit(df, length=22, mult=3.0, show_labels=True, use_close=True, h
         'short_fill_color': short_fill_color
     }
 
-# Example usage:
-# result = chandelier_exit(df)
-# print(result)
+# use the 3 lines below to debug output. Example usage:
+#result = chandelier_exit(df)
+#chandelier_exit_data = chandelier_exit(df)
+#print(result)
+#print(df.head())
 
 
-def chandelier_exit_signal_sell_dropped_stocks():
+def chandelier_exit_signal_sell_dropped_stocks(df):
     # Get current positions
     account = api.get_account()
     positions = api.list_positions()
@@ -166,38 +169,41 @@ def chandelier_exit_signal_sell_dropped_stocks():
     current_prices = {}
     for position in positions:
         symbol = position.symbol
-        last_trade = api.get_last_trade(symbol)
+        last_trade = api.get_latest_trade(symbol=symbol)
         current_prices[symbol] = float(last_trade.price)
 
     for position in positions:
         symbol = position.symbol
 
-        # Fetch historical price data for the symbol with 1-minute interval
-        df = yf.download(symbol, period="1d", interval="1m")
+        try:
+            # Check if Chandelier Exit signals a sell (using chandelier_exit_data dictionary)
+            chandelier_exit_data = chandelier_exit(df)  # Pass the DataFrame here
+            sell_signal = chandelier_exit_data['sell_label'].dropna().iloc[-1]
 
-        # Check if Chandelier Exit signals a sell (using chandelier_exit_data dictionary)
-        chandelier_exit_data = chandelier_exit(df)
-        sell_signal = chandelier_exit_data['sell_label'].dropna().iloc[-1]
+            if sell_signal:
+                # Get the current price for this symbol from the previously fetched prices
+                current_price = current_prices[symbol]
 
-        if sell_signal:
-            # Get the current price for this symbol from the previously fetched prices
-            current_price = current_prices[symbol]
+                # Place your sell order logic here
+                # For example:
+                if float(position.qty) > 0 and account.daytrade_count < 3:
+                    api.submit_order(
+                        symbol=symbol,
+                        qty=float(position.qty),
+                        side='sell',
+                        type='market',
+                        time_in_force='day'
+                    )
+                    print(f"Submitted order to sell all shares of {symbol} at current price: ${current_price:.2f}")
+                    logging.info(f"Submitted order to sell all shares of {symbol} at current price: ${current_price:.2f}")
+                    print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
+                    logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ")
+                    time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
 
-            # Place your sell order logic here
-            # For example:
-            if float(position.qty) > 0 and account.daytrade_count < 3:
-                api.submit_order(
-                    symbol=symbol,
-                    qty=float(position.qty),
-                    side='sell',
-                    type='market',
-                    time_in_force='day'
-                )
-                print(f"Submitted order to sell all shares of {symbol} at current price: ${current_price:.2f}")
-                logging.info(f"Submitted order to sell all shares of {symbol} at current price: ${current_price:.2f}")
-                print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
-                logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ")
-                time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
+        except Exception as e:
+            print(f"Error processing {symbol}: {e}")
+            logging.error(f"Error processing {symbol}: {e}")
+            continue
 
 
 def bullish(symbol):
@@ -374,7 +380,7 @@ def buy_stock(symbol, cash):
     time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
 
 
-def sell_stock(self, position):
+def sell_stock(position):
     # Get account and check day trade count
     account = api.get_account()
     if account.daytrade_count >= 3:
@@ -502,8 +508,6 @@ def monitor_stocks():
 
         check_account_status()
 
-        chandelier_exit_signal_sell_dropped_stocks()
-        
         sell_dropped_stocks()
 
         # Print account information
@@ -512,9 +516,22 @@ def monitor_stocks():
         # Print current positions
         print_positions()
 
-        # Evaluate and print monitored stocks
+        # Loop through the list of symbols
         for symbol in SYMBOLS:
-            evaluate_stock(symbol)
+            try:
+                # Fetch historical price data for the symbol with 1-minute interval
+                df = yf.download(symbol, period="1d", interval="1m")
+
+                # Call the function for the specific symbol
+                chandelier_exit_signal_sell_dropped_stocks(df)
+
+                # Evaluate and print monitored stocks
+                evaluate_stock(symbol)
+
+            except Exception as e:
+                print(f"Error processing {symbol}: {e}")
+                logging.error(f"Error processing {symbol}: {e}")
+                continue
 
         time.sleep(3)
 
