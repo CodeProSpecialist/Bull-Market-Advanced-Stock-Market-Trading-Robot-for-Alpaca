@@ -1,4 +1,6 @@
 import alpaca_trade_api as tradeapi
+import pandas as pd
+import tradingview_ta as ta
 import yfinance as yf
 from talib import MACD, RSI, BBANDS
 from datetime import datetime
@@ -99,6 +101,103 @@ def get_opening_price(self, symbol):
     bars = yf.download(symbol, period="1d")
     opening_price = bars["Open"].iloc[0]
     return opening_price
+
+
+# Define the Chandelier Exit function
+def chandelier_exit(df, length=22, mult=3.0, show_labels=True, use_close=True, highlight_state=True):
+    atr = mult * ta.atr(df['high'], df['low'], df['close'], length)
+
+    if use_close:
+        high_extremum = df['close'].rolling(length).max()
+        low_extremum = df['close'].rolling(length).min()
+    else:
+        high_extremum = df['high'].rolling(length).max()
+        low_extremum = df['low'].rolling(length).min()
+
+    long_stop = high_extremum - atr
+    long_stop_prev = long_stop.shift(1).fillna(long_stop)
+    long_stop = df['close'].shift(1).where(df['close'].shift(1) > long_stop_prev, long_stop)
+
+    short_stop = low_extremum + atr
+    short_stop_prev = short_stop.shift(1).fillna(short_stop)
+    short_stop = df['close'].shift(1).where(df['close'].shift(1) < short_stop_prev, short_stop)
+
+    dir_signal = df['close'].apply(lambda x: 1 if x > short_stop_prev[-1] else -1 if x < long_stop_prev[-1] else dir_signal[-1])
+
+    long_color = 'green'
+    short_color = 'red'
+
+    long_stop_plot = dir_signal.apply(lambda x: long_stop[-1] if x == 1 else pd.NA)
+    long_stop_start = dir_signal.apply(lambda x: long_stop[-1] if x == 1 and dir_signal.shift(1).fillna(dir_signal[-1]) == -1 else pd.NA)
+    buy_label = dir_signal.apply(lambda x: long_stop[-1] if x == 1 and show_labels else pd.NA)
+
+    short_stop_plot = dir_signal.apply(lambda x: short_stop[-1] if x == -1 else pd.NA)
+    short_stop_start = dir_signal.apply(lambda x: short_stop[-1] if x == -1 and dir_signal.shift(1).fillna(dir_signal[-1]) == 1 else pd.NA)
+    sell_label = dir_signal.apply(lambda x: short_stop[-1] if x == -1 and show_labels else pd.NA)
+
+    mid_price_plot = df['close']
+
+    long_fill_color = dir_signal.apply(lambda x: long_color if x == 1 else pd.NA)
+    short_fill_color = dir_signal.apply(lambda x: short_color if x == -1 else pd.NA)
+
+    return {
+        'long_stop': long_stop_plot,
+        'long_stop_start': long_stop_start,
+        'buy_label': buy_label,
+        'short_stop': short_stop_plot,
+        'short_stop_start': short_stop_start,
+        'sell_label': sell_label,
+        'mid_price_plot': mid_price_plot,
+        'long_fill_color': long_fill_color,
+        'short_fill_color': short_fill_color
+    }
+
+# Example usage:
+# result = chandelier_exit(df)
+# print(result)
+
+
+def chandelier_exit_signal_sell_dropped_stocks():
+    # Get current positions
+    account = api.get_account()
+    positions = api.list_positions()
+
+    # Fetch the current price for each symbol
+    current_prices = {}
+    for position in positions:
+        symbol = position.symbol
+        last_trade = api.get_last_trade(symbol)
+        current_prices[symbol] = float(last_trade.price)
+
+    for position in positions:
+        symbol = position.symbol
+
+        # Fetch historical price data for the symbol with 1-minute interval
+        df = yf.download(symbol, period="1d", interval="1m")
+
+        # Check if Chandelier Exit signals a sell (using chandelier_exit_data dictionary)
+        chandelier_exit_data = chandelier_exit(df)
+        sell_signal = chandelier_exit_data['sell_label'].dropna().iloc[-1]
+
+        if sell_signal:
+            # Get the current price for this symbol from the previously fetched prices
+            current_price = current_prices[symbol]
+
+            # Place your sell order logic here
+            # For example:
+            if float(position.qty) > 0 and account.daytrade_count < 3:
+                api.submit_order(
+                    symbol=symbol,
+                    qty=float(position.qty),
+                    side='sell',
+                    type='market',
+                    time_in_force='day'
+                )
+                print(f"Submitted order to sell all shares of {symbol} at current price: ${current_price:.2f}")
+                logging.info(f"Submitted order to sell all shares of {symbol} at current price: ${current_price:.2f}")
+                print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
+                logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ")
+                time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
 
 
 def bullish(symbol):
@@ -402,6 +501,8 @@ def monitor_stocks():
         stop_if_stock_market_is_closed()
 
         check_account_status()
+
+        chandelier_exit_signal_sell_dropped_stocks()
         
         sell_dropped_stocks()
 
