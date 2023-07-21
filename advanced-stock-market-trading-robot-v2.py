@@ -303,7 +303,6 @@ def remove_symbol(symbol, filename):
             file.write(s + "\n")
 
 
-
 def buy_stock(symbol, cash):
     df = yf.download(symbol, period="6mo")
     df["RSI"] = RSI(df["Close"], timeperiod=14)
@@ -318,10 +317,10 @@ def buy_stock(symbol, cash):
     # Get account and check day trade count
     account = api.get_account()
     if account.daytrade_count >= 3:
-        print(" Day trade limit would be reached if we tried to sell after buying today. "
-              " Not buying until Day Trade number is 2 or less. ")
+        print("Day trade limit would be reached if we tried to sell after buying today. "
+              "Not buying until Day Trade number is 2 or less.")
         logging.info("Day trade limit would be reached if we tried to sell after buying today. "
-                     " Not buying until Day Trade number is 2 or less. ")
+                     "Not buying until Day Trade number is 2 or less.")
         return
 
     # Prevent buying if stock is bearish
@@ -331,18 +330,24 @@ def buy_stock(symbol, cash):
         return
 
     # A second important check to not buy if stock is bearish to prevent loss of profit
-    # Check if the 6 month percent change is less than 25%, to not buy bearish stocks
+    # Check if the 6-month percent change is less than 25%, to not buy bearish stocks
     if percent_change < 25:
-        print(f"The percent change for {symbol} is less than 25% for 6 months. Not buying bearish stock. ")
-        logging.info(f"The percent change for {symbol} is less than 25% for 6 months. Not buying bearish stock. ")
+        print(f"The percent change for {symbol} is less than 25% for 6 months. Not buying bearish stock.")
+        logging.info(f"The percent change for {symbol} is less than 25% for 6 months. Not buying bearish stock.")
         return
 
-    # Get the last closing price of the stock
-    bars = yf.download(symbol, period="1d")
-    price = bars['Close'].iloc[-1]
+    # Check if Chandelier Exit signals a buy (using chandelier_exit_data dictionary)
+    chandelier_exit_data = chandelier_exit(df)
+    buy_signal = chandelier_exit_data['buy_label'].dropna().iloc[-1]
+
+    # Check if we have a Chandelier Exit buy signal
+    if not buy_signal:
+        print("Waiting for the Chandelier Exit buy signal before buying the stock.")
+        logging.info("Waiting for the Chandelier Exit buy signal before buying the stock.")
+        return
 
     # Calculate the maximum number of shares we can buy
-    num_shares = int(cash / price)
+    num_shares = int(cash / df["Close"].iloc[-1])
 
     # If we can't buy at least 1 share, then don't submit the order
     if num_shares < 1:
@@ -358,19 +363,21 @@ def buy_stock(symbol, cash):
         type='market',
         time_in_force='day'
     )
-    print(f"Submitted order to buy {num_shares} shares of {symbol}")
-    logging.info(f"Submitted order to buy {num_shares} shares of {symbol}")
+    print(f"Submitted order to buy {num_shares} shares of {symbol} at current price: ${df['Close'].iloc[-1]:.2f}")
+    logging.info(f"Submitted order to buy {num_shares} shares of {symbol} at current price: ${df['Close'].iloc[-1]:.2f}")
 
     time.sleep(15)  # waiting 15 seconds to remove the stock from the text file
 
     # remove the symbol from the list file after successful order
     remove_symbol(symbol, 'successful-stocks-list.txt')
 
-    print("The buy stock order has been submitted. The stock symbol has been removed from successful-stocks-list.txt to finish the order process.")
-    logging.info("The buy stock order has been submitted. The stock symbol has been removed from successful-stocks-list.txt to finish the order process.")
+    print("The buy stock order has been submitted. The stock symbol has been removed from successful-stocks-list.txt "
+          "to finish the order process.")
+    logging.info("The buy stock order has been submitted. The stock symbol has been removed from "
+                 "successful-stocks-list.txt to finish the order process.")
 
-    print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
-    logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ")
+    print("Waiting 10 minutes for the order to 100% finish updating in the account.")
+    logging.info("Waiting 10 minutes for the order to 100% finish updating in the account.")
     time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
 
 
