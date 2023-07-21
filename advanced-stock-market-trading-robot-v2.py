@@ -354,8 +354,8 @@ def sell_dropped_stocks():
         # Update previous price for next iteration
         previous_price = current_price
 
-        # Wait for 8 seconds before repeating the process
-        time.sleep(8)
+        # Wait for 2 seconds before repeating the process
+        time.sleep(2)
 
 
 def stop_if_stock_market_is_closed():
