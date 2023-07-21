@@ -157,48 +157,47 @@ def chandelier_exit(df, length=22, mult=3.0, show_labels=True, use_close=True, h
 # print(result)
 
 
-def chandelier_exit_signal_sell_dropped_stocks():
-    # Get current positions
-    account = api.get_account()
-    positions = api.list_positions()
+def chandelier_exit_signal_sell_dropped_stocks(self):
+        # Get current positions
+        account = self.api.get_account()
+        positions = self.api.list_positions()
 
-    # Fetch the current price for each symbol
-    current_prices = {}
-    for position in positions:
-        symbol = position.symbol
-        last_trade = api.get_last_trade_v2(symbol)  # Use get_last_trade_v2 instead of get_last_trade
-        current_prices[symbol] = float(last_trade.price)
+        # Fetch the current price for each symbol
+        current_prices = {}
+        for position in positions:
+            symbol = position.symbol
+            last_trade = self.api.get_last_trade(symbol)
+            current_prices[symbol] = float(last_trade.price)
 
-    for position in positions:
-        symbol = position.symbol
+        for position in positions:
+            symbol = position.symbol
 
-        # Fetch historical price data for the symbol with 1-minute interval
-        df = yf.download(symbol, period="1d", interval="1m")
+            # Fetch historical price data for the symbol with 1-minute interval
+            df = yf.download(symbol, period="1d", interval="1m")
 
-        # Check if Chandelier Exit signals a sell (using chandelier_exit_data dictionary)
-        chandelier_exit_data = chandelier_exit(df)
-        sell_signal = chandelier_exit_data['sell_label'].dropna().iloc[-1]
+            # Check if Chandelier Exit signals a sell (using chandelier_exit_data dictionary)
+            chandelier_exit_data = chandelier_exit(df)
+            sell_signal = chandelier_exit_data['sell_label'].dropna().iloc[-1]
 
-        if sell_signal:
-            # Get the current price for this symbol from the previously fetched prices
-            current_price = current_prices[symbol]
+            if sell_signal:
+                # Get the current price for this symbol from the previously fetched prices
+                current_price = current_prices[symbol]
 
-            # Place your sell order logic here
-            # For example:
-            if float(position.qty) > 0 and account.daytrade_count < 3:
-                api.submit_order(
-                    symbol=symbol,
-                    qty=float(position.qty),
-                    side='sell',
-                    type='market',
-                    time_in_force='day'
-                )
-                print(f"Submitted order to sell all shares of {symbol} at current price: ${current_price:.2f}")
-                logging.info(f"Submitted order to sell all shares of {symbol} at current price: ${current_price:.2f}")
-                print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
-                logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ")
-                time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
-
+                # Place your sell order logic here
+                # For example:
+                if float(position.qty) > 0 and account.daytrade_count < 3:
+                    self.api.submit_order(
+                        symbol=symbol,
+                        qty=float(position.qty),
+                        side='sell',
+                        type='market',
+                        time_in_force='day'
+                    )
+                    print(f"Submitted order to sell all shares of {symbol} at current price: ${current_price:.2f}")
+                    logging.info(f"Submitted order to sell all shares of {symbol} at current price: ${current_price:.2f}")
+                    print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
+                    logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ")
+                    time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
 
 
 def bullish(symbol):
