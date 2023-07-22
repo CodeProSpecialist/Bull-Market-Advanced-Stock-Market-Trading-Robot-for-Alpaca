@@ -46,7 +46,7 @@ Here's a breakdown of what the code does:
 
     Update previous price for the next iteration: It updates the previous_price variable with the current price, so it can be used for comparison in the next iteration.
 
-    Wait before repeating the process: It pauses the execution for 15 seconds before repeating the process, allowing for a delay between each iteration of the loop.
+    Wait before repeating the process: It pauses the execution for at least 2 seconds before repeating the process, allowing for a delay between each iteration of the loop.
 
 Overall, the code evaluates the sell conditions, executes the sell operation if the conditions are met, and tracks trailing stop loss and consecutive price decreases to make informed decisions on when to sell the stocks. 
 
