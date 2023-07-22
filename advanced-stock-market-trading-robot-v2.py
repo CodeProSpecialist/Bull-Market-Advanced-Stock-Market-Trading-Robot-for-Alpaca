@@ -201,8 +201,8 @@ def chandelier_exit_signal_sell_dropped_stocks(df):
                     time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
 
         except Exception as e:
-            print(f"Error processing {symbol}: {e}")
-            logging.error(f"Error processing {symbol}: {e}")
+            print(f"Error processing {symbol}: {e} in the chandelier_exit_signal_sell_dropped_stocks Python code section. ")
+            logging.error(f"Error processing {symbol}: {e} in the chandelier_exit_signal_sell_dropped_stocks Python code section. ")
             continue
 
 
@@ -529,8 +529,8 @@ def monitor_stocks():
                 evaluate_stock(symbol)
 
             except Exception as e:
-                print(f"Error processing {symbol}: {e}")
-                logging.error(f"Error processing {symbol}: {e}")
+                print(f"Error processing {symbol}: {e} in the monitor_stocks Python code section. ")
+                logging.error(f"Error processing {symbol}: {e} in the monitor_stocks Python code section. ")
                 continue
 
         time.sleep(3)
