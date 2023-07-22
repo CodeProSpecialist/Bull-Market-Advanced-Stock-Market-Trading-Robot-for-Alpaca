@@ -2,7 +2,7 @@
 
 This Advanced Stock Market Robot seems to be working great. 
 Important note: This Stock Market Robot will quickly sell any stocks 
-that decrease in value, even just by 1 penny to prevent losing any money 
+that decrease in value, sometimes even selling just by 1 penny to prevent losing any money 
 at all during the 2023 Stock Market Recession. 
 
 Important Instructions: 
