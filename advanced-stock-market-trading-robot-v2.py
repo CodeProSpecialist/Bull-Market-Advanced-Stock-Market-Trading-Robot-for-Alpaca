@@ -498,7 +498,7 @@ def monitor_stocks():
                 logging.error("because it reports an Error when it reached the end of the text file list of successful stocks to buy. ")
                 continue
 
-        time.sleep(3)
+        time.sleep(2)
 
 
 if __name__ == "__main__":
@@ -509,7 +509,7 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"Error: {e}")
             logging.error(f"Error: {e}")
-            # Sleep for 5 seconds before restarting the program
-            time.sleep(3)
+            # Sleep for 2 seconds before restarting the program
+            time.sleep(2)
             continue
 
