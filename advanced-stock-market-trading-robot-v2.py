@@ -219,8 +219,9 @@ def evaluate_stock(symbol):
     current_price = df["Close"].iloc[-1]
     price_change = (current_price - closing_price) / closing_price * 100
 
-    # buy stock in your text file of successful stocks when the price increases 1.5%
-    if price_change > 1.5:
+    # buy stock in your text file of successful stocks when the price decreases 3% 
+    # to get a profit when the stock price will increase in the future. 
+    if price_change < 3:
         account = api.get_account()
         cash = float(account.cash)
         buy_stock(symbol, cash)
