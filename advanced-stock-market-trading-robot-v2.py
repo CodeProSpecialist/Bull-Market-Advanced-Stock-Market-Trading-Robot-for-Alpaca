@@ -103,109 +103,6 @@ def get_opening_price(symbol):
     return opening_price
 
 
-# Define the Chandelier Exit function
-def chandelier_exit(df, length=22, mult=3.0, show_labels=True, use_close=True, highlight_state=True):
-
-    atr = ATR(df['high'], df['low'], df['close'], timeperiod=length)  # Use ATR from talib
-
-    if use_close:
-        high_extremum = df['close'].rolling(length).max()
-        low_extremum = df['close'].rolling(length).min()
-    else:
-        high_extremum = df['high'].rolling(length).max()
-        low_extremum = df['low'].rolling(length).min()
-
-    long_stop = high_extremum - atr
-    long_stop_prev = long_stop.shift(1).fillna(long_stop)
-    long_stop = df['close'].shift(1).where(df['close'].shift(1) > long_stop_prev, long_stop)
-
-    short_stop = low_extremum + atr
-    short_stop_prev = short_stop.shift(1).fillna(short_stop)
-    short_stop = df['close'].shift(1).where(df['close'].shift(1) < short_stop_prev, short_stop)
-
-    dir_signal = df['close'].apply(lambda x: 1 if x > short_stop_prev[-1] else -1 if x < long_stop_prev[-1] else dir_signal[-1])
-
-    long_color = 'green'
-    short_color = 'red'
-
-    long_stop_plot = dir_signal.apply(lambda x: long_stop[-1] if x == 1 else pd.NA)
-    long_stop_start = dir_signal.apply(lambda x: long_stop[-1] if x == 1 and dir_signal.shift(1).fillna(dir_signal[-1]) == -1 else pd.NA)
-    buy_label = dir_signal.apply(lambda x: long_stop[-1] if x == 1 and show_labels else pd.NA)
-
-    short_stop_plot = dir_signal.apply(lambda x: short_stop[-1] if x == -1 else pd.NA)
-    short_stop_start = dir_signal.apply(lambda x: short_stop[-1] if x == -1 and dir_signal.shift(1).fillna(dir_signal[-1]) == 1 else pd.NA)
-    sell_label = dir_signal.apply(lambda x: short_stop[-1] if x == -1 and show_labels else pd.NA)
-
-    mid_price_plot = df['close']
-
-    long_fill_color = dir_signal.apply(lambda x: long_color if x == 1 else pd.NA)
-    short_fill_color = dir_signal.apply(lambda x: short_color if x == -1 else pd.NA)
-
-    return {
-        'long_stop': long_stop_plot,
-        'long_stop_start': long_stop_start,
-        'buy_label': buy_label,
-        'short_stop': short_stop_plot,
-        'short_stop_start': short_stop_start,
-        'sell_label': sell_label,
-        'mid_price_plot': mid_price_plot,
-        'long_fill_color': long_fill_color,
-        'short_fill_color': short_fill_color
-    }
-
-# use the 3 lines below to debug output. Example usage:
-#result = chandelier_exit(df)
-#chandelier_exit_data = chandelier_exit(df)
-#print(result)
-#print(df.head())
-
-
-def chandelier_exit_signal_sell_dropped_stocks(df):
-    # Get current positions
-    account = api.get_account()
-    positions = api.list_positions()
-
-    # Fetch the current price for each symbol
-    current_prices = {}
-    for position in positions:
-        symbol = position.symbol
-        last_trade = api.get_latest_trade(symbol=symbol)
-        current_prices[symbol] = float(last_trade.price)
-
-    for position in positions:
-        symbol = position.symbol
-
-        try:
-            # Check if Chandelier Exit signals a sell (using chandelier_exit_data dictionary)
-            chandelier_exit_data = chandelier_exit(df)  # Pass the DataFrame here
-            sell_signal = chandelier_exit_data['sell_label'].dropna().iloc[-1]
-
-            if sell_signal:
-                # Get the current price for this symbol from the previously fetched prices
-                current_price = current_prices[symbol]
-
-                # Place your sell order logic here
-                # For example:
-                if float(position.qty) > 0 and account.daytrade_count < 3:
-                    api.submit_order(
-                        symbol=symbol,
-                        qty=float(position.qty),
-                        side='sell',
-                        type='market',
-                        time_in_force='day'
-                    )
-                    print(f"Submitted order to sell all shares of {symbol} at current price: ${current_price:.2f}")
-                    logging.info(f"Submitted order to sell all shares of {symbol} at current price: ${current_price:.2f}")
-                    print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
-                    logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ")
-                    time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
-
-        except Exception as e:
-            print(f"Error processing {symbol}: {e} in the chandelier_exit_signal_sell_dropped_stocks Python code section. ")
-            logging.error(f"Error processing {symbol}: {e} in the chandelier_exit_signal_sell_dropped_stocks Python code section. ")
-            continue
-
-
 def bullish(symbol):
     # Download historical data
     bars = yf.download(symbol, period="1mo")
@@ -240,6 +137,70 @@ def bearish(symbol):
     bollinger_signal = close_prices[-1] > upper[-1]  # Price is above upper Bollinger Band
 
     return macd_signal and rsi_signal and bollinger_signal
+
+
+# Function to get current positions using Alpaca API
+def get_positions(api):
+    positions = api.list_positions()
+    return positions
+
+def evaluate_owned_shares_and_generate_sell_signal_at_high_bollinger_band(api):
+    # Get current positions
+    positions = get_positions(api)
+
+    # Loop through the positions and evaluate each stock
+    for position in positions:
+        symbol = position.symbol
+
+        # Get stock data and calculate indicators
+        df = yf.download(symbol, period="6mo")
+        df["RSI"] = RSI(df["Close"], timeperiod=14)
+        df["MACD"], _, _ = MACD(df["Close"], fastperiod=12, slowperiod=26, signalperiod=9)
+        df["Upper Band"], df["Middle Band"], df["Lower Band"] = BBANDS(df["Close"], timeperiod=20)
+
+        # Calculate the percentage change from the initial value to the final value
+        initial_value = df["Close"].iloc[0]
+        final_value = df["Close"].iloc[-1]
+        percent_change = (final_value - initial_value) / initial_value * 100
+
+        # Calculate the percentage change between yesterday's closing price and the current price
+        closing_price = df["Close"].iloc[-2]
+        current_price = df["Close"].iloc[-1]
+        price_change = (current_price - closing_price) / closing_price * 100
+
+        # Sell stock if it reaches the upper Bollinger Band
+        if current_price >= df["Upper Band"].iloc[-1]:
+            sell_stock(position)
+
+        # Print evaluation results with bullish/bearish indication
+        print(f"Evaluation results for {symbol}:")
+        print(f"Current Price: ${current_price:.2f}")
+        print(f"Previous Opening Price: ${df['Open'].iloc[-1]:.2f}")
+        print(f"Previous Closing Price: ${closing_price:.2f}")
+        print(f"Percentage Change: {price_change:.2f}%")
+        print(f"RSI: {df['RSI'].iloc[-1]:.2f}")
+        print(f"MACD: {df['MACD'].iloc[-1]:.2f}")
+        print(f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
+        print(f"6-Month Percentage Change to identify Bullish or Bearish stocks: {percent_change:.2f}%")
+        print(f"Waiting to Sell all Shares of {symbol} for a profit when the price reaches the Upper Bollinger Band. ")
+        print(f"Bullish: {bullish(symbol)}")
+        print(f"Bearish: {bearish(symbol)}")
+        print("--------------------")
+
+        # Log evaluation results with bullish/bearish indication
+        logging.info(f"Evaluation results for {symbol}:")
+        logging.info(f"Current Price: ${current_price:.2f}")
+        logging.info(f"Previous Opening Price: ${df['Open'].iloc[-1]:.2f}")
+        logging.info(f"Previous Closing Price: ${closing_price:.2f}")
+        logging.info(f"Percentage Change: {price_change:.2f}%")
+        logging.info(f"RSI: {df['RSI'].iloc[-1]:.2f}")
+        logging.info(f"MACD: {df['MACD'].iloc[-1]:.2f}")
+        logging.info(f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
+        logging.info(f"6-Month Percentage Change to identify Bullish or Bearish stocks: {percent_change:.2f}%")
+        logging.info(f"Waiting to Sell all Shares of {symbol} for a profit when the price reaches the Upper Bollinger Band. ")
+        logging.info(f"Bullish: {bullish(symbol)}")
+        logging.info(f"Bearish: {bearish(symbol)}")
+        logging.info("--------------------")
 
 
 def evaluate_stock(symbol):
@@ -523,14 +484,18 @@ def monitor_stocks():
                 df = yf.download(symbol, period="1d", interval="1m")
 
                 # Call the function for the specific symbol
-                chandelier_exit_signal_sell_dropped_stocks(df)
+                evaluate_owned_shares_and_generate_sell_signal_at_high_bollinger_band(api)
 
                 # Evaluate and print monitored stocks
                 evaluate_stock(symbol)
 
             except Exception as e:
                 print(f"Error processing {symbol}: {e} in the monitor_stocks Python code section. ")
+                print("It is OK to ignore the Error processing : No objects to concatenate message ")
+                print("because it reports an Error when it reached the end of the text file list of successful stocks to buy. ")
                 logging.error(f"Error processing {symbol}: {e} in the monitor_stocks Python code section. ")
+                logging.error("It is OK to ignore the Error processing : No objects to concatenate message ")
+                logging.error("because it reports an Error when it reached the end of the text file list of successful stocks to buy. ")
                 continue
 
         time.sleep(3)
@@ -547,3 +512,4 @@ if __name__ == "__main__":
             # Sleep for 5 seconds before restarting the program
             time.sleep(3)
             continue
+
