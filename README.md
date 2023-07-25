@@ -6,20 +6,20 @@ that decrease in value, sometimes even selling just by 1 penny to prevent losing
 at all during the 2023 Stock Market Recession. 
 
 Important Instructions: 
-1. Place this program into "buy more stocks mode"
-    when you put stock symbols in the text file "successful-stocks-list.txt"
-    and the stock market trading robot keeps looking for chances to buy more stocks
-   from the list of stock symbols.
+1.To buy stocks, run the python script named buy-stock-robot.py 
+with the command: python3 buy-stock-robot.py 
+ Place this program into "buy more stocks mode"
+ when you put stock symbols in the text file "successful-stocks-list.txt"
+ and the stock market trading robot keeps looking for chances to buy more stocks
+ from the list of stock symbols.
 
 2. This program will automatically remove the stock symbol name
    from the text file "successful-stocks-list.txt" after an order to buy stock has
    been placed. This will allow you to not have to do anything while the
    Stock Market Robot is working for you. 
 
-4. Place this program into "sell stocks only mode" by deleting all of the
-   stock symbols in the text file called: "successful-stocks-list.txt. "
-   This includes when you want to try to sell stocks for a profit when the price of the stock
-   is increasing in value. 
+3. Sell stocks by running the python script named sell-stock-robot.py
+   with the command: python3 sell-stock-robot.py
 
    
 The code block sell_dropped_stocks() is a function that checks the current positions of stocks held by the account and performs several checks before deciding whether to sell any of the stocks.
