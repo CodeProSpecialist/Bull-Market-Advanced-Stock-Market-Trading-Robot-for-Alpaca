@@ -38,26 +38,7 @@ Here's a breakdown of what the code does:
 
     Get the current price: It retrieves the current price of the stock from the Position object and assigns it to the current_price variable.
 
-    Initialize variables: It initializes several variables related to trailing stop loss and consecutive price decreases. These variables include highest_price (the highest price the stock has reached since entry), stop_loss_percentage (the percentage below the highest price to set the stop loss price), stop_loss_price (the calculated stop loss price), stop_loss_triggered (a flag to indicate if the stop loss has been triggered), consecutive_decreases (the count of consecutive price decreases), and previous_price (the previous price for comparison).
-
-    Check if the price meets the sell conditions: It checks two conditions to determine if the stock should be sold:
-        If the current price is less than the average entry price minus 1 (dollar). This condition allows for selling if the price drops by more than 1 dollar from the average entry price.
-        If there are three or more consecutive price decreases. This condition allows for selling if the price has been decreasing for three consecutive intervals.
-
-    Sell the stock: If the sell conditions are met, it executes the sell operation. The code checks if the quantity of shares (position.qty) is greater than 0 and if the day trade count (account.daytrade_count) is less than 3 before submitting the order to sell the stock using api.submit_order() with the specified parameters.
-
-    Update trailing stop loss and consecutive price decreases: It updates the trailing stop loss and consecutive price decrease variables based on the current price. If the current price is higher than the previous highest price, the highest_price is updated, and the stop_loss_price is recalculated based on the new highest price. If the current price is lower than the previous price, the consecutive_decreases count is incremented. If the current price is higher or the same as the previous price, the consecutive_decreases count is reset to 0.
-
-    Check if stop loss is triggered: It compares the current price with the calculated stop loss price to check if the stop loss condition has been triggered. If the current price is lower than the stop loss price, the stop_loss_triggered flag is set to True.
-
-    Update previous price for the next iteration: It updates the previous_price variable with the current price, so it can be used for comparison in the next iteration.
-
-    Wait before repeating the process: It pauses the execution for at least 2 seconds before repeating the process, allowing for a delay between each iteration of the loop.
-
-Overall, the code evaluates the sell conditions, executes the sell operation if the conditions are met, and tracks trailing stop loss and consecutive price decreases to make informed decisions on when to sell the stocks. 
-
-   The Buy and Sell Functions: This python code includes buy_stock and sell_stock functions 
-to perform trading actions based on the strategy. The functions consider account’s available cash 
+     The functions consider account’s available cash 
 and day trade limit, which is a good practice. Additionally, bearish conditions and 
 the past 6-month performance are considered before buying a stock to avoid buying into a downtrending stock.
 
@@ -86,14 +67,6 @@ This is an Advanced buying and selling Python 3 Trading Robot
 to monitor a stock market symbol or a number of stock symbols that you place in the file "successful-stocks-list.txt". 
 Only place one stock symbol on each line. 
 
-It will automatically buy more stock of the symbol that you have selected when there is a bull market 
-or a price increase and it will automatically sell all shares of the same symbol when there is a bear market or a price decrease. 
-It helps to prevent from buying bearish stocks with 2 bearish stock checks 
-and this feature will almost completely prevent buying the stocks that are losing price value. 
-After buying or selling a stock, this Trading Robot waits for 10 minutes to resume working to wait for the 
-order to finish processing. This prevents numerous orders for the same stocks from being placed. 
-It stops buying more stocks if you have a Daytrade Count of 3 days to comply with the PDT or Pattern Daytrading Rules. 
-It maximizes your profits by trading with all of the available Cash Equity in your stock broker account. Here's more information: 
 
 Experience the power of Python 3's TA Library with our Advanced Stock Market Trading Bot. Turn data into insights, insights into decisions, and decisions into profit. Experience the future of trading with our Advanced Stock Market Trading Bot. 
 Elevate your trading game, maximize your profits, and let our bot do the heavy lifting. This isn't just a bot, it's your 24/7 trading partner.
@@ -120,9 +93,11 @@ Remember that you just let the stockbot run for 24 hours. It watches the prices 
 
 After placing your alpaca keys at the bottom of /home/nameofyourhomefolderhere/.bashrc you simply run the command in a command terminal like:
 
-python3 advanced-stock-market-trading-robot-v2.py
+python3 buy-stock-robot.py 
 
+or
 
+python3 sell-stock-robot.py
 
 Disclaimer: Remember that all trading involves risks. The ability to successfully implement these strategies depends on both market conditions and individual skills and knowledge. As such, trading should only be done with funds that you can afford to lose. Always do thorough research before making investment decisions, and consider consulting with a financial advisor. This is use at your own risk software. This software does not include any warranty or guarantees other than the useful tasks that may or may not work as intended for the software application end user. The software developer shall not be held liable for any financial losses or damages that occur as a result of using this software for any reason to the fullest extent of the law. Using this software is your agreement to these terms. This software is designed to be helpful and useful to the end user.
 
