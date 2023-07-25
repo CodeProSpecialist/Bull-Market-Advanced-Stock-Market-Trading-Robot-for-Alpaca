@@ -111,10 +111,7 @@ def main():
 
     # Sell the stock based on the specified target price and stop loss conditions
     sell_stock(symbol, target_price)
-
-    # Sleep for 10 minutes after selling the stock
-#    print("Sleeping for 10 minutes before exiting the program.")
-#    time.sleep(600)  # Sleep for 10 minutes
+    
 
 if __name__ == "__main__":
     main()
