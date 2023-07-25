@@ -20,6 +20,12 @@ with the command: python3 buy-stock-robot.py
 
 3. Sell stocks by running the python script named sell-stock-robot.py
    with the command: python3 sell-stock-robot.py
+   First make sure to place the stock symbol name to sell in the first line
+   at the top of the text file named the-stock-symbol-to-sell.txt as a
+   stock symbol name like AAPL 
+   and set the price you want to sell the stock at in the first line
+   at the top of the text file named sell-stocks-price.txt as a
+   number like 850.00 for $850.00 as the sale target price. 
 
    
 The code block sell_dropped_stocks() is a function that checks the current positions of stocks held by the account and performs several checks before deciding whether to sell any of the stocks.
