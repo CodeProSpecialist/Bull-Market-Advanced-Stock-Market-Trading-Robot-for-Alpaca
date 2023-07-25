@@ -28,15 +28,6 @@ with the command: python3 buy-stock-robot.py
    number like 850.00 for $850.00 as the sale target price. 
 
    
-The code block sell_dropped_stocks() is a function that checks the current positions of stocks held by the account and performs several checks before deciding whether to sell any of the stocks.
-
-Here's a breakdown of what the code does:
-
-    Get current positions: It retrieves the current positions from the Alpaca API using api.list_positions() and assigns them to the positions variable.
-
-    Loop through each position: It iterates over each position in the positions list.
-
-    Get the current price: It retrieves the current price of the stock from the Position object and assigns it to the current_price variable.
 
      The functions consider account’s available cash 
 and day trade limit, which is a good practice. Additionally, bearish conditions and 
