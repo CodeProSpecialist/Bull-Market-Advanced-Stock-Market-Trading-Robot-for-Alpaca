@@ -266,10 +266,19 @@ def remove_symbol(symbol, filename):
     except FileNotFoundError:
         print(f"Error: File '{filename}' not found.")
         return
+
+    # Clear the 'symbols' and 'SYMBOLS' variables
+    global symbols, SYMBOLS
+    symbols.clear()
+    SYMBOLS.clear()
+
+    # Update the 'symbols' and 'SYMBOLS' variables with new information
+    symbols = load_symbols(filename)
+    SYMBOLS = load_symbols(filename)
+
     with open(filename, 'w') as file:
         for s in symbols:
             file.write(s + "\n")
-
 
 
 def buy_stock(symbol, cash):
@@ -333,6 +342,15 @@ def buy_stock(symbol, cash):
 
     # remove the symbol from the list file after successful order
     remove_symbol(symbol, 'successful-stocks-list.txt')
+
+    # Clear the 'symbols' and 'SYMBOLS' variables
+    global symbols, SYMBOLS
+    symbols.clear()
+    SYMBOLS.clear()
+
+    # Update the 'symbols' and 'SYMBOLS' variables with new information
+    symbols = load_symbols('successful-stocks-list.txt')
+    SYMBOLS = load_symbols('successful-stocks-list.txt')
 
     print("The buy stock order has been submitted. The stock symbol has been removed from successful-stocks-list.txt to finish the order process.")
     logging.info("The buy stock order has been submitted. The stock symbol has been removed from successful-stocks-list.txt to finish the order process.")
