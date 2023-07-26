@@ -21,6 +21,7 @@ eastern_zone = 'America/New_York'
 current_time_zone = datetime.now(pytz.timezone(eastern_zone))
 
 global current_time
+global symbols, SYMBOLS
 
 current_time = datetime.now(pytz.timezone(eastern_zone)).strftime("%A, %b-%d-%Y %H:%M:%S")
 
@@ -267,18 +268,19 @@ def remove_symbol(symbol, filename):
         print(f"Error: File '{filename}' not found.")
         return
 
+    with open(filename, 'w') as file:
+        for s in symbols:
+            file.write(s + "\n")
+
     # Clear the 'symbols' and 'SYMBOLS' variables
-    global symbols, SYMBOLS
+    SYMBOLS = load_symbols(filename)
+
     symbols.clear()
     SYMBOLS.clear()
 
     # Update the 'symbols' and 'SYMBOLS' variables with new information
     symbols = load_symbols(filename)
     SYMBOLS = load_symbols(filename)
-
-    with open(filename, 'w') as file:
-        for s in symbols:
-            file.write(s + "\n")
 
 
 def buy_stock(symbol, cash):
@@ -343,8 +345,12 @@ def buy_stock(symbol, cash):
     # remove the symbol from the list file after successful order
     remove_symbol(symbol, 'successful-stocks-list.txt')
 
+    global symbols
+
     # Clear the 'symbols' and 'SYMBOLS' variables
-    global symbols, SYMBOLS
+
+    SYMBOLS = load_symbols('successful-stocks-list.txt')
+
     symbols.clear()
     SYMBOLS.clear()
 
