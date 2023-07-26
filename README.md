@@ -6,9 +6,9 @@ that decrease in value, sometimes even selling just by 1 penny to prevent losing
 at all during the 2023 Stock Market Recession. 
 
 Important Instructions: 
-1.To buy stocks, run the python script named buy-stock-robot.py 
-with the command: python3 buy-stock-robot.py 
- Place this program into "buy more stocks mode"
+1.To buy stocks, run the python script named buy-and-automatically-sell-at-a-profit-robot.py 
+with the command: python3 buy-and-automatically-sell-at-a-profit-robot.py 
+ Place this program into "buy more stocks mode" 
  when you put stock symbols in the text file "successful-stocks-list.txt"
  and the stock market trading robot keeps looking for chances to buy more stocks
  from the list of stock symbols.
@@ -84,7 +84,7 @@ sudo pip3 install ta-lib
 
 After placing your alpaca keys at the bottom of /home/nameofyourhomefolderhere/.bashrc you simply run the command in a command terminal like:
 
-python3 buy-stock-robot.py 
+python3 buy-and-automatically-sell-at-a-profit-robot.py 
 
 or
 
