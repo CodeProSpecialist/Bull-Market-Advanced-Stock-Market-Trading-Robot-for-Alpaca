@@ -466,11 +466,15 @@ def stop_if_stock_market_is_closed():
             break
 
         print('''
+        
            _____   __                   __             ____            __            __ 
           / ___/  / /_  ____   _____   / /__          / __ \  ____    / /_   ____   / /_
           \__ \  / __/ / __ \ / ___/  / //_/         / /_/ / / __ \  / __ \ / __ \ / __/
          ___/ / / /_  / /_/ // /__   / ,<           / _, _/ / /_/ / / /_/ // /_/ // /_  
-        /____/  \__/  \____/ \___/  /_/|_|         /_/ |_|  \____/ /_.___/ \____/ \__/  
+        /____/  \__/  \____/ \___/  /_/|_|         /_/ |_|  \____/ /_.___/ \____/ \__/
+
+                  2023          https://github.com/CodeProSpecialist    
+        
          ''')
         print(f'Current date & time (Eastern Time): {now.strftime("%A, %B %d, %Y, %H:%M:%S")}\n')
         print("Stockbot only works Monday through Friday: 9:30am - 4:00pm Eastern Time. ")
