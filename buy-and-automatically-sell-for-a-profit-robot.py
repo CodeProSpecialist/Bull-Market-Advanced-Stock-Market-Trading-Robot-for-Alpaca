@@ -2,7 +2,8 @@ import alpaca_trade_api as tradeapi
 import pandas as pd
 import tradingview_ta as ta
 import yfinance as yf
-from talib import MACD, RSI, BBANDS, ATR  # Import ATR from talib
+import pandas_ta as ta
+import numpy as np
 from datetime import datetime
 from datetime import time as time2
 import os
@@ -204,57 +205,44 @@ def evaluate_owned_shares_and_generate_sell_signal_at_high_bollinger_band(api):
         logging.info("--------------------")
 
 
-def evaluate_stock(symbol):
+def evaluate_stock(symbol, risk=0.03):
     df = yf.download(symbol, period="6mo")
-    df["RSI"] = RSI(df["Close"], timeperiod=14)
-    df["MACD"], _, _ = MACD(df["Close"], fastperiod=12, slowperiod=26, signalperiod=9)
-    df["Upper Band"], df["Middle Band"], df["Lower Band"] = BBANDS(df["Close"], timeperiod=20)
+    macd = ta.macd(df['Close'])
+    df = pd.concat([df, macd], axis=1).reindex(df.index)
+    MACD_Strategy(df, risk)
 
-    # Calculate the percentage change from the initial value to the final value
-    initial_value = df["Close"].iloc[0]
-    final_value = df["Close"].iloc[-1]
-    percent_change = (final_value - initial_value) / initial_value * 100
+    # Get the latest row from the DataFrame to check the latest MACD buy signal
+    latest_row = df.iloc[-1]
 
-    # Calculate the percentage change between yesterday's closing price and the current price
-    closing_price = df["Close"].iloc[-2]
-    current_price = df["Close"].iloc[-1]
-    price_change = (current_price - closing_price) / closing_price * 100
+    # Check if the latest MACD buy signal is present
+    macd_buy_signal = not np.isnan(latest_row['MACD_Buy_Signal_price'])
 
-    # buy stock in your text file of successful stocks when the price decreases 3% 
-    # to get a profit when the stock price will increase in the future. 
-    if price_change < 3:
+    # Buy stock when the MACD buy signal is present.
+    if macd_buy_signal:
         account = api.get_account()
         cash = float(account.cash)
         buy_stock(symbol, cash)
 
-    # Print evaluation results with bullish/bearish indication
+    # Print evaluation results with MACD indication
     print(f"Evaluation results for {symbol}:")
-    print(f"Current Price: ${current_price:.2f}")
-    print(f"Previous Opening Price: ${df['Open'].iloc[-1]:.2f}")
-    print(f"Previous Closing Price: ${closing_price:.2f}")
-    print(f"Percentage Change: {price_change:.2f}%")
-    print(f"RSI: {df['RSI'].iloc[-1]:.2f}")
-    print(f"MACD: {df['MACD'].iloc[-1]:.2f}")
-    print(
-        f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
-    print(f"6-Month Percentage Change to identify Bullish or Bearish stocks: {percent_change:.2f}%")
-    print(f"Bullish: {bullish(symbol)}")
-    print(f"Bearish: {bearish(symbol)}")
+    print(f"Current Price: ${latest_row['Close']:.2f}")
+    print(f"Previous Opening Price: ${latest_row['Open']:.2f}")
+    print(f"Previous Closing Price: ${df['Close'].iloc[-2]:.2f}")
+    print(f"MACD: {latest_row['MACD_12_26_9']:.2f}")
+    print(f"MACD Signal Line: {latest_row['MACDs_12_26_9']:.2f}")
+    print(f"MACD Buy Signal Price: ${latest_row['MACD_Buy_Signal_price']:.2f}")
+    print(f"MACD Sell Signal Price: ${latest_row['MACD_Sell_Signal_price']:.2f}")
     print("--------------------")
 
-    # Log evaluation results with bullish/bearish indication
+    # Log evaluation results with MACD indication
     logging.info(f"Evaluation results for {symbol}:")
-    logging.info(f"Current Price: ${current_price:.2f}")
-    logging.info(f"Previous Opening Price: ${df['Open'].iloc[-1]:.2f}")
-    logging.info(f"Previous Closing Price: ${closing_price:.2f}")
-    logging.info(f"Percentage Change: {price_change:.2f}%")
-    logging.info(f"RSI: {df['RSI'].iloc[-1]:.2f}")
-    logging.info(f"MACD: {df['MACD'].iloc[-1]:.2f}")
-    logging.info(
-        f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
-    logging.info(f"6-Month Percentage Change to identify Bullish or Bearish stocks: {percent_change:.2f}%")
-    logging.info(f"Bullish: {bullish(symbol)}")
-    logging.info(f"Bearish: {bearish(symbol)}")
+    logging.info(f"Current Price: ${latest_row['Close']:.2f}")
+    logging.info(f"Previous Opening Price: ${latest_row['Open']:.2f}")
+    logging.info(f"Previous Closing Price: ${df['Close'].iloc[-2]:.2f}")
+    logging.info(f"MACD: {latest_row['MACD_12_26_9']:.2f}")
+    logging.info(f"MACD Signal Line: {latest_row['MACDs_12_26_9']:.2f}")
+    logging.info(f"MACD Buy Signal Price: ${latest_row['MACD_Buy_Signal_price']:.2f}")
+    logging.info(f"MACD Sell Signal Price: ${latest_row['MACD_Sell_Signal_price']:.2f}")
     logging.info("--------------------")
 
 
