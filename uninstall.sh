@@ -4,8 +4,7 @@ pip3 uninstall alpaca-trade-api
 pip3 uninstall yfinance
 pip3 uninstall pytz
 pip3 uninstall pandas
-pip3 uninstall tradingview_ta
-
-sudo pip3 uninstall TA-Lib
+pip3 uninstall pandas_ta
+pip3 uninstall numpy
 
 echo "Uninstall completed successfully."
