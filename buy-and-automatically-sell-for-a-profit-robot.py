@@ -97,6 +97,52 @@ def print_positions():
     logging.info("--------------------")
 
 
+def MACD_Strategy(symbol, risk):
+    # Fetch historical price data from Yahoo Finance for the given symbol
+    data = yf.download(symbol, period="6mo")
+
+    # Calculate MACD using the 'Close' price
+    macd = ta.macd(data['Close'])
+    # Concatenate the MACD data to the original DataFrame
+    data = pd.concat([data, macd], axis=1).reindex(data.index)
+
+    MACD_Buy = []
+    MACD_Sell = []
+    position = False
+
+    for i in range(0, len(data)):
+        if data['MACD_12_26_9'][i] > data['MACDs_12_26_9'][i]:
+            MACD_Sell.append(np.nan)
+            if not position:
+                MACD_Buy.append(data['Adj Close'][i])
+                position = True
+            else:
+                MACD_Buy.append(np.nan)
+        elif data['MACD_12_26_9'][i] < data['MACDs_12_26_9'][i]:
+            MACD_Buy.append(np.nan)
+            if position:
+                MACD_Sell.append(data['Adj Close'][i])
+                position = False
+            else:
+                MACD_Sell.append(np.nan)
+        elif position and data['Adj Close'][i] < MACD_Buy[-1] * (1 - risk):
+            MACD_Sell.append(data["Adj Close"][i])
+            MACD_Buy.append(np.nan)
+            position = False
+        elif position and data['Adj Close'][i] < data['Adj Close'][i - 1] * (1 - risk):
+            MACD_Sell.append(data["Adj Close"][i])
+            MACD_Buy.append(np.nan)
+            position = False
+        else:
+            MACD_Buy.append(np.nan)
+            MACD_Sell.append(np.nan)
+
+    data['MACD_Buy_Signal_price'] = MACD_Buy
+    data['MACD_Sell_Signal_price'] = MACD_Sell
+
+    return data
+
+
 def get_opening_price(symbol):
     # Fetch the opening price of today
     bars = yf.download(symbol, period="1d")
