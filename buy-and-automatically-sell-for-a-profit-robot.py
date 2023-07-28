@@ -1,6 +1,5 @@
 import alpaca_trade_api as tradeapi
 import pandas as pd
-import tradingview_ta as ta
 import yfinance as yf
 import pandas_ta as ta
 import numpy as np
