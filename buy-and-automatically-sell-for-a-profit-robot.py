@@ -390,13 +390,28 @@ def sell_stock(position):
         time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
 
 
+def get_rsi(data, period=14):
+    delta = data.diff(1)
+    gain = delta.where(delta > 0, 0)
+    loss = -delta.where(delta < 0, 0)
+
+    avg_gain = gain.rolling(window=period).mean()
+    avg_loss = loss.rolling(window=period).mean()
+
+    rs = avg_gain / avg_loss
+    rsi = 100 - (100 / (1 + rs))
+    return rsi
+
+
 def sell_dropped_stocks():
     # Get current positions
     account = api.get_account()
     positions = api.list_positions()
 
     for position in positions:
-        # Get the current price from the Position object
+        # Get historical price data
+        symbol = position.symbol
+        historical_data = yf.download(symbol, period="7d")  # Download data for the last 7 days
         current_price = float(position.current_price)
 
         # Variables for trailing stop loss
@@ -410,22 +425,27 @@ def sell_dropped_stocks():
         previous_price = current_price
 
         # Check if the price meets the sell conditions
-        if current_price < float(position.avg_entry_price) - 1 or consecutive_decreases >= 3:
-            # Sell the stock
-            # Add your code here to execute the sell operation
-            if float(position.qty) > 0 and account.daytrade_count < 3:
-                api.submit_order(
-                    symbol=position.symbol,
-                    qty=float(position.qty),
-                    side='sell',
-                    type='market',
-                    time_in_force='day'
-                )
-                print(f"Submitted order to sell all shares of {position.symbol}")
-                logging.info(f"Submitted order to sell all shares of {position.symbol}")
-                print("Waiting 10 minutes for the order to 100% finish updating in the account. ")
-                logging.info("Waiting 10 minutes for the order to 100% finish updating in the account. ")
-                time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
+        if current_price < float(position.avg_entry_price) - 0.52 or consecutive_decreases >= 2:
+            # Calculate RSI
+            rsi = get_rsi(historical_data['Close'])
+
+            # Additional sell conditions
+            if rsi.iloc[-1] < 30 and rsi.iloc[-2] > rsi.iloc[-1]:
+                # Sell the stock
+                # Add your code here to execute the sell operation
+                if float(position.qty) > 0 and account.daytrade_count < 3:
+                    api.submit_order(
+                        symbol=position.symbol,
+                        qty=float(position.qty),
+                        side='sell',
+                        type='market',
+                        time_in_force='day'
+                    )
+                    print(f"Submitted order to sell all shares of {position.symbol}")
+                    logging.info(f"Submitted order to sell all shares of {position.symbol}")
+                    print("Waiting 10 minutes for the order to 100% finish updating in the account.")
+                    logging.info("Waiting 10 minutes for the order to 100% finish updating in the account.")
+                    time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
 
         # Update trailing stop loss and consecutive price decreases
         if current_price > highest_price:
@@ -442,7 +462,7 @@ def sell_dropped_stocks():
         if current_price < stop_loss_price:
             stop_loss_triggered = True
 
-        # Update previous price for next iteration
+        # Update previous price for the next iteration
         previous_price = current_price
 
         # Wait for 2 seconds before repeating the process
