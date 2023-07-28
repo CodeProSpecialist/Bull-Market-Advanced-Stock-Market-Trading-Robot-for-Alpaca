@@ -105,42 +105,6 @@ def get_opening_price(symbol):
     return opening_price
 
 
-def bullish(symbol):
-    # Download historical data
-    bars = yf.download(symbol, period="1mo")
-    close_prices = bars['Close']
-
-    # Calculate MACD, RSI, and Bollinger Bands
-    macd, _, _ = MACD(close_prices)
-    rsi = RSI(close_prices)
-    _, _, lower = BBANDS(close_prices)
-
-    # Check bullish conditions
-    macd_signal = macd[-1] > 0  # MACD is positive
-    rsi_signal = rsi[-1] < 30  # RSI is below 30 (oversold)
-    bollinger_signal = close_prices[-1] < lower[-1]  # Price is below lower Bollinger Band
-
-    return macd_signal and rsi_signal and bollinger_signal
-
-
-def bearish(symbol):
-    # Download historical data
-    bars = yf.download(symbol, period="1mo")
-    close_prices = bars['Close']
-
-    # Calculate MACD, RSI, and Bollinger Bands
-    macd, _, _ = MACD(close_prices)
-    rsi = RSI(close_prices)
-    upper, _, _ = BBANDS(close_prices)
-
-    # Check bearish conditions
-    macd_signal = macd[-1] < 0  # MACD is negative
-    rsi_signal = rsi[-1] > 70  # RSI is above 70 (overbought)
-    bollinger_signal = close_prices[-1] > upper[-1]  # Price is above upper Bollinger Band
-
-    return macd_signal and rsi_signal and bollinger_signal
-
-
 # Function to get current positions using Alpaca API
 def get_positions(api):
     positions = api.list_positions()
@@ -185,8 +149,7 @@ def evaluate_owned_shares_and_generate_sell_signal_at_high_bollinger_band(api):
         print(f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
         print(f"6-Month Percentage Change to identify Bullish or Bearish stocks: {percent_change:.2f}%")
         print(f"Waiting to Sell all Shares of {symbol} for a profit when the price reaches the Upper Bollinger Band. ")
-        print(f"Bullish: {bullish(symbol)}")
-        print(f"Bearish: {bearish(symbol)}")
+        
         print("--------------------")
 
         # Log evaluation results with bullish/bearish indication
@@ -200,8 +163,7 @@ def evaluate_owned_shares_and_generate_sell_signal_at_high_bollinger_band(api):
         logging.info(f"Bollinger Bands: {df['Upper Band'].iloc[-1]:.2f} - {df['Middle Band'].iloc[-1]:.2f} - {df['Lower Band'].iloc[-1]:.2f}")
         logging.info(f"6-Month Percentage Change to identify Bullish or Bearish stocks: {percent_change:.2f}%")
         logging.info(f"Waiting to Sell all Shares of {symbol} for a profit when the price reaches the Upper Bollinger Band. ")
-        logging.info(f"Bullish: {bullish(symbol)}")
-        logging.info(f"Bearish: {bearish(symbol)}")
+        
         logging.info("--------------------")
 
 
@@ -290,13 +252,7 @@ def buy_stock(symbol, cash):
         logging.info("Day trade limit would be reached if we tried to sell after buying today. "
                      " Not buying until Day Trade number is 2 or less. ")
         return
-
-    # Prevent buying if stock is bearish
-    if bearish(symbol):
-        print(f"The stock {symbol} is bearish. Not buying.")
-        logging.info(f"The stock {symbol} is bearish. Not buying.")
-        return
-
+       
     # A second important check to not buy if stock is bearish to prevent loss of profit
     # Check if the 6 month percent change is less than 25%, to not buy bearish stocks
     if percent_change < 25:
@@ -402,18 +358,11 @@ def sell_dropped_stocks():
         historical_data = yf.download(symbol, period="7d")  # Download data for the last 7 days
         current_price = float(position.current_price)
 
-        # Variables for trailing stop loss
-        highest_price = float(position.avg_entry_price)  # Initialize highest price
-        stop_loss_percentage = 0.10  # Set stop loss percentage to 10%
-        stop_loss_price = highest_price * (1 - stop_loss_percentage)  # Calculate stop loss price
-        stop_loss_triggered = False
+        # Variables for MACD sell signal
+        macd_sell_signal = not np.isnan(historical_data['MACD_Sell_Signal_price'].iloc[-1])
 
-        # Variables for consecutive price decreases
-        consecutive_decreases = 0
-        previous_price = current_price
-
-        # Check if the price meets the sell conditions
-        if current_price < float(position.avg_entry_price) - 0.52 or consecutive_decreases >= 2:
+        # Check if the price meets the MACD sell signal condition
+        if macd_sell_signal:
             # Calculate RSI
             rsi = get_rsi(historical_data['Close'])
 
@@ -434,24 +383,6 @@ def sell_dropped_stocks():
                     print("Waiting 10 minutes for the order to 100% finish updating in the account.")
                     logging.info("Waiting 10 minutes for the order to 100% finish updating in the account.")
                     time.sleep(600)  # wait 10 minutes for the order to 100% finish updating in the account.
-
-        # Update trailing stop loss and consecutive price decreases
-        if current_price > highest_price:
-            highest_price = current_price
-            stop_loss_price = highest_price * (1 - stop_loss_percentage)
-            consecutive_decreases = 0
-        else:
-            if current_price < previous_price:
-                consecutive_decreases += 1
-            else:
-                consecutive_decreases = 0
-
-        # Check if stop loss is triggered
-        if current_price < stop_loss_price:
-            stop_loss_triggered = True
-
-        # Update previous price for the next iteration
-        previous_price = current_price
 
         # Wait for 2 seconds before repeating the process
         time.sleep(2)
