@@ -1,5 +1,8 @@
 # Advanced-Stock-Market-Trading-Bot-Version-2 
 
+***** this code is currently being re-written and does not fully work until Monday or when 
+this message is removed. Sorry, a bug is being removed. *****July 28, 2023. *****
+
 This Advanced Stock Market Robot seems to be working great. 
 Important note: This Stock Market Robot will quickly sell any stocks 
 that decrease in value, sometimes even selling just by 1 penny to prevent losing any money 
