@@ -33,7 +33,35 @@ Advanced Stock Market Day Trading Robot – Trading Simplified.
 
 Remember, the success in trading stocks and other securities can never be guaranteed. 
 Please trade responsibly and do your own research before making any investment. 
-This advertisement does not constitute financial advice.
+This does not constitute financial advice.
+
+Defining functions: The script defines several functions:
+
+    load_stocks_list(): This function reads the list of stocks from the file successful-stocks-list.txt.
+
+    get_data(symbol): This function downloads the stock price data for a given symbol. 
+
+    remove_symbol(symbol, filename1): This function removes a given symbol from the list of stocks in the file successful-stocks-list.txt.
+
+    MACD_Strategy(df, risk): This function implements the MACD strategy. It calculates the MACD and signal line for the given dataframe of stock prices, and generates buy and sell signals based on these values.
+
+    MACD_color(df): This function generates a list of boolean values based on whether the MACD histogram value of the current period is greater than the previous period.
+
+    make_order(api, symbol, qty, side): This function submits a market order to the Alpaca API.
+
+        check_cash(api, symbol): This function checks the amount of cash available in the trading account and calculates the maximum quantity of a stock that can be bought with that cash.
+
+    get_position_qty(api, symbol): This function retrieves the quantity of a particular stock currently held in the trading account.
+
+    plot_macd_graph(data, symbol): This function plots a graph of the stock price and the MACD indicators. It shows the stock's closing price, the MACD line, the signal line, and the MACD histogram. It also marks the points where the MACD strategy generated buy and sell signals.
+
+    stop_if_stock_market_is_closed(): This function checks if the current time is within the stock market's operating hours (9:30 am - 4:00 pm Eastern Time, Monday to Friday). If the market is closed, the function waits until it opens.
+
+    main(): This is the main function that runs the trading bot. It first checks if the stock market is open. Then it enters a loop where it checks the current positions in the trading account and the list of stocks to buy. For each stock in the list, it downloads the stock price data, calculates the MACD indicators, and generates buy and sell signals. If a buy signal is generated and the account has not exceeded the day trading limit, it places a buy order. If a sell signal is generated, it places a sell order. After each buy order, it waits for 7 minutes to allow the account to update before placing more orders.
+
+The if __name__ == "__main__": block at the end is the entry point of the script. When the script is run directly (not imported as a module), it calls the main() function. If the script is interrupted by the user (with Ctrl+C, for example), it prints a message and exits. If any other exception occurs, it prints the error message and restarts the main() function after a 2-second delay.
+
+Please note that this script is designed to run during the stock market's operating hours. 
 
 This Advanced Stock Market Robot seems to be working great. 
 Important note: This Stock Market Robot will quickly sell any stocks 
