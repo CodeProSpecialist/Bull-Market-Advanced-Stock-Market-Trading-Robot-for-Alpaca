@@ -9,6 +9,7 @@ from datetime import datetime
 from datetime import time as time2
 import matplotlib.pyplot as plt
 import numpy as np
+import logging
 
 # Load environment variables for Alpaca API
 APIKEYID = os.getenv('APCA_API_KEY_ID')
@@ -27,6 +28,11 @@ yf.pdr_override()
 eastern = pytz.timezone('US/Eastern')
 debug_mode = False
 
+global risk
+
+risk = 0.025
+
+filename1 = 'successful-stocks-list.txt'
 
 def load_stocks_list():
     with open('successful-stocks-list.txt', 'r') as file:
@@ -35,6 +41,32 @@ def load_stocks_list():
 
 def get_data(symbol):
     return yf.download(symbol, period='1d', interval='1m')
+
+
+# the python code below will remove the stock from the text file after the buy order is placed
+# the python code below will remove the stock from the text file after the buy order is placed
+def remove_symbol(symbol, filename1):
+    symbols = []
+    try:
+        with open(filename1, 'r') as file:
+            symbols = [line.strip() for line in file.readlines() if line.strip() != symbol]
+    except FileNotFoundError:
+        print(f"Error: File '{filename1}' not found.")
+        return
+
+    with open(filename1, 'w') as file:
+        for s in symbols:
+            file.write(s + "\n")
+
+    # Clear the 'symbols' and 'SYMBOLS' variables
+    SYMBOLS = load_stocks_list()
+
+    symbols.clear()
+    SYMBOLS.clear()
+
+    # Update the 'symbols' and 'SYMBOLS' variables with new information
+    symbols = load_stocks_list()
+    SYMBOLS = load_stocks_list()
 
 
 def MACD_Strategy(df, risk):
@@ -210,6 +242,26 @@ def main():
                         time.sleep(420)
                         print(" Waiting for 7 minutes after placing the most recent buy stock order to allow the ")
                         print(" account to update before placing more buy orders. ")
+                        time.sleep(15)  # waiting 15 seconds to remove the stock from the text file
+
+                        # remove the symbol from the list file after successful order
+                        remove_symbol(symbol, 'successful-stocks-list.txt')
+
+                        global symbols
+
+                        # Clear the 'symbols' and 'SYMBOLS' variables
+
+                        SYMBOLS = load_stocks_list()
+
+                        symbols.clear()
+                        SYMBOLS.clear()
+
+                        # Update the 'symbols' and 'SYMBOLS' variables with new information
+                        symbols = load_stocks_list()
+                        SYMBOLS = load_stocks_list()
+
+                        print("The buy stock order has been submitted. The stock symbol has been removed from "
+                              "successful-stocks-list.txt to finish the order process.")
 
                 elif data['MACD_Sell_Signal_price'].iloc[-1] > 0:
                     qty = get_position_qty(api, symbol)
