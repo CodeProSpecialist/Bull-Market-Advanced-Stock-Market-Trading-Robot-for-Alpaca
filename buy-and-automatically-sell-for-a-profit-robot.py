@@ -161,6 +161,7 @@ def stop_if_stock_market_is_closed():
 
 
 def main():
+    stop_if_stock_market_is_closed()
     stocks_list = load_stocks_list()
     while True:
         try:
