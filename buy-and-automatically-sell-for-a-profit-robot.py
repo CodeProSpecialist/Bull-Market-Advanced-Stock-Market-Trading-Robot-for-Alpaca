@@ -188,7 +188,7 @@ def stop_if_stock_market_is_closed():
                        2023                      https://github.com/CodeProSpecialist
         
          ''')
-        print(f'Current date & time (Eastern Time): {now.strftime("%A, %B %d, %Y, %H:%M:%S")}\n')
+        print(f'Current date & time (Eastern Time): {now.strftime("%A, %B %d, %Y, %I:%M:%S %p")}\n')
         print("Stockbot only works Monday through Friday: 9:30 am - 4:00 pm Eastern Time.")
         print("Waiting until Stock Market Hours to begin the Stockbot Trading Program.")
         time.sleep(60)  # Sleep for 1 minute and check again
