@@ -207,6 +207,8 @@ def main():
                         make_order(api, symbol, qty, 'buy')
                         log_order(symbol, 'buy')
                         time.sleep(600)
+                        print(" Waiting for 10 minutes after placing the most recent buy stock order to allow the ")
+                        print(" account to update before placing more buy orders. ")
 
                 elif data['MACD_Sell_Signal_price'].iloc[-1] > 0:
                     qty = get_position_qty(api, symbol)
