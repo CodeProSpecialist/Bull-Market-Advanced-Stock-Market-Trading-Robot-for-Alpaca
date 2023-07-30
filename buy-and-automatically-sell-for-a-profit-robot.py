@@ -6,6 +6,7 @@ import pandas_ta as ta
 import alpaca_trade_api as tradeapi
 import pytz
 from datetime import datetime
+from datetime import time as time2
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -137,7 +138,7 @@ def stop_if_stock_market_is_closed():
     while True:
         # Get the current time in Eastern Time
         eastern = pytz.timezone('US/Eastern')
-        now = datetime.datetime.now(eastern)
+        now = datetime.now(eastern)
         current_time = now.time()
 
         # Check if the current time is within market hours
@@ -215,6 +216,8 @@ def main():
             time.sleep(2)
         except Exception as e:
             print(f'An error occurred: {e}')
+            print("Ignore the error about -No objects to concatenate- when the successful-stocks-list.txt is empty. ")
+            print("This is just an error saying that there are no Stock Symbols in the text file to concatenate. ")
             time.sleep(2)
 
 
