@@ -238,8 +238,8 @@ def main():
                     if qty:
                         make_order(api, symbol, qty, 'buy')
                         log_order(symbol, 'buy')
-                        time.sleep(420)
-                        print(" Waiting for 7 minutes after placing the most recent buy stock order to allow the ")
+                        time.sleep(300)
+                        print(" Waiting for 5 minutes after placing the most recent buy stock order to allow the ")
                         print(" account to update before placing more buy orders. ")
                         time.sleep(15)  # waiting 15 seconds to remove the stock from the text file
 
