@@ -35,7 +35,7 @@ Remember, the success in trading stocks and other securities can never be guaran
 Please trade responsibly and do your own research before making any investment. 
 This does not constitute financial advice.
 
-Defining functions: The script defines several functions:
+Defining functions: The script defines several important functions:
 
     load_stocks_list(): This function reads the list of stocks from the file successful-stocks-list.txt.
 
@@ -74,7 +74,7 @@ It also reacts to quickly buy new stocks by reacting to an extremely accurate
 Moving Average Convergence / Divergence "Buy Signal." 
 
 Important Instructions: 
-1.To buy and sell stocks, run the python script named buy-and-automatically-sell-for-a-profit-robot.py 
+     To buy and sell stocks, run the python script named buy-and-automatically-sell-for-a-profit-robot.py 
 with the command: python3 buy-and-automatically-sell-for-a-profit-robot.py 
  Place this program into "buy more stocks mode" 
  when you put stock symbols in the text file "successful-stocks-list.txt"
