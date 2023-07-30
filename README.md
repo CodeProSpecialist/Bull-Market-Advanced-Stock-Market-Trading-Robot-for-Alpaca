@@ -6,7 +6,7 @@ that decrease in value, sometimes even selling just by 1 penny to prevent losing
 at all during the 2023 Stock Market Recession. 
 
 This Stock Market Robot will work best to quickly sell stocks that are decreasing in price value 
-by reacting to a Moving Average Convergence / Divergence "SELL SIGNAL." 
+by reacting to a Moving Average Convergence / Divergence "Sell Signal." 
 It also reacts to quickly buy new stocks by reacting to an extremely accurate 
 Moving Average Convergence / Divergence "Buy Signal." 
 
@@ -29,7 +29,7 @@ the past 3 - 12 months.
    I also recommend to not select stocks that are valued less than 200 dollars to have the stocks work well 
 with this stock bot because it is more worth your time to use your single or last few day trades 
 to generate a larger dollar amount of profit from a 2 percent profit before the stock is sold. 
-I also recommend only having this stock bot monitor your favorite top 2 or 3 stocks that you have 
+I also recommend only having this stock bot monitor your favorite stock that you have 
 noticed increasing in price numbers. This will make this stock bot generate the most profit for 
 you in the least amount of time. 
 
@@ -43,14 +43,39 @@ This is an Advanced buying and selling Python 3 Trading Robot
 to monitor a stock market symbol or a number of stock symbols that you place in the file "successful-stocks-list.txt". 
 Only place one stock symbol on each line. 
 
+In the ever-changing world of the stock market, opportunity can rise and fall in an instant...
 
-Experience the power of Python 3's TA Library with our Advanced Stock Market Trading Bot. Turn data into insights, insights into decisions, and decisions into profit. Experience the future of trading with our Advanced Stock Market Trading Bot. 
-Elevate your trading game, maximize your profits, and let our bot do the heavy lifting. This isn't just a bot, it's your 24/7 trading partner.
+That's why we've developed the ultimate tool to help you seize the moment and maximize your profits. 
+Meet your new ally, the state-of-the-art, Advanced Stock Market Day Trading Robot. 
 
-Imagine having a personal stock market advisor available 24/7, assessing opportunities, risks, and making decisions without ever needing a break. Welcome to the future of trading with our revolutionary Advanced Trading Bot! Our robot leverages the power of Alpaca API and the newest online stock market data to keep its finger on the pulse of the market. It continually monitors your specified stocks, utilizing the most advanced trading indicators including MACD, RSI, and Moving Averages to make the most informed buy and sell decisions.
-Even better, it's not just about buying and selling. This trading bot is meticulous with your account management - keeping track of your account cash, monitoring day trade counts, and providing real-time updates on your positions: 
-And the best part? You're in control. You can input the stock symbols you want to trade and edit them anytime. 
-Plus, it's flexible, running in any market conditions. Whether the market is open or not, our bot is hard at work, strategizing and waiting for the right moment to buy profitable stock. In a world full of data, making sense of it all can be overwhelming. That's where our Stock Market Trading Bot and the power of Python 3's TA (Technical Analysis) Library come in. The TA Library is the master key to unlocking the potential of your trading. It is a comprehensive software suite that allows our bot to tap into a myriad of technical analysis indicators. This isn't just average data, this is high-precision, deeply-analyzed metrics that give you a cutting-edge advantage in the market. Our Advanced Stock Market Trading Bot, armed with the TA Library, processes market data in real-time, applying rigorous mathematical analysis to identify key trends and indicators. From Moving Averages, MACD, to RSI, this bot can leverage them all, providing you with clear, data-driven buy and sell signals. The TA Library isn't a perfect market prediction software tool, but it's close to being perfect.  With its predictive analytics capabilities, it enables our Robot to analyze price movements, estimate future price changes, and reduce risks, leading to more informed and profitable trading decisions.
+Harnessing the power of cutting-edge Python 3 programming code and sophisticated financial algorithms, 
+
+our Day Trading Robot is designed to operate with precision and speed that's beyond human capabilities. 
+
+It leverages the renowned MACD Indicator for reliable buy and sell signals. 
+
+It's programmed in Python 3 to analyze market data at lightning speed, 
+
+monitoring multiple stocks simultaneously for optimal trade execution.
+
+
+Getting started is as easy as a few clicks. Just load your stock list, set up your Alpaca trade API keys, 
+
+and let the Robot do the heavy lifting. 
+
+Our Robot is proactive and smart, making trades when the time is right, 
+
+and holding back when it's not, ensuring you're on the right path to growing your portfolio. 
+
+With our Day Trading Robot, the future of profitable, stress-free trading is here. 
+
+Embrace the technology and let the Robot do the trading. 
+
+Advanced Stock Market Day Trading Robot – Trading Simplified. 
+
+Remember, the success in trading stocks and other securities can never be guaranteed. 
+Please trade responsibly and do your own research before making any investment. 
+This advertisement does not constitute financial advice.
 
 To install:
 
