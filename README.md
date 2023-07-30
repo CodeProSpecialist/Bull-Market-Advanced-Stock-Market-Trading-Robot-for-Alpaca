@@ -11,28 +11,12 @@ It also reacts to quickly buy new stocks by reacting to an extremely accurate
 Moving Average Convergence / Divergence "Buy Signal." 
 
 Important Instructions: 
-1.To buy stocks, run the python script named buy-and-automatically-sell-for-a-profit-robot.py 
+1.To buy and sell stocks, run the python script named buy-and-automatically-sell-for-a-profit-robot.py 
 with the command: python3 buy-and-automatically-sell-for-a-profit-robot.py 
  Place this program into "buy more stocks mode" 
  when you put stock symbols in the text file "successful-stocks-list.txt"
  and the stock market trading robot keeps looking for chances to buy more stocks
  from the list of stock symbols.
-
-2. This program will automatically remove the stock symbol name
-   from the text file "successful-stocks-list.txt" after an order to buy stock has
-   been placed. This will allow you to not have to do anything while the
-   Stock Market Robot is working for you. 
-
-3. Sell stocks by running the python script named sell-stock-robot.py
-   with the command: python3 sell-stock-robot.py
-   First make sure to place the stock symbol name to sell in the first line
-   at the top of the text file named the-stock-symbol-to-sell.txt as a
-   stock symbol name like AAPL 
-   and set the price you want to sell the stock at in the first line
-   at the top of the text file named sell-stocks-price.txt as a
-   number like 850.00 for $850.00 as the sale target price. 
-
-   
 
      The functions consider account’s available cash 
 and day trade limit, which is a good practice. Additionally, bearish conditions and 
