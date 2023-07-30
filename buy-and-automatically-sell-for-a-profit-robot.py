@@ -108,12 +108,12 @@ def get_position_qty(api, symbol):
 
 def plot_macd_graph(data, symbol):
     plt.rcParams.update({'font.size': 10})
-    fig, ax1 = plt.subplots(figsize=(14,8))
+    fig, ax1 = plt.subplots(figsize=(14, 8))
     fig.suptitle(symbol, fontsize=10, backgroundcolor='blue', color='white')
     ax1 = plt.subplot2grid((14, 8), (0, 0), rowspan=8, colspan=14)
     ax2 = plt.subplot2grid((14, 12), (10, 0), rowspan=6, colspan=14)
     ax1.set_ylabel('Price in ₨')
-    ax1.plot('Adj Close',data=data, label='Close Price', linewidth=0.5, color='blue')
+    ax1.plot('Adj Close', data=data, label='Close Price', linewidth=0.5, color='blue')
     ax1.scatter(data.index, data['MACD_Buy_Signal_price'], color='green', marker='^', alpha=1)
     ax1.scatter(data.index, data['MACD_Sell_Signal_price'], color='red', marker='v', alpha=1)
     ax1.legend()
@@ -123,7 +123,8 @@ def plot_macd_graph(data, symbol):
     ax2.set_ylabel('MACD', fontsize=8)
     ax2.plot('MACD_12_26_9', data=data, label='MACD', linewidth=0.5, color='blue')
     ax2.plot('MACDs_12_26_9', data=data, label='signal', linewidth=0.5, color='red')
-    ax2.bar(data.index,'MACDh_12_26_9', data=data, label='Volume', color=data.positive.map({True: 'g', False: 'r'}),width=1,alpha=0.8)
+    ax2.bar(data.index, 'MACDh_12_26_9', data=data, label='Volume', color=data.positive.map({True: 'g', False: 'r'}),
+            width=1, alpha=0.8)
     ax2.axhline(0, color='black', linewidth=0.5, alpha=0.5)
     ax2.grid()
     plt.show()
@@ -151,14 +152,14 @@ def stop_if_stock_market_is_closed():
           \__ \  / __/ / __ \ / ___/  / //_/         / /_/ / / __ \  / __ \ / __ \ / __/
          ___/ / / /_  / /_/ // /__   / ,<           / _, _/ / /_/ / / /_/ // /_/ // /_  
         /____/  \__/  \____/ \___/  /_/|_|         /_/ |_|  \____/ /_.___/ \____/ \__/  
-                    2023                 https://github.com/CodeProSpecialist
+                    
+                       2023                      https://github.com/CodeProSpecialist
         
          ''')
         print(f'Current date & time (Eastern Time): {now.strftime("%A, %B %d, %Y, %H:%M:%S")}\n')
         print("Stockbot only works Monday through Friday: 9:30 am - 4:00 pm Eastern Time.")
         print("Waiting until Stock Market Hours to begin the Stockbot Trading Program.")
         time.sleep(60)  # Sleep for 1 minute and check again
-
 
 
 def main():
@@ -195,7 +196,7 @@ def main():
                 data['positive'] = MACD_color(data)
 
                 if debug_mode:
-                    plot_macd_graph(data, symbol)    # Call the function to plot the graph
+                    plot_macd_graph(data, symbol)  # Call the function to plot the graph
 
                 account = api.get_account()
                 daytrade_count = account.daytrade_count
