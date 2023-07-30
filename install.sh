@@ -19,7 +19,7 @@ then
 fi
 
 echo "Installing necessary Python packages"
-pip3 install yfinance pandas pandas_ta alpaca-trade-api matplotlib pytz
+pip3 install yfinance pandas pandas_ta alpaca-trade-api matplotlib pytz numpy
 
 
 echo "Setup completed successfully."
