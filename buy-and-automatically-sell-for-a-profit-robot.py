@@ -6,11 +6,17 @@ import pandas_ta as ta
 import pandas_datareader.data as web
 import alpaca_trade_api as tradeapi
 import pytz
-from datetime import datetime
+from datetime import datetime, timedelta, date
 from datetime import time as time2
 import matplotlib.pyplot as plt
 import numpy as np
 import logging
+
+plt.rcParams['figure.figsize'] = (20, 10)
+plt.style.use('fivethirtyeight')
+
+# Using pandas datareader override
+yf.pdr_override()
 
 # Load environment variables for Alpaca API
 APIKEYID = os.getenv('APCA_API_KEY_ID')
@@ -20,28 +26,31 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-# Using five thirty eight style for plots
-plt.style.use('fivethirtyeight')
-
-# Using pandas datareader override
-yf.pdr_override()
-
 eastern = pytz.timezone('US/Eastern')
+
 debug_mode = False
 
-global risk
+global risk, symbol, data, SYMBOLS
 
 risk = 0.025
 
 filename1 = 'successful-stocks-list.txt'
+
 
 def load_stocks_list():
     with open('successful-stocks-list.txt', 'r') as file:
         return [line.strip() for line in file]
 
 
-def get_data(symbol):
-    return yf.download(symbol, period='1d', interval='1m')
+SYMBOLS = ['']
+end_date = date.today()
+startdate = end_date - timedelta(days=728)
+print(end_date)
+
+
+def get_data(stocks=SYMBOLS, start=startdate, end=end_date):
+    data = web.get_data_yahoo(stocks, start=start, end=end)
+    return data
 
 
 # the python code below will remove the stock from the text file after the buy order is placed
@@ -139,9 +148,11 @@ def get_position_qty(api, symbol):
 
 
 def plot_macd_graph(data, symbol):
+    data['positive'] = MACD_color(data)
+
     plt.rcParams.update({'font.size': 10})
     fig, ax1 = plt.subplots(figsize=(14, 8))
-    fig.suptitle(symbol, fontsize=10, backgroundcolor='blue', color='white')
+    #fig.suptitle(symbol[0], fontsize=10, backgroundcolor='blue', color='white')
     ax1 = plt.subplot2grid((14, 8), (0, 0), rowspan=8, colspan=14)
     ax2 = plt.subplot2grid((14, 12), (10, 0), rowspan=6, colspan=14)
     ax1.set_ylabel('Price in ₨')
@@ -150,8 +161,9 @@ def plot_macd_graph(data, symbol):
     ax1.scatter(data.index, data['MACD_Sell_Signal_price'], color='red', marker='v', alpha=1)
     ax1.legend()
     ax1.grid()
+    ax1.set_title(symbol + " Buy Signals and Sell Signals with Price History" , fontsize=10, backgroundcolor='white',
+                 color='black')
     ax1.set_xlabel('Date', fontsize=8)
-
     ax2.set_ylabel('MACD', fontsize=8)
     ax2.plot('MACD_12_26_9', data=data, label='MACD', linewidth=0.5, color='blue')
     ax2.plot('MACDs_12_26_9', data=data, label='signal', linewidth=0.5, color='red')
