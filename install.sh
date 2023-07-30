@@ -19,7 +19,7 @@ then
 fi
 
 # Install the necessary python packages
-sudo pip3 install alpaca-trade-api yfinance pytz pandas import pandas_ta numpy
+sudo pip3 install alpaca-trade-api yfinance pytz pandas pandas_ta numpy
 
 # Check if build-essential is installed
 if ! command -v gcc &> /dev/null
