@@ -19,6 +19,7 @@ def introduction():
     print("This allows the price to increase to its maximum and then sell immediately if it drops by 1 penny. ")
     print("--------------------")
 
+
 def stop_if_stock_market_is_closed():
     # Check if the current time is within the stock market hours
     # Set the stock market open and close times
@@ -28,7 +29,7 @@ def stop_if_stock_market_is_closed():
     while True:
         # Get the current time in Eastern Time
         eastern = pytz.timezone('US/Eastern')
-        now = datetime.now(eastern)
+        now = datetime.datetime.now(eastern)
         current_time = now.time()
 
         # Check if the current time is within market hours
@@ -41,6 +42,8 @@ def stop_if_stock_market_is_closed():
           \__ \  / __/ / __ \ / ___/  / //_/         / /_/ / / __ \  / __ \ / __ \ / __/
          ___/ / / /_  / /_/ // /__   / ,<           / _, _/ / /_/ / / /_/ // /_/ // /_  
         /____/  \__/  \____/ \___/  /_/|_|         /_/ |_|  \____/ /_.___/ \____/ \__/  
+                    2023                 https://github.com/CodeProSpecialist
+        
          ''')
         print(f'Current date & time (Eastern Time): {now.strftime("%A, %B %d, %Y, %H:%M:%S")}\n')
         print("Stockbot only works Monday through Friday: 9:30 am - 4:00 pm Eastern Time.")
