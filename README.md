@@ -1,4 +1,38 @@
-# Advanced-Stock-Market-Trading-Bot-Version-2 
+
+
+In the ever-changing world of the stock market, opportunity can rise and fall in an instant...
+
+That's why we've developed the ultimate tool to help you seize the moment and maximize your profits. 
+Meet your new ally, the state-of-the-art, Advanced Stock Market Day Trading Robot. 
+
+Harnessing the power of cutting-edge Python 3 programming code and sophisticated financial algorithms, 
+
+our Day Trading Robot is designed to operate with precision and speed that's beyond human capabilities. 
+
+It leverages the renowned MACD Indicator for reliable buy and sell signals. 
+
+It's programmed in Python 3 to analyze market data at lightning speed, 
+
+monitoring multiple stocks simultaneously for optimal trade execution.
+
+
+Getting started is as easy as a few clicks. Just load your stock list, set up your Alpaca trade API keys, 
+
+and let the Robot do the heavy lifting. 
+
+Our Robot is proactive and smart, making trades when the time is right, 
+
+and holding back when it's not, ensuring you're on the right path to growing your portfolio. 
+
+With our Day Trading Robot, the future of profitable, stress-free trading is here. 
+
+Embrace the technology and let the Robot do the trading. 
+
+Advanced Stock Market Day Trading Robot – Trading Simplified. 
+
+Remember, the success in trading stocks and other securities can never be guaranteed. 
+Please trade responsibly and do your own research before making any investment. 
+This advertisement does not constitute financial advice.
 
 This Advanced Stock Market Robot seems to be working great. 
 Important note: This Stock Market Robot will quickly sell any stocks 
@@ -43,39 +77,6 @@ This is an Advanced buying and selling Python 3 Trading Robot
 to monitor a stock market symbol or a number of stock symbols that you place in the file "successful-stocks-list.txt". 
 Only place one stock symbol on each line. 
 
-In the ever-changing world of the stock market, opportunity can rise and fall in an instant...
-
-That's why we've developed the ultimate tool to help you seize the moment and maximize your profits. 
-Meet your new ally, the state-of-the-art, Advanced Stock Market Day Trading Robot. 
-
-Harnessing the power of cutting-edge Python 3 programming code and sophisticated financial algorithms, 
-
-our Day Trading Robot is designed to operate with precision and speed that's beyond human capabilities. 
-
-It leverages the renowned MACD Indicator for reliable buy and sell signals. 
-
-It's programmed in Python 3 to analyze market data at lightning speed, 
-
-monitoring multiple stocks simultaneously for optimal trade execution.
-
-
-Getting started is as easy as a few clicks. Just load your stock list, set up your Alpaca trade API keys, 
-
-and let the Robot do the heavy lifting. 
-
-Our Robot is proactive and smart, making trades when the time is right, 
-
-and holding back when it's not, ensuring you're on the right path to growing your portfolio. 
-
-With our Day Trading Robot, the future of profitable, stress-free trading is here. 
-
-Embrace the technology and let the Robot do the trading. 
-
-Advanced Stock Market Day Trading Robot – Trading Simplified. 
-
-Remember, the success in trading stocks and other securities can never be guaranteed. 
-Please trade responsibly and do your own research before making any investment. 
-This advertisement does not constitute financial advice.
 
 To install:
 
