@@ -3,6 +3,7 @@ import time
 import pandas as pd
 import yfinance as yf
 import pandas_ta as ta
+import pandas_datareader.data as web
 import alpaca_trade_api as tradeapi
 import pytz
 from datetime import datetime
