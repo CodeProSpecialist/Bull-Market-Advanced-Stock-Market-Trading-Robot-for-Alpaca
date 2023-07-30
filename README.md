@@ -1,6 +1,6 @@
 
 
-In the ever-changing world of the stock market, opportunity can rise and fall in an instant...
+     In the ever-changing world of the stock market, opportunity can rise and fall in an instant...
 
 That's why we've developed the ultimate tool to help you seize the moment and maximize your profits. 
 
