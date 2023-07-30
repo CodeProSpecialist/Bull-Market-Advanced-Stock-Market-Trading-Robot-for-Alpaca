@@ -195,7 +195,7 @@ def main():
                 data['positive'] = MACD_color(data)
 
                 if debug_mode:
-                    plot_macd_graph(data, symbol)  # Call the function to plot the graph
+                    plot_macd_graph(data, symbol)   # Call the function to plot the graph
 
                 account = api.get_account()
                 daytrade_count = account.daytrade_count
