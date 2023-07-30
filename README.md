@@ -18,11 +18,7 @@ with the command: python3 buy-and-automatically-sell-for-a-profit-robot.py
  and the stock market trading robot keeps looking for chances to buy more stocks
  from the list of stock symbols.
 
-     The functions consider account’s available cash 
-and day trade limit, which is a good practice. Additionally, bearish conditions and 
-the past 6-month performance are considered before buying a stock to avoid buying into a downtrending stock.
-
-Never buy any stock less than 200 dollars with a stock robot 
+ Never buy any stock less than 200 dollars with a stock robot 
 because the stock is too unstable to work very well with a stock robot. 
 More stable price increases will work the best with a stock robot 
 and that would be stock that is 200 dollars or more, 
@@ -62,22 +58,11 @@ Do not be the root user. This installs from a regular user account.
 ***** The below install commands are ONLY for a Desktop or Laptop Computer x86_64 type of install. ***** 
 Open a command line terminal from this folder location and type: 
 
-sh install.sh ;
-sh desktop-computer-python3-TA-Lib-install.sh
-
-sudo pip3 install ta-lib
-
-(do not use the Raspberry Pi 4 install script unless you are installing on a Raspbery Pi 4)
-
-
+sh install.sh
 
 After placing your alpaca keys at the bottom of /home/nameofyourhomefolderhere/.bashrc you simply run the command in a command terminal like:
 
 python3 buy-and-automatically-sell-for-a-profit-robot.py 
-
-or
-
-python3 sell-stock-robot.py
 
 Disclaimer: Remember that all trading involves risks. The ability to successfully implement these strategies depends on both market conditions and individual skills and knowledge. As such, trading should only be done with funds that you can afford to lose. Always do thorough research before making investment decisions, and consider consulting with a financial advisor. This is use at your own risk software. This software does not include any warranty or guarantees other than the useful tasks that may or may not work as intended for the software application end user. The software developer shall not be held liable for any financial losses or damages that occur as a result of using this software for any reason to the fullest extent of the law. Using this software is your agreement to these terms. This software is designed to be helpful and useful to the end user.
 
