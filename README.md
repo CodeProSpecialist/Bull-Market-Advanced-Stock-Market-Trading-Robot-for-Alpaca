@@ -5,6 +5,11 @@ Important note: This Stock Market Robot will quickly sell any stocks
 that decrease in value, sometimes even selling just by 1 penny to prevent losing any money 
 at all during the 2023 Stock Market Recession. 
 
+This Stock Market Robot will work best to quickly sell stocks that are decreasing in price value 
+by reacting to a Moving Average Convergence / Divergence "SELL SIGNAL." 
+It also reacts to quickly buy new stocks by reacting to an extremely accurate 
+Moving Average Convergence / Divergence "Buy Signal." 
+
 Important Instructions: 
 1.To buy stocks, run the python script named buy-and-automatically-sell-for-a-profit-robot.py 
 with the command: python3 buy-and-automatically-sell-for-a-profit-robot.py 
