@@ -3,6 +3,7 @@
 In the ever-changing world of the stock market, opportunity can rise and fall in an instant...
 
 That's why we've developed the ultimate tool to help you seize the moment and maximize your profits. 
+
 Meet your new ally, the state-of-the-art, Advanced Stock Market Day Trading Robot. 
 
 Harnessing the power of cutting-edge Python 3 programming code and sophisticated financial algorithms, 
