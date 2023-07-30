@@ -29,7 +29,7 @@ def stop_if_stock_market_is_closed():
     while True:
         # Get the current time in Eastern Time
         eastern = pytz.timezone('US/Eastern')
-        now = datetime.datetime.now(eastern)
+        now = datetime.now(eastern)
         current_time = now.time()
 
         # Check if the current time is within market hours
