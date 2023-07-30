@@ -44,7 +44,6 @@ def get_data(symbol):
 
 
 # the python code below will remove the stock from the text file after the buy order is placed
-# the python code below will remove the stock from the text file after the buy order is placed
 def remove_symbol(symbol, filename1):
     symbols = []
     try:
