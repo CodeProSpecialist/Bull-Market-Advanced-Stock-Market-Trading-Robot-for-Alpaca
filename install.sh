@@ -18,17 +18,8 @@ then
     sudo apt install -y python3-pip
 fi
 
-# Install the necessary python packages
-sudo pip3 install alpaca-trade-api yfinance pytz pandas pandas_ta numpy
-
-# Check if build-essential is installed
-if ! command -v gcc &> /dev/null
-then
-    echo "gcc could not be found. Attempting to install build-essential..."
-    sudo apt update
-    sudo apt install -y build-essential
-fi
-
+echo "Installing necessary Python packages"
+pip3 install yfinance pandas pandas_ta alpaca-trade-api matplotlib pytz
 
 
 echo "Setup completed successfully."
