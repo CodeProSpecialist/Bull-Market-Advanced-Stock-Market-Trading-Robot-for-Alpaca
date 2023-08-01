@@ -155,7 +155,7 @@ def plot_macd_graph(data, symbol):
     #fig.suptitle(symbol[0], fontsize=10, backgroundcolor='blue', color='white')
     ax1 = plt.subplot2grid((14, 8), (0, 0), rowspan=8, colspan=14)
     ax2 = plt.subplot2grid((14, 12), (10, 0), rowspan=6, colspan=14)
-    ax1.set_ylabel('Price in ₨')
+    ax1.set_ylabel('Price in USD')
     ax1.plot('Adj Close', data=data, label='Close Price', linewidth=0.5, color='blue')
     ax1.scatter(data.index, data['MACD_Buy_Signal_price'], color='green', marker='^', alpha=1)
     ax1.scatter(data.index, data['MACD_Sell_Signal_price'], color='red', marker='v', alpha=1)
