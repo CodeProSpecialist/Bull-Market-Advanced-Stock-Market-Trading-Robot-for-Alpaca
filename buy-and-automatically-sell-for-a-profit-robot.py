@@ -89,18 +89,33 @@ def OCC_Strategy(df):
     occ_signal_buy = [np.nan]
     occ_signal_sell = [np.nan]
     position = False
-
+    
     atr = ta.atr(df.High, df.Low, df.Close, length=22)
-    zema_val = compute_zema(df.Close)  # Fixed the function call here
+    zema_val = compute_zema(df.Close)
     upper = zema_val + (atr * 3)
     lower = zema_val - (atr * 3)
 
-    for i in range(1, len(df)):
-        if df['Close'][i] > upper[i] and df['Close'][i - 1] <= upper[i - 1] and not position:
+    # Introduce a buffer zone for better signal clarity
+    buffer = atr * 1.5  # for example
+    upper_buffer = zema_val + buffer
+    lower_buffer = zema_val - buffer
+
+    # MACD for supplementary signals
+    macd_line, signal_line, _ = ta.macd(df.Close)
+    
+    occ_signal_buy = []
+    occ_signal_sell = []
+    position = False
+
+    for i in range(len(df)):
+        # Add MACD conditions to validate the primary strategy
+        if (df['Close'][i] > upper[i] and not position and 
+            (i == 0 or (macd_line[i] > signal_line[i] and macd_line[i-1] <= signal_line[i-1]))):
             occ_signal_buy.append(df['Close'][i])
             occ_signal_sell.append(np.nan)
             position = True
-        elif df['Close'][i] < lower[i] and df['Close'][i - 1] >= lower[i - 1] and position:
+        elif (df['Close'][i] < lower_buffer[i] and position and 
+              (i == 0 or (macd_line[i] < signal_line[i] and macd_line[i-1] >= signal_line[i-1]))):
             occ_signal_buy.append(np.nan)
             occ_signal_sell.append(df['Close'][i])
             position = False
@@ -113,21 +128,40 @@ def OCC_Strategy(df):
     df['Zema'] = zema_val
     df['Upper'] = upper
     df['Lower'] = lower
+    df['Upper_Buffer'] = upper_buffer
+    df['Lower_Buffer'] = lower_buffer
+
+    return df
 
 
 def plot_graph(data, symbol):
     plt.figure(figsize=(20, 10))
+    
+    # Plotting stock close prices
     plt.plot(data['Close'], label='Close Price', alpha=0.5)
+    
+    # Plotting ZEMA
     plt.plot(data['Zema'], label='ZEMA', alpha=0.5, color='blue')
-    plt.plot(data['Upper'], label='Upper Bound', alpha=0.5, color='green')
-    plt.plot(data['Lower'], label='Lower Bound', alpha=0.5, color='red')
+    
+    # Plotting Upper and Lower Bounds
+    plt.plot(data['Upper'], label='Upper Bound', alpha=0.5, color='green', linestyle='--')
+    plt.plot(data['Lower'], label='Lower Bound', alpha=0.5, color='red', linestyle='--')
+    
+    # Plotting Upper and Lower Buffers
+    plt.plot(data['Upper_Buffer'], label='Upper Buffer', alpha=0.7, color='lime', linestyle='-')
+    plt.plot(data['Lower_Buffer'], label='Lower Buffer', alpha=0.7, color='salmon', linestyle='-')
+    
+    # Plotting Buy and Sell signals
     plt.scatter(data.index, data['Buy_Signal_price'], color='green', marker='^', alpha=1, label='Buy Signal')
     plt.scatter(data.index, data['Sell_Signal_price'], color='red', marker='v', alpha=1, label='Sell Signal')
+    
+    # Title, labels, and legend
     plt.title(symbol + ' Buy & Sell Signals')
     plt.xlabel('Date', fontsize=15)
     plt.ylabel('Close Price', fontsize=15)
     plt.legend(loc='upper left')
     plt.grid()
+    
     plt.show()
 
 
