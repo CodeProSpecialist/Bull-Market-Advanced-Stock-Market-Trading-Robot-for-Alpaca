@@ -1,3 +1,29 @@
+******** This software is in the process of needing an upgrade to make it work better. It might not be fully functional until after the upgrade is finished. This message will disappear after the upgrade has been completed. ********
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
    In the ever-changing world of the stock market, opportunity can rise and fall in an instant...
