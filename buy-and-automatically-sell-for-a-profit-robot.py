@@ -3,14 +3,20 @@ import time
 import pandas as pd
 import yfinance as yf
 import pandas_ta as ta
-import pandas_datareader.data as web
+#import pandas_datareader.data as web
 import alpaca_trade_api as tradeapi
 import pytz
-from datetime import datetime
+from datetime import datetime, timedelta, date
 from datetime import time as time2
 import matplotlib.pyplot as plt
 import numpy as np
 import logging
+
+plt.rcParams['figure.figsize'] = (20, 10)
+plt.style.use('fivethirtyeight')
+
+# Using pandas datareader override
+yf.pdr_override()
 
 # Load environment variables for Alpaca API
 APIKEYID = os.getenv('APCA_API_KEY_ID')
@@ -20,16 +26,11 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-# Using five thirty eight style for plots
-plt.style.use('fivethirtyeight')
-
-# Using pandas datareader override
-yf.pdr_override()
-
 eastern = pytz.timezone('US/Eastern')
-debug_mode = True
 
-global risk
+debug_mode = False
+
+global risk, symbol, data, SYMBOLS
 
 risk = 0.025
 
@@ -41,8 +42,15 @@ def load_stocks_list():
         return [line.strip() for line in file]
 
 
-def get_data(symbol):
-    return yf.download(symbol, period='1d', interval='1m')
+SYMBOLS = []
+end_date = date.today()
+startdate = end_date - timedelta(days=365)
+print(end_date)
+
+
+def get_data(stocks=SYMBOLS, start=startdate, end=end_date):
+    data = yf.download(stocks, start=start, end=end)
+    return data
 
 
 # the python code below will remove the stock from the text file after the buy order is placed
@@ -70,15 +78,22 @@ def remove_symbol(symbol, filename1):
     SYMBOLS = load_stocks_list()
 
 
+def compute_zema(series, length=22):
+    ema1 = series.ewm(span=length).mean()
+    ema2 = ema1.ewm(span=length).mean()
+    zema_val = ema1 + (ema1 - ema2)
+    return zema_val
+
+
 def OCC_Strategy(df):
-    occ_signal_buy = []
-    occ_signal_sell = []
+    occ_signal_buy = [np.nan]
+    occ_signal_sell = [np.nan]
     position = False
 
     atr = ta.atr(df.High, df.Low, df.Close, length=22)
-    zema = ta.zema(df.Close)
-    upper = zema + (atr * 3)
-    lower = zema - (atr * 3)
+    zema_val = compute_zema(df.Close)  # Fixed the function call here
+    upper = zema_val + (atr * 3)
+    lower = zema_val - (atr * 3)
 
     for i in range(1, len(df)):
         if df['Close'][i] > upper[i] and df['Close'][i - 1] <= upper[i - 1] and not position:
@@ -95,7 +110,7 @@ def OCC_Strategy(df):
 
     df['Buy_Signal_price'] = occ_signal_buy
     df['Sell_Signal_price'] = occ_signal_sell
-    df['Zema'] = zema
+    df['Zema'] = zema_val
     df['Upper'] = upper
     df['Lower'] = lower
 
@@ -182,12 +197,34 @@ def backtest():
     while True:
         pass
         try:
-            stop_if_stock_market_is_closed()
-            load_stocks_list()
-                       
+            #stop_if_stock_market_is_closed()
+            global SYMBOLS  # Declare SYMBOLS as a global variable
+            stocks_list = load_stocks_list()
+            print(f' Eastern Time: {datetime.now(eastern).strftime("%A, %B %d, %Y %I:%M:%S %p")}')
+
+            positions = api.list_positions()
+            if positions:
+                print("Stocks in our Portfolio:")
+                for position in positions:
+                    print(f'{position.symbol}, Current Price: {round(float(position.current_price), 2)}')
+
+            print("Stocks to buy:")
+            for symbol in SYMBOLS:  # I assume you meant SYMBOLS which is your stocks_list
+                #data = get_data(symbol)
+                data = get_data(stocks=[symbol])
+                if not data.empty:
+                    current_price = round(data['Close'].iloc[-1], 2)
+                else:
+                    print(f"No data available for {symbol}. Skipping...")
+                    continue
+
+                current_price = round(data['Close'].iloc[-1], 2)  # rounding off to 2 decimal places
+                print(f'{symbol}, Current Price: {current_price}')
+
             SYMBOLS = load_stocks_list()
             for symbol in SYMBOLS:
-                data = get_data(stocks=symbol)
+                #data = get_data(stocks=symbol)
+                data = get_data(stocks=[symbol])
                 df = pd.DataFrame(data['Adj Close']).rename(columns={'Adj Close': 'Close'})
                 df['Open'] = data['Open']
                 df['High'] = data['High']
