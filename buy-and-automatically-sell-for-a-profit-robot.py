@@ -180,7 +180,11 @@ def stop_if_stock_market_is_closed():
 
 def backtest():
     while True:
+        pass
         try:
+            stop_if_stock_market_is_closed()
+            load_stocks_list()
+                       
             SYMBOLS = load_stocks_list()
             for symbol in SYMBOLS:
                 data = get_data(stocks=symbol)
@@ -217,7 +221,7 @@ def backtest():
                             make_order(api, symbol, qty, 'sell')
                             log_order(symbol, 'Sold')
 
-       
+
 
             time.sleep(2)  # Sleep for 1 minute and then check again
 
@@ -228,6 +232,7 @@ def backtest():
 
 if __name__ == "__main__":
     try:
+        pass
         backtest()
 
     except KeyboardInterrupt:
