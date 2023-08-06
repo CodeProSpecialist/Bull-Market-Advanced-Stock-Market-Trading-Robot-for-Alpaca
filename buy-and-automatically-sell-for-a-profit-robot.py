@@ -6,17 +6,11 @@ import pandas_ta as ta
 import pandas_datareader.data as web
 import alpaca_trade_api as tradeapi
 import pytz
-from datetime import datetime, timedelta, date
+from datetime import datetime
 from datetime import time as time2
 import matplotlib.pyplot as plt
 import numpy as np
 import logging
-
-plt.rcParams['figure.figsize'] = (20, 10)
-plt.style.use('fivethirtyeight')
-
-# Using pandas datareader override
-yf.pdr_override()
 
 # Load environment variables for Alpaca API
 APIKEYID = os.getenv('APCA_API_KEY_ID')
@@ -26,11 +20,16 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
+# Using five thirty eight style for plots
+plt.style.use('fivethirtyeight')
+
+# Using pandas datareader override
+yf.pdr_override()
+
 eastern = pytz.timezone('US/Eastern')
+debug_mode = True
 
-debug_mode = False
-
-global risk, symbol, data, SYMBOLS
+global risk
 
 risk = 0.025
 
@@ -42,15 +41,8 @@ def load_stocks_list():
         return [line.strip() for line in file]
 
 
-SYMBOLS = ['']
-end_date = date.today()
-startdate = end_date - timedelta(days=728)
-print(end_date)
-
-
-def get_data(stocks=SYMBOLS, start=startdate, end=end_date):
-    data = web.get_data_yahoo(stocks, start=start, end=end)
-    return data
+def get_data(symbol):
+    return yf.download(symbol, period='1d', interval='1m')
 
 
 # the python code below will remove the stock from the text file after the buy order is placed
@@ -78,42 +70,50 @@ def remove_symbol(symbol, filename1):
     SYMBOLS = load_stocks_list()
 
 
-def MACD_Strategy(df, risk):
-    MACD_Buy = []
-    MACD_Sell = []
+def OCC_Strategy(df):
+    occ_signal_buy = []
+    occ_signal_sell = []
     position = False
 
-    for i in range(0, len(df)):
-        if df['MACD_12_26_9'][i] > df['MACDs_12_26_9'][i]:
-            MACD_Sell.append(np.nan)
-            if position == False:
-                MACD_Buy.append(df['Close'][i])
-                position = True
-            else:
-                MACD_Buy.append(np.nan)
-        elif df['MACD_12_26_9'][i] < df['MACDs_12_26_9'][i]:
-            MACD_Buy.append(np.nan)
-            if position == True:
-                MACD_Sell.append(df['Close'][i])
-                position = False
-            else:
-                MACD_Sell.append(np.nan)
+    atr = ta.atr(df.High, df.Low, df.Close, length=22)
+    zema = ta.zema(df.Close)
+    upper = zema + (atr * 3)
+    lower = zema - (atr * 3)
+
+    for i in range(1, len(df)):
+        if df['Close'][i] > upper[i] and df['Close'][i - 1] <= upper[i - 1] and not position:
+            occ_signal_buy.append(df['Close'][i])
+            occ_signal_sell.append(np.nan)
+            position = True
+        elif df['Close'][i] < lower[i] and df['Close'][i - 1] >= lower[i - 1] and position:
+            occ_signal_buy.append(np.nan)
+            occ_signal_sell.append(df['Close'][i])
+            position = False
         else:
-            MACD_Buy.append(np.nan)
-            MACD_Sell.append(np.nan)
+            occ_signal_buy.append(np.nan)
+            occ_signal_sell.append(np.nan)
 
-    df['MACD_Buy_Signal_price'] = MACD_Buy
-    df['MACD_Sell_Signal_price'] = MACD_Sell
+    df['Buy_Signal_price'] = occ_signal_buy
+    df['Sell_Signal_price'] = occ_signal_sell
+    df['Zema'] = zema
+    df['Upper'] = upper
+    df['Lower'] = lower
 
 
-def MACD_color(df):
-    MACD_color = []
-    for i in range(0, len(df)):
-        if df['MACDh_12_26_9'][i] > df['MACDh_12_26_9'][i - 1]:
-            MACD_color.append(True)
-        else:
-            MACD_color.append(False)
-    return MACD_color
+def plot_graph(data, symbol):
+    plt.figure(figsize=(20, 10))
+    plt.plot(data['Close'], label='Close Price', alpha=0.5)
+    plt.plot(data['Zema'], label='ZEMA', alpha=0.5, color='blue')
+    plt.plot(data['Upper'], label='Upper Bound', alpha=0.5, color='green')
+    plt.plot(data['Lower'], label='Lower Bound', alpha=0.5, color='red')
+    plt.scatter(data.index, data['Buy_Signal_price'], color='green', marker='^', alpha=1, label='Buy Signal')
+    plt.scatter(data.index, data['Sell_Signal_price'], color='red', marker='v', alpha=1, label='Sell Signal')
+    plt.title(symbol + ' Buy & Sell Signals')
+    plt.xlabel('Date', fontsize=15)
+    plt.ylabel('Close Price', fontsize=15)
+    plt.legend(loc='upper left')
+    plt.grid()
+    plt.show()
 
 
 def make_order(api, symbol, qty, side):
@@ -147,33 +147,6 @@ def get_position_qty(api, symbol):
         return None
 
 
-def plot_macd_graph(data, symbol):
-    data['positive'] = MACD_color(data)
-
-    plt.rcParams.update({'font.size': 10})
-    fig, ax1 = plt.subplots(figsize=(14, 8))
-    #fig.suptitle(symbol[0], fontsize=10, backgroundcolor='blue', color='white')
-    ax1 = plt.subplot2grid((14, 8), (0, 0), rowspan=8, colspan=14)
-    ax2 = plt.subplot2grid((14, 12), (10, 0), rowspan=6, colspan=14)
-    ax1.set_ylabel('Price in USD')
-    ax1.plot('Adj Close', data=data, label='Close Price', linewidth=0.5, color='blue')
-    ax1.scatter(data.index, data['MACD_Buy_Signal_price'], color='green', marker='^', alpha=1)
-    ax1.scatter(data.index, data['MACD_Sell_Signal_price'], color='red', marker='v', alpha=1)
-    ax1.legend()
-    ax1.grid()
-    ax1.set_title(symbol + " Buy Signals and Sell Signals with Price History" , fontsize=10, backgroundcolor='white',
-                 color='black')
-    ax1.set_xlabel('Date', fontsize=8)
-    ax2.set_ylabel('MACD', fontsize=8)
-    ax2.plot('MACD_12_26_9', data=data, label='MACD', linewidth=0.5, color='blue')
-    ax2.plot('MACDs_12_26_9', data=data, label='signal', linewidth=0.5, color='red')
-    ax2.bar(data.index, 'MACDh_12_26_9', data=data, label='Volume', color=data.positive.map({True: 'g', False: 'r'}),
-            width=1, alpha=0.8)
-    ax2.axhline(0, color='black', linewidth=0.5, alpha=0.5)
-    ax2.grid()
-    plt.show()
-
-
 def stop_if_stock_market_is_closed():
     # Check if the current time is within the stock market hours
     # Set the stock market open and close times
@@ -196,104 +169,68 @@ def stop_if_stock_market_is_closed():
           \__ \  / __/ / __ \ / ___/  / //_/         / /_/ / / __ \  / __ \ / __ \ / __/
          ___/ / / /_  / /_/ // /__   / ,<           / _, _/ / /_/ / / /_/ // /_/ // /_  
         /____/  \__/  \____/ \___/  /_/|_|         /_/ |_|  \____/ /_.___/ \____/ \__/  
-                    
+
                        2023                      https://github.com/CodeProSpecialist
-        
+
          ''')
         print(f'Current date & time (Eastern Time): {now.strftime("%A, %B %d, %Y, %I:%M:%S %p")}\n')
         print("Stockbot only works Monday through Friday: 9:30 am - 4:00 pm Eastern Time.")
         print("Waiting until Stock Market Hours to begin the Stockbot Trading Program.")
         time.sleep(60)  # Sleep for 1 minute and check again
 
-
-def main():
-    stop_if_stock_market_is_closed()
-    stocks_list = load_stocks_list()
+def backtest():
     while True:
         try:
-            print(f' Eastern Time: {datetime.now(eastern).strftime("%A, %B %d, %Y %I:%M:%S %p")}')
-            positions = api.list_positions()
-            if positions:
-                print("Stocks in our Portfolio:")
-                for position in positions:
-                    print(f'{position.symbol}, Current Price: {round(float(position.current_price), 2)}')
-
-                    if debug_mode:
-                        data = get_data(position.symbol)
-                        macd = ta.macd(data['Close'])
-                        data = pd.concat([data, macd], axis=1).reindex(data.index)
-                        MACD_Strategy(data, 0.025)
-                        data['positive'] = MACD_color(data)
-                        plot_macd_graph(data, position.symbol)  # plot the graph for owned stocks
-            else:
-                print("No stocks are currently in the portfolio.")
-
-            print("Stocks to buy:")
-            for symbol in stocks_list:
-                data = get_data(symbol)
-                current_price = round(data['Close'].iloc[-1], 2)  # rounding off to 2 decimal places
-                print(f'{symbol}, Current Price: {current_price}')
-
-                macd = ta.macd(data['Close'])
-                data = pd.concat([data, macd], axis=1).reindex(data.index)
-                MACD_Strategy(data, 0.025)
-                data['positive'] = MACD_color(data)
+            SYMBOLS = load_stocks_list()
+            for symbol in SYMBOLS:
+                data = get_data(stocks=symbol)
+                df = pd.DataFrame(data['Adj Close']).rename(columns={'Adj Close': 'Close'})
+                df['Open'] = data['Open']
+                df['High'] = data['High']
+                df['Low'] = data['Low']
+                OCC_Strategy(df)
 
                 if debug_mode:
-                    plot_macd_graph(data, symbol)  # Call the function to plot the graph
+                    plot_graph(df, symbol)
 
-                account = api.get_account()
-                daytrade_count = account.daytrade_count
-                print(f'Total number of day trades out of 3 Maximum in 5 business days: {daytrade_count}')
+                for i in range(len(df)):
+                    if not pd.isnull(df['Buy_Signal_price'][i]):
+                        qty = check_cash(api, symbol)
+                        if qty:
+                            make_order(api, symbol, qty, 'buy')
+                            log_order(symbol, 'Bought')
 
-                if data['MACD_Buy_Signal_price'].iloc[-1] > 0 and int(daytrade_count) < 3:
-                    qty = check_cash(api, symbol)
-                    if qty:
-                        make_order(api, symbol, qty, 'buy')
-                        log_order(symbol, 'buy')
-                        time.sleep(300)
-                        print(" Waiting for 5 minutes after placing the most recent buy stock order to allow the ")
-                        print(" account to update before placing more buy orders. ")
-                        time.sleep(15)  # waiting 15 seconds to remove the stock from the text file
+                            time.sleep(300)
+                            print(" Waiting for 5 minutes after placing the most recent buy stock order to allow the ")
+                            print(" account to update before placing more buy orders. ")
+                            time.sleep(15)
 
-                        # remove the symbol from the list file after successful order
-                        remove_symbol(symbol, 'successful-stocks-list.txt')
+                            remove_symbol(symbol, filename1)
+                            SYMBOLS = load_stocks_list()
 
-                        global symbols
+                            print("The buy stock order has been submitted. The stock symbol has been removed from "
+                                  "successful-stocks-list.txt to finish the order process.")
 
-                        # Clear the 'symbols' and 'SYMBOLS' variables
+                    elif not pd.isnull(df['Sell_Signal_price'][i]):
+                        qty = get_position_qty(api, symbol)
+                        if qty:
+                            make_order(api, symbol, qty, 'sell')
+                            log_order(symbol, 'Sold')
 
-                        SYMBOLS = load_stocks_list()
+       
 
-                        symbols.clear()
-                        SYMBOLS.clear()
+            time.sleep(2)  # Sleep for 1 minute and then check again
 
-                        # Update the 'symbols' and 'SYMBOLS' variables with new information
-                        symbols = load_stocks_list()
-                        SYMBOLS = load_stocks_list()
 
-                        print("The buy stock order has been submitted. The stock symbol has been removed from "
-                              "successful-stocks-list.txt to finish the order process.")
-
-                elif data['MACD_Sell_Signal_price'].iloc[-1] > 0:
-                    qty = get_position_qty(api, symbol)
-                    if qty:
-                        make_order(api, symbol, qty, 'sell')
-                        log_order(symbol, 'sell')
-            time.sleep(2)
         except Exception as e:
             print(f'An error occurred: {e}')
-            print("Ignore the error about -No objects to concatenate- when the successful-stocks-list.txt is empty. ")
-            print("This is just an error saying that there are no Stock Symbols in the text file to concatenate. ")
             time.sleep(2)
-
 
 if __name__ == "__main__":
     try:
-        main()
+        backtest()
+
     except KeyboardInterrupt:
         print('Interrupted by user')
-    except Exception as e:
-        print('Error:', e)
-        time.sleep(2)
-        main()
+
+    time.sleep(2)
