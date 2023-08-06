@@ -1,4 +1,4 @@
-******** This software is in the process of needing an upgrade to make it work better. It might not be fully functional until after the upgrade is finished. This message will disappear after the upgrade has been completed. ********
+******** This software is in the process of needing an upgrade to make it work better. It might not be fully functional until after the upgrade is finished. This message will disappear after the upgrade has been completed. The Python software might be partially functional. It is in beta code testing mode for right now. ********
 
 
 
