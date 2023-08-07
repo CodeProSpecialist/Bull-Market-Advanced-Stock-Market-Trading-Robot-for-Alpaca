@@ -93,7 +93,7 @@ def OCC_Strategy(df):
     atr = ta.atr(df.High, df.Low, df.Close, length=22)
     zema_val = compute_zema(df.Close)
     upper = zema_val + (atr * 3)
-    lower = zema_val - (atr * 3)
+    lower = zema_val - (atr * 0.6)
 
     # Introduce a buffer zone for better signal clarity
     buffer = atr * 1.5  # for example
