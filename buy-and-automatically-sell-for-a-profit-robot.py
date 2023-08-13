@@ -44,7 +44,7 @@ def load_stocks_list():
 
 SYMBOLS = []
 end_date = date.today()
-startdate = end_date - timedelta(days=100)
+startdate = end_date - timedelta(days=180)
 print(end_date)
 
 
@@ -217,6 +217,24 @@ def plot_graph(data, symbol):
     plt.show()
 
 
+# sell all owned stocks that lose value more than a strict minimum average of -2.4 percent: threshold=-2.4
+def sell_decreasing_stocks(api):
+    try:
+        positions = api.list_positions()
+        for position in positions:
+            symbol = position.symbol
+            qty = int(position.qty)
+            current_price = api.get_last_trade(symbol).price
+            purchase_price = float(position.avg_entry_price)
+
+            if current_price <= purchase_price * 0.976: # 2.4% decrease
+                make_order(api, symbol, qty, 'sell')
+                log_order(symbol, 'Sold')
+                print(f"Sold {symbol} as the price decreased by 2.4% or more.")
+    except Exception as e:
+        print(f"An error occurred while trying to sell decreasing stocks: {e}")
+
+
 def make_order(api, symbol, qty, side):
     api.submit_order(
         symbol=symbol,
@@ -284,15 +302,20 @@ def backtest():
         pass
         try:
             #stop_if_stock_market_is_closed()
+            print(f' Eastern Time: {datetime.now(eastern).strftime("%A, %B %d, %Y %I:%M:%S %p")}')
+
             global SYMBOLS  # Declare SYMBOLS as a global variable
             stocks_list = load_stocks_list()
-            print(f' Eastern Time: {datetime.now(eastern).strftime("%A, %B %d, %Y %I:%M:%S %p")}')
+
+            sell_decreasing_stocks(api)
 
             positions = api.list_positions()
             if positions:
                 print("Stocks in our Portfolio:")
                 for position in positions:
                     print(f'{position.symbol}, Current Price: {round(float(position.current_price), 2)}')
+            else:
+                print("No stocks are in our portfolio..... not looking to sell stocks right now.")
 
             print("Stocks to buy:")
             for symbol in SYMBOLS:  # I assume you meant SYMBOLS which is your stocks_list
