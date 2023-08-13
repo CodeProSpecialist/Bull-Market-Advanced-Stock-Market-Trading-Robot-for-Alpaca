@@ -2,6 +2,12 @@
 
 This is a work in progress that I will be working on during my spare time outside of my full time job. I am going to keep working on this Python stock market robot at least once a week or more often. There are some different software design options that I have been considering for this program. 
 
+This Python Stock Market Trading Bot is somewhat more functional today, August 13, 2023. 
+
+The error message can be ignored because it just simply stopped reading more 
+stock symbols at the end of "successful-stocks-list.txt" and reported an error; 
+An error occurred: Length of values does not match length of index. 
+
 Buying stocks during the 2023 Recession is not easy for anyone: not even easy for computers and robots. 
 
       The event of the 2023 recession means trouble for your "unprepared" investment portfolio. 
