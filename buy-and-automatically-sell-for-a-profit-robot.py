@@ -44,12 +44,28 @@ def load_stocks_list():
 
 SYMBOLS = []
 end_date = date.today()
-startdate = end_date - timedelta(days=365)
+startdate = end_date - timedelta(days=100)
 print(end_date)
 
 
-def get_data(stocks=SYMBOLS, start=startdate, end=end_date):
+def get_data(stocks=SYMBOLS, start=startdate, end=end_date, debug=False):
     data = yf.download(stocks, start=start, end=end)
+
+    # Check for any missing values and handle them
+    if data.isnull().any().any():
+        print("Missing values detected, applying forward-fill.")
+        data.fillna(method='ffill', inplace=True)
+
+    # If you still have missing values (e.g., at the beginning of the DataFrame),
+    # you might choose to drop those rows
+    data.dropna(inplace=True)
+
+    if debug:
+        print("Downloaded data shape:", data.shape)
+        print("Downloaded data columns:", data.columns)
+        print("First few rows of data:")
+        print(data.head())
+
     return data
 
 
