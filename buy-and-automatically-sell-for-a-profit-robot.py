@@ -77,11 +77,10 @@ def remove_symbol(symbol, filename1):
     symbols = load_stocks_list()
     SYMBOLS = load_stocks_list()
 
-
 def MACD_Strategy(df, risk):
-    MACD_Buy=[]
-    MACD_Sell=[]
-    position=False
+    MACD_Buy = [np.nan] * len(df)
+    MACD_Sell = [np.nan] * len(df)
+    position = False
 
     for i in range(0, len(df)):
         if df['MACD_12_26_9'][i] > df['MACDs_12_26_9'][i]:
