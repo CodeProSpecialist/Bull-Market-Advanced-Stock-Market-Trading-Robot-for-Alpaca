@@ -2,6 +2,15 @@
 
 This is a work in progress that I will be working on during my spare time outside of my full time job. I am going to keep working on this Python stock market robot at least once a week or more often. There are some different software design options that I have been considering for this program. 
 
+This Python Stock Market Trading Bot is somewhat more functional today, August 13, 2023. 
+
+The error message can be ignored because it just simply stopped reading more 
+stock symbols at the end of "successful-stocks-list.txt" and reported an error; 
+An error occurred: Length of values does not match length of index. 
+
+This stock market robot works best if you purchase 25 to 30 different stocks in fractional shares 
+or at only 1 share per stock because the stocks are sold really soon when the price decreases. 
+
 Buying stocks during the 2023 Recession is not easy for anyone: not even easy for computers and robots. 
 
       The event of the 2023 recession means trouble for your "unprepared" investment portfolio. 
@@ -14,6 +23,7 @@ limit their losses during an economic downturn because their products are always
 The best recession stocks include consumer staples, utilities and healthcare companies, 
 all of which produce goods and services that consumers can’t do without, no matter how bad the economy gets.
  Extremely important: invest in Electricity, Natural Gas, and perhaps even Crude Oil stocks. 
+  Some Energy stocks include: XLE, XOM, EQT, SLB, and CVX. 
    
    In the ever-changing world of the stock market, opportunity can rise and fall in an instant...
 
@@ -80,7 +90,7 @@ Please note that this script is designed to run during the stock market's operat
 
 This Advanced Stock Market Robot seems to be working great. 
 Important note: This Stock Market Robot will quickly sell any stocks 
-that decrease in value, sometimes even selling just by 1 penny to prevent losing any money 
+that decrease in value, sometimes even selling just by 1 percent to prevent losing any money 
 at all during the 2023 Stock Market Recession. 
 
 This Stock Market Robot will work best to quickly sell stocks that are decreasing in price value 
