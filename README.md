@@ -8,6 +8,9 @@ The error message can be ignored because it just simply stopped reading more
 stock symbols at the end of "successful-stocks-list.txt" and reported an error; 
 An error occurred: Length of values does not match length of index. 
 
+This stock market robot works best if you purchase 25 to 30 different stocks in fractional shares 
+or at only 1 share per stock because the stocks are sold really soon when the price decreases. 
+
 Buying stocks during the 2023 Recession is not easy for anyone: not even easy for computers and robots. 
 
       The event of the 2023 recession means trouble for your "unprepared" investment portfolio. 
@@ -86,7 +89,7 @@ Please note that this script is designed to run during the stock market's operat
 
 This Advanced Stock Market Robot seems to be working great. 
 Important note: This Stock Market Robot will quickly sell any stocks 
-that decrease in value, sometimes even selling just by 1 penny to prevent losing any money 
+that decrease in value, sometimes even selling just by 1 percent to prevent losing any money 
 at all during the 2023 Stock Market Recession. 
 
 This Stock Market Robot will work best to quickly sell stocks that are decreasing in price value 
