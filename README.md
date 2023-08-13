@@ -120,7 +120,7 @@ Advanced Stock Market Trading Bot only works Monday through Friday: 9:30am - 4:0
 This is an Advanced buying and selling Python 3 Trading Robot 
 to monitor a stock market symbol or a number of stock symbols that you place in the file "successful-stocks-list.txt". 
 Only place one stock symbol on each line. 
-
+ 
 
 To install:
 
