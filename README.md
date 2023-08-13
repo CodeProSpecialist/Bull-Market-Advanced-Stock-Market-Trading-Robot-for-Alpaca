@@ -2,32 +2,18 @@
 
 This is a work in progress that I will be working on during my spare time outside of my full time job. I am going to keep working on this Python stock market robot at least once a week or more often. There are some different software design options that I have been considering for this program. 
 
+Buying stocks during the 2023 Recession is not easy for anyone: not even easy for computers and robots. 
 
+      The event of the 2023 recession means trouble for your "unprepared" investment portfolio. 
+   The economy is contracting, markets are falling and risky assets are losing value. 
+   At times like these, experienced investors rotate 
+   into recession stocks that perform well—or lose less value—during an economic contraction
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Recession stocks are defensive stocks that can sustain growth or 
+limit their losses during an economic downturn because their products are always in demand. 
+The best recession stocks include consumer staples, utilities and healthcare companies, 
+all of which produce goods and services that consumers can’t do without, no matter how bad the economy gets.
+   
    In the ever-changing world of the stock market, opportunity can rise and fall in an instant...
 
 That's why we've developed the ultimate tool to help you seize the moment and maximize your profits. 
