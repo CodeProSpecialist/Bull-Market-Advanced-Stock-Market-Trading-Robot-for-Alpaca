@@ -301,7 +301,7 @@ def backtest():
     while True:
         pass
         try:
-            #stop_if_stock_market_is_closed()
+            stop_if_stock_market_is_closed()
             print(f' Eastern Time: {datetime.now(eastern).strftime("%A, %B %d, %Y %I:%M:%S %p")}')
 
             global SYMBOLS  # Declare SYMBOLS as a global variable
