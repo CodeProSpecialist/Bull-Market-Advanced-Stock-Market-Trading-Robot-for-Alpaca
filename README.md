@@ -7,12 +7,13 @@ Buying stocks during the 2023 Recession is not easy for anyone: not even easy fo
       The event of the 2023 recession means trouble for your "unprepared" investment portfolio. 
    The economy is contracting, markets are falling and risky assets are losing value. 
    At times like these, experienced investors rotate 
-   into recession stocks that perform well—or lose less value—during an economic contraction
+   into recession stocks that perform well—or lose less value—during an economic contraction. 
 
 Recession stocks are defensive stocks that can sustain growth or 
 limit their losses during an economic downturn because their products are always in demand. 
 The best recession stocks include consumer staples, utilities and healthcare companies, 
 all of which produce goods and services that consumers can’t do without, no matter how bad the economy gets.
+ Extremely important: invest in Electricity, Natural Gas, and perhaps even Crude Oil stocks. 
    
    In the ever-changing world of the stock market, opportunity can rise and fall in an instant...
 
