@@ -173,32 +173,33 @@ def OCC_Strategy(df):
 
 
 def plot_graph(data, symbol):
-macd = ta.macd(data['Close'])
-data = pd.concat([data, macd], axis=1).reindex(data.index)
-MACD_Strategy(data, 0.025)
-data['positive'] = MACD_color(data)
-OCC_Strategy(data)
+    global macd
+    macd = ta.macd(data['Close'])
+    data = pd.concat([data, macd], axis=1).reindex(data.index)
+    MACD_Strategy(data, 0.025)
+    data['positive'] = MACD_color(data)
+    OCC_Strategy(data)
 
-plt.rcParams.update({'font.size': 10})
-fig, ax1 = plt.subplots(figsize=(14,8))
-fig.suptitle(stocksymbols[0], fontsize=10, backgroundcolor='blue', color='white')
-ax1 = plt.subplot2grid((14, 8), (0, 0), rowspan=8, colspan=14)
-ax2 = plt.subplot2grid((14, 12), (10, 0), rowspan=6, colspan=14)
-ax1.set_ylabel('Price in ₨')
-ax1.plot('Adj Close',data=data, label='Close Price', linewidth=0.5, color='blue')
-ax1.scatter(data.index, data['MACD_Buy_Signal_price'], color='green', marker='^', alpha=1)
-ax1.scatter(data.index, data['MACD_Sell_Signal_price'], color='red', marker='v', alpha=1)
-ax1.legend()
-ax1.grid()
-ax1.set_xlabel('Date', fontsize=8)
+    plt.rcParams.update({'font.size': 10})
+    fig, ax1 = plt.subplots(figsize=(14,8))
+    fig.suptitle(symbol, fontsize=10, backgroundcolor='blue', color='white')
+    ax1 = plt.subplot2grid((14, 8), (0, 0), rowspan=8, colspan=14)
+    ax2 = plt.subplot2grid((14, 12), (10, 0), rowspan=6, colspan=14)
+    ax1.set_ylabel('Price in ₨')
+    ax1.plot('Adj Close',data=data, label='Close Price', linewidth=0.5, color='blue')
+    ax1.scatter(data.index, data['MACD_Buy_Signal_price'], color='green', marker='^', alpha=1)
+    ax1.scatter(data.index, data['MACD_Sell_Signal_price'], color='red', marker='v', alpha=1)
+    ax1.legend()
+    ax1.grid()
+    ax1.set_xlabel('Date', fontsize=8)
 
-ax2.set_ylabel('MACD', fontsize=8)
-ax2.plot('MACD_12_26_9', data=data, label='MACD', linewidth=0.5, color='blue')
-ax2.plot('MACDs_12_26_9', data=data, label='signal', linewidth=0.5, color='red')
-ax2.bar(data.index,'MACDh_12_26_9', data=data, label='Volume', color=data.positive.map({True: 'g', False: 'r'}),width=1,alpha=0.8)
-ax2.axhline(0, color='black', linewidth=0.5, alpha=0.5)
-ax2.grid()
-plt.show()
+    ax2.set_ylabel('MACD', fontsize=8)
+    ax2.plot('MACD_12_26_9', data=data, label='MACD', linewidth=0.5, color='blue')
+    ax2.plot('MACDs_12_26_9', data=data, label='signal', linewidth=0.5, color='red')
+    ax2.bar(data.index,'MACDh_12_26_9', data=data, label='Volume', color=data.positive.map({True: 'g', False: 'r'}),width=1,alpha=0.8)
+    ax2.axhline(0, color='black', linewidth=0.5, alpha=0.5)
+    ax2.grid()
+    plt.show()
 
 
 def make_order(api, symbol, qty, side):
@@ -267,7 +268,7 @@ def backtest():
     while True:
         pass
         try:
-            stop_if_stock_market_is_closed()
+            #stop_if_stock_market_is_closed()
             global SYMBOLS  # Declare SYMBOLS as a global variable
             stocks_list = load_stocks_list()
             print(f' Eastern Time: {datetime.now(eastern).strftime("%A, %B %d, %Y %I:%M:%S %p")}')
