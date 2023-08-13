@@ -217,7 +217,7 @@ def plot_graph(data, symbol):
     plt.show()
 
 
-# sell all owned stocks that lose value more than a strict minimum average of -2.4 percent: threshold=-2.4
+# sell all owned stocks that lose value more than a strict minimum average of -1.0 percent: 0.99
 def sell_decreasing_stocks(api):
     try:
         positions = api.list_positions()
@@ -227,10 +227,10 @@ def sell_decreasing_stocks(api):
             current_price = api.get_last_trade(symbol).price
             purchase_price = float(position.avg_entry_price)
 
-            if current_price <= purchase_price * 0.976: # 2.4% decrease
+            if current_price <= purchase_price * 0.99: # 1.0% decrease
                 make_order(api, symbol, qty, 'sell')
                 log_order(symbol, 'Sold')
-                print(f"Sold {symbol} as the price decreased by 2.4% or more.")
+                print(f"Sold {symbol} as the price decreased by 1.0% or more.")
     except Exception as e:
         print(f"An error occurred while trying to sell decreasing stocks: {e}")
 
