@@ -302,20 +302,22 @@ def backtest():
         pass
         try:
             stop_if_stock_market_is_closed()
-            print(f' Eastern Time: {datetime.now(eastern).strftime("%A, %B %d, %Y %I:%M:%S %p")}')
-
             global SYMBOLS  # Declare SYMBOLS as a global variable
             stocks_list = load_stocks_list()
+
+            print(f' Eastern Time: {datetime.now(eastern).strftime("%A, %B %d, %Y %I:%M:%S %p")}')
 
             sell_decreasing_stocks(api)
 
             positions = api.list_positions()
+
             if positions:
                 print("Stocks in our Portfolio:")
                 for position in positions:
                     print(f'{position.symbol}, Current Price: {round(float(position.current_price), 2)}')
             else:
                 print("No stocks are in our portfolio..... not looking to sell stocks right now.")
+
 
             print("Stocks to buy:")
             for symbol in SYMBOLS:  # I assume you meant SYMBOLS which is your stocks_list
@@ -330,6 +332,7 @@ def backtest():
                 current_price = round(data['Close'].iloc[-1], 2)  # rounding off to 2 decimal places
                 print(f'{symbol}, Current Price: {current_price}')
 
+
             SYMBOLS = load_stocks_list()
             for symbol in SYMBOLS:
                 #data = get_data(stocks=symbol)
@@ -340,32 +343,32 @@ def backtest():
                 df['Low'] = data['Low']
                 OCC_Strategy(df)
 
-                if debug_mode:
-                    plot_graph(df, symbol)
+            if debug_mode:
+                plot_graph(df, symbol)
 
-                for i in range(len(df)):
-                    if not pd.isnull(df['Buy_Signal_price'][i]):
-                        qty = check_cash(api, symbol)
-                        if qty:
-                            make_order(api, symbol, qty, 'buy')
-                            log_order(symbol, 'Bought')
+            for i in range(len(df)):
+                if not pd.isnull(df['Buy_Signal_price'][i]):
+                    qty = check_cash(api, symbol)
+                    if qty:
+                        make_order(api, symbol, qty, 'buy')
+                        log_order(symbol, 'Bought')
 
-                            time.sleep(300)
-                            print(" Waiting for 5 minutes after placing the most recent buy stock order to allow the ")
-                            print(" account to update before placing more buy orders. ")
-                            time.sleep(15)
+                        time.sleep(300)
+                        print(" Waiting for 5 minutes after placing the most recent buy stock order to allow the ")
+                        print(" account to update before placing more buy orders. ")
+                        time.sleep(15)
 
-                            remove_symbol(symbol, filename1)
-                            SYMBOLS = load_stocks_list()
+                        remove_symbol(symbol, filename1)
+                        SYMBOLS = load_stocks_list()
 
-                            print("The buy stock order has been submitted. The stock symbol has been removed from "
-                                  "successful-stocks-list.txt to finish the order process.")
+                        print("The buy stock order has been submitted. The stock symbol has been removed from "
+                              "successful-stocks-list.txt to finish the order process.")
 
-                    elif not pd.isnull(df['Sell_Signal_price'][i]):
-                        qty = get_position_qty(api, symbol)
-                        if qty:
-                            make_order(api, symbol, qty, 'sell')
-                            log_order(symbol, 'Sold')
+                elif not pd.isnull(df['Sell_Signal_price'][i]):
+                    qty = get_position_qty(api, symbol)
+                    if qty:
+                        make_order(api, symbol, qty, 'sell')
+                        log_order(symbol, 'Sold')
 
 
 
