@@ -224,7 +224,7 @@ def sell_decreasing_stocks(api):
         for position in positions:
             symbol = position.symbol
             qty = int(position.qty)
-            current_price = api.get_last_trade(symbol).price
+            current_price = api.get_latest_trade(symbol).price
             purchase_price = float(position.avg_entry_price)
 
             if current_price <= purchase_price * 0.99: # 1.0% decrease
@@ -301,7 +301,7 @@ def backtest():
     while True:
         pass
         try:
-            stop_if_stock_market_is_closed()
+            #stop_if_stock_market_is_closed()
             print(f' Eastern Time: {datetime.now(eastern).strftime("%A, %B %d, %Y %I:%M:%S %p")}')
 
             global SYMBOLS  # Declare SYMBOLS as a global variable
