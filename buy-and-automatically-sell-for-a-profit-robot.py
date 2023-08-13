@@ -343,32 +343,32 @@ def backtest():
                 df['Low'] = data['Low']
                 OCC_Strategy(df)
 
-            if debug_mode:
-                plot_graph(df, symbol)
+                if debug_mode:
+                    plot_graph(df, symbol)
 
-            for i in range(len(df)):
-                if not pd.isnull(df['Buy_Signal_price'][i]):
-                    qty = check_cash(api, symbol)
-                    if qty:
-                        make_order(api, symbol, qty, 'buy')
-                        log_order(symbol, 'Bought')
+                for i in range(len(df)):
+                    if not pd.isnull(df['Buy_Signal_price'][i]):
+                        qty = check_cash(api, symbol)
+                        if qty:
+                            make_order(api, symbol, qty, 'buy')
+                            log_order(symbol, 'Bought')
 
-                        time.sleep(300)
-                        print(" Waiting for 5 minutes after placing the most recent buy stock order to allow the ")
-                        print(" account to update before placing more buy orders. ")
-                        time.sleep(15)
+                            time.sleep(300)
+                            print(" Waiting for 5 minutes after placing the most recent buy stock order to allow the ")
+                            print(" account to update before placing more buy orders. ")
+                            time.sleep(15)
 
-                        remove_symbol(symbol, filename1)
-                        SYMBOLS = load_stocks_list()
+                            remove_symbol(symbol, filename1)
+                            SYMBOLS = load_stocks_list()
 
-                        print("The buy stock order has been submitted. The stock symbol has been removed from "
-                              "successful-stocks-list.txt to finish the order process.")
+                            print("The buy stock order has been submitted. The stock symbol has been removed from "
+                                  "successful-stocks-list.txt to finish the order process.")
 
-                elif not pd.isnull(df['Sell_Signal_price'][i]):
-                    qty = get_position_qty(api, symbol)
-                    if qty:
-                        make_order(api, symbol, qty, 'sell')
-                        log_order(symbol, 'Sold')
+                    elif not pd.isnull(df['Sell_Signal_price'][i]):
+                        qty = get_position_qty(api, symbol)
+                        if qty:
+                            make_order(api, symbol, qty, 'sell')
+                            log_order(symbol, 'Sold')
 
 
 
