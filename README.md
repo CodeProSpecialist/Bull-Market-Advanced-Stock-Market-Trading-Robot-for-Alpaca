@@ -2,7 +2,7 @@
 
 This is a work in progress that I will be working on during my spare time outside of my full time job. I am going to keep working on this Python stock market robot at least once a week or more often. There are some different software design options that I have been considering for this program. 
 
-This Python Stock Market Trading Bot has completely brand new, redesigned python 3 code today, August 13, 2023. This code is currently in beta testing mode. I needed to stop using the strict and somewhat buggy python Pandas Library to add more flexibility to the data frames. So, I am using talib and not using Pandas at all. 
+This Python Stock Market Trading Bot has completely brand new, redesigned python 3 code today, August 13, 2023. Proceed with caution because this python code is currently in beta testing mode. I needed to stop using the strict and somewhat buggy python Pandas Library to add more flexibility to the data frames. So, I am using talib and not using Pandas at all. 
 
 This stock market robot works best if you purchase 25 to 30 different stocks in fractional shares 
 or at only 1 share per stock because the stocks are sold really soon when the price decreases. 
