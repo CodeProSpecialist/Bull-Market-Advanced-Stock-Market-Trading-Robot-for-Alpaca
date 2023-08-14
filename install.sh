@@ -33,6 +33,10 @@ echo "Configuring TA-Lib..."
 echo "Installing TA-Lib..."
 make
 sudo make install
+
+# Install TA-Lib python wrapper
+sudo pip3 install ta-lib
+
 cd ..
 rm -r ta-lib
 rm ta-lib-0.4.0-src.tar.gz
