@@ -47,7 +47,7 @@ echo "Installing Python packages..."
 # making sure python3.11 can install packages by renaming EXTERNALLY-MANAGED to EXTERNALLY-MANAGED.old
 sudo mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.old  
 
-pip3 install yfinance pandas pandas_ta alpaca-trade-api matplotlib pytz numpy pandas_datareader talib-binary
+pip3 install yfinance alpaca-trade-api pytz numpy talib-binary
 
 
 echo "All done! You can now run your Python script."
