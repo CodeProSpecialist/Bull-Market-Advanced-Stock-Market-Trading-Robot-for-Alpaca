@@ -23,7 +23,7 @@ limit their losses during an economic downturn because their products are always
 The best recession stocks include consumer staples, utilities and healthcare companies, 
 all of which produce goods and services that consumers can’t do without, no matter how bad the economy gets.
  Extremely important: invest in Electricity, Natural Gas, and perhaps even Crude Oil stocks. 
-  Some Energy stocks include: XLE, XOM, EQT, SLB, and CVX. 
+  Some Energy stocks include: XLE, XOM, AEE, CMS, PCG, EQT, SLB, and CVX. 
    
    In the ever-changing world of the stock market, opportunity can rise and fall in an instant...
 
