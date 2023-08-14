@@ -18,10 +18,32 @@ then
     sudo apt install -y python3-pip
 fi
 
-echo "Installing necessary Python packages"
+# Install TA-Lib dependencies
+echo "Installing TA-Lib dependencies..."
+
+sudo apt-get install libatlas-base-dev gfortran -y
+
+# Download and install TA-Lib
+echo "Downloading TA-Lib..."
+wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
+tar -xzvf ta-lib-0.4.0-src.tar.gz
+cd ta-lib/
+echo "Configuring TA-Lib..."
+./configure --prefix=/usr
+echo "Installing TA-Lib..."
+make
+sudo make install
+cd ..
+rm -r ta-lib
+rm ta-lib-0.4.0-src.tar.gz
+
+# Install Python packages
+echo "Installing Python packages..."
+
 # making sure python3.11 can install packages by renaming EXTERNALLY-MANAGED to EXTERNALLY-MANAGED.old
 sudo mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.old  
-pip3 install yfinance pandas pandas_ta alpaca-trade-api matplotlib pytz numpy pandas_datareader 
+
+pip3 install yfinance pandas pandas_ta alpaca-trade-api matplotlib pytz numpy pandas_datareader talib-binary
 
 
-echo "Setup completed successfully."
+echo "All done! You can now run your Python script."
