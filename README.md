@@ -1,3 +1,5 @@
+***** this code is currently under Construction by an experienced software programmer that is working 40 hours per week at a different job. I will do my best to make this code work as soon as I can. *****
+
 ******** This software is in the process of needing an upgrade to make it work better. It might not be fully functional until after the upgrade is finished. This message will disappear after the upgrade has been completed. The Python software might be partially functional. It is in beta code testing mode for right now. ********
 
 This is a work in progress that I will be working on during my spare time outside of my full time job. I am going to keep working on this Python stock market robot at least once a week or more often. There are some different software design options that I have been considering for this program. 
