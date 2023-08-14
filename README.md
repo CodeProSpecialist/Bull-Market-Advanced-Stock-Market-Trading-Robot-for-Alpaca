@@ -4,7 +4,7 @@ This is a work in progress that I will be working on during my spare time outsid
 
 This Python Stock Market Trading Bot is somewhat more functional today, August 13, 2023. 
 
-The error message can be ignored because it just simply stopped reading more 
+This error message can be ignored because it just simply stopped reading more 
 stock symbols at the end of "successful-stocks-list.txt" and reported an error; 
 An error occurred: Length of values does not match length of index. 
 
