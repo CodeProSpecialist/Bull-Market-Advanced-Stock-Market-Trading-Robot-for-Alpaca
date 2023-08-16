@@ -1,12 +1,12 @@
-import os
 import logging
-import pytz
+import os
 import time
-import yfinance as yf
-import talib
-from datetime import datetime
+from datetime import datetime, time as time2
+
 import alpaca_trade_api as tradeapi
-from alpaca_trade_api import REST
+import pytz
+import talib
+import yfinance as yf
 
 # Load environment variables for Alpaca API
 APIKEYID = os.getenv('APCA_API_KEY_ID')
@@ -85,10 +85,10 @@ with open("successful-stocks-list.txt", "r") as f:
 
 while True:
     try:
-        stop_if_stock_market_is_closed()
+        #stop_if_stock_market_is_closed()
         eastern = pytz.timezone('US/Eastern')
         now = datetime.now(eastern)
-        current_time_str = now.strftime('%A, %B %d, %Y, %I:%M %p (Eastern Time)')
+        current_time_str = now.strftime('%A, %B %d, %Y, %I:%M:%S %p (Eastern Time)')
         print(f"Current Time: {current_time_str}")
 
         # Make sure to respect Alpaca's rate limits. The default rate limit for Alpaca's API is 200 requests per minute.
@@ -114,22 +114,14 @@ while True:
             # Print each symbol's name, previous buy signal price, previous buy signal date, and current price
             print(f"Symbol: {symbol}, Previous Close: {close[-2]}, Current Price: {close[-1]}")
 
-        time.sleep(2)  # Wait for 2 seconds before the next iteration
+            time.sleep(2)  # Wait for 2 seconds before the next iteration
+
     except Exception as e:
         logging.error(f"Error in main loop: {e}")
     except:
         logging.error("Unexpected error in main loop.")
 
-    try:
-        pass  # Placeholder for additional error handler
+    time.sleep(2)
 
-    except Exception as e:
-        logging.error(f"Secondary Error: {e}")
 
-    try:
-        time.sleep(120)  # Sleep for 2 minutes
-    except Exception as e:
-        logging.error(f"Error during sleep: {e}")
 
-    except:
-        logging.error("Unexpected error during sleep.")
