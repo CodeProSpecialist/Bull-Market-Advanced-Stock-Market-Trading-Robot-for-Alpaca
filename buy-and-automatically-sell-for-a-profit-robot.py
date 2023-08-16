@@ -85,7 +85,7 @@ with open("successful-stocks-list.txt", "r") as f:
 
 while True:
     try:
-        #stop_if_stock_market_is_closed()
+        stop_if_stock_market_is_closed()
         eastern = pytz.timezone('US/Eastern')
         now = datetime.now(eastern)
         current_time_str = now.strftime('%A, %B %d, %Y, %I:%M:%S %p (Eastern Time)')
