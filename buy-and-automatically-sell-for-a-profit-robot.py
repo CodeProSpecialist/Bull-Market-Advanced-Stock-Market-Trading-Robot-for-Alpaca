@@ -131,6 +131,7 @@ while True:
         stop_if_stock_market_is_closed()
         # Display time in Eastern Time
         current_time = datetime.now(pytz.timezone('US/Eastern'))
+        print("---------------------------------------------------")
         print(current_time.strftime('%A %B %d, %Y %I:%M:%S %p'))
         print(f"Day Trades Count: {get_day_trades_count(api)} out of 3 in 5 business days. ")
         stock_symbols = load_stock_symbols()
@@ -144,7 +145,11 @@ while True:
 
             print(f"Symbol: {symbol}")
             print(f"Current Price: ${current_price:.2f}")
-            print(f"Previous Buy Signal Price: {stock_data[symbol].get('prev_price', 'N/A')}")
+
+            prev_price = stock_data[symbol].get('prev_price', None)
+            formatted_price = f"{prev_price:.2f}" if prev_price is not None else 'N/A'
+            print(f"Previous Buy Signal Price: ${formatted_price}")
+
             print(f"Price Increase Count: {stock_data[symbol]['increase_count']}")
             print(f"Price Decrease Count: {stock_data[symbol]['decrease_count']}")
 
