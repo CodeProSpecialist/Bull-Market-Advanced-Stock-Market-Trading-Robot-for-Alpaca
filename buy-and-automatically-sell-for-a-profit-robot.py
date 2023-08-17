@@ -1,12 +1,13 @@
 import logging
-import os
+import os,sys
 import time
-from datetime import datetime, time as time2
-
+from datetime import datetime
+from datetime import time as time2
 import alpaca_trade_api as tradeapi
 import pytz
 import talib
 import yfinance as yf
+
 
 # Load environment variables for Alpaca API
 APIKEYID = os.getenv('APCA_API_KEY_ID')
@@ -14,9 +15,14 @@ APISECRETKEY = os.getenv('APCA_API_SECRET_KEY')
 APIBASEURL = os.getenv('APCA_API_BASE_URL')
 
 # Initialize the Alpaca API
-alpaca_api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
+api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
 eastern = pytz.timezone('US/Eastern')
+
+global stock_symbols, stock_data, symbol
+
+# Dictionary to maintain previous prices and counts
+stock_data = {}
 
 
 def stop_if_stock_market_is_closed():
@@ -52,30 +58,34 @@ def stop_if_stock_market_is_closed():
 
 
 # Load stock symbols from file
-with open("successful-stocks-list.txt", "r") as file:
-    stock_symbols = file.read().splitlines()
+def load_stock_symbols():
+    with open('successful-stocks-list.txt', 'r') as f:
+        return [line.strip() for line in f]
+
 
 # Logging setup
 logging.basicConfig(filename='log-file-of-buy-and-sell-signals.txt', level=logging.INFO)
 
 
-#def get_current_price(symbol):
-#    data = yf.download(tickers=symbol, period="1d", interval="1m")
- #   return float(data["Close"][-1])
-
-# Dictionary to maintain previous prices and counts
-stock_data = {}
-
 def get_current_price(symbol):
-    ticker = yf.Ticker(symbol)
-    todays_data = ticker.history(period='1d')
-    return float(todays_data['Close'][0])
+    try:
+        stock_data = yf.Ticker(symbol)
+        return stock_data.history(period="5d")["Close"].iloc[-1]  # get the latest close price
+    except Exception as e:
+        logging.error(f"Error fetching current price for {symbol}: {str(e)}")
+        return None
+
 
 def get_average_true_range(symbol):
     ticker = yf.Ticker(symbol)
     data = ticker.history(period='30d')
     atr = talib.ATR(data['High'].values, data['Low'].values, data['Close'].values, timeperiod=22)
     return atr[-1]
+
+
+def get_day_trades_count(api):
+    return api.get_account().daytrade_count
+
 
 def buy_stock(symbol, price, api):
     cash_available = float(api.get_account().cash)
@@ -91,6 +101,7 @@ def buy_stock(symbol, price, api):
         logging.info(f"Bought {qty} shares of {symbol} at {price}.")
         time.sleep(300)  # Wait 5 minutes for the order to update
 
+
 def sell_stock(symbol, qty, api):
     api.submit_order(
         symbol=symbol,
@@ -100,11 +111,6 @@ def sell_stock(symbol, qty, api):
         time_in_force='day',
     )
     logging.info(f"Sold {qty} shares of {symbol}.")
-
-
-def get_day_trades_count(api):
-    account = api.get_account()
-    return account.day_trade_count
 
 
 def update_stock_data(symbol, current_price):
@@ -117,24 +123,27 @@ def update_stock_data(symbol, current_price):
         elif current_price < stock_data[symbol]['prev_price']:
             stock_data[symbol]['decrease_count'] += 1
             stock_data[symbol]['increase_count'] = 0
-        stock_data[symbol]['prev_price'] = current_price
+            stock_data[symbol]['prev_price'] = current_price
 
 
 while True:
     try:
-        stop_if_stock_market_is_closed()
-
+        #stop_if_stock_market_is_closed()
         # Display time in Eastern Time
         current_time = datetime.now(pytz.timezone('US/Eastern'))
-        print(current_time.strftime('%A %B %d, %Y %I:%M %p'))
-
-        print(f"Day Trades Count: {get_day_trades_count(alpaca_api)}")
-
+        print(current_time.strftime('%A %B %d, %Y %I:%M:%S %p'))
+        print(f"Day Trades Count: {get_day_trades_count(api)} out of 3 in 5 business days. ")
+        stock_symbols = load_stock_symbols()
         for symbol in stock_symbols:
+
             current_price = get_current_price(symbol)
+            if current_price is None:
+                continue  # if we can't get a price, skip this iteration
+
             update_stock_data(symbol, current_price)
 
             print(f"Symbol: {symbol}")
+            print(f"Current Price: ${current_price:.2f}")
             print(f"Previous Buy Signal Price: {stock_data[symbol].get('prev_price', 'N/A')}")
             print(f"Price Increase Count: {stock_data[symbol]['increase_count']}")
             print(f"Price Decrease Count: {stock_data[symbol]['decrease_count']}")
@@ -145,13 +154,13 @@ while True:
 
             # Check for buy and sell conditions
             if stock_data[symbol]['decrease_count'] == 5:
-                buy_stock(symbol, buy_signal_price, alpaca_api)
+                buy_stock(symbol, buy_signal_price, api)
                 stock_data[symbol]['decrease_count'] = 0  # Reset counter
 
-            positions = alpaca_api.list_positions()
+            positions = api.list_positions()
             for position in positions:
                 if position.symbol == symbol and stock_data[symbol]['decrease_count'] == 3:
-                    sell_stock(symbol, int(position.qty), alpaca_api)
+                    sell_stock(symbol, int(position.qty), api)
                     stock_data[symbol]['decrease_count'] = 0  # Reset counter
 
         time.sleep(2)
@@ -159,5 +168,3 @@ while True:
     except Exception as e:
         logging.error(f"Error encountered: {e}")
         time.sleep(2)  # To ensure that the loop continues even after an error
-
-
