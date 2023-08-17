@@ -1,6 +1,7 @@
 
      This Python Stock Market Trading Bot has completely brand new, redesigned python 3 code today, August 16, 2023.
 Proceed with caution because this python code is currently in beta testing mode. 
+
 I needed to stop using the strict and somewhat buggy python Pandas Library to add more flexibility to the data frames. 
 So, I am using talib and not using Pandas at all. 
 
