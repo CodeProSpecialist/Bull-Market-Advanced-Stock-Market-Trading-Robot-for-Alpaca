@@ -117,13 +117,16 @@ def update_stock_data(symbol, current_price):
     if symbol not in stock_data:
         stock_data[symbol] = {'prev_price': current_price, 'increase_count': 0, 'decrease_count': 0}
     else:
+        # Check if the price has increased compared to previous price
         if current_price > stock_data[symbol]['prev_price']:
             stock_data[symbol]['increase_count'] += 1
             stock_data[symbol]['decrease_count'] = 0
+        # Check if the price has decreased compared to previous price
         elif current_price < stock_data[symbol]['prev_price']:
             stock_data[symbol]['decrease_count'] += 1
             stock_data[symbol]['increase_count'] = 0
-            stock_data[symbol]['prev_price'] = current_price
+        # Update the previous price for next comparison
+        stock_data[symbol]['prev_price'] = current_price
 
 
 while True:
@@ -144,10 +147,10 @@ while True:
             update_stock_data(symbol, current_price)
 
             print(f"Symbol: {symbol}")
-            print(f"Current Price: ${current_price:.2f}")
+            print(f"Current Price: ${current_price:.4}")
 
             prev_price = stock_data[symbol].get('prev_price', None)
-            formatted_price = f"{prev_price:.2f}" if prev_price is not None else 'N/A'
+            formatted_price = f"{prev_price:.4f}" if prev_price is not None else 'N/A'
             print(f"Previous Buy Signal Price: ${formatted_price}")
 
             print(f"Price Increase Count: {stock_data[symbol]['increase_count']}")
@@ -167,6 +170,19 @@ while True:
                 if position.symbol == symbol and stock_data[symbol]['decrease_count'] == 3:
                     sell_stock(symbol, int(position.qty), api)
                     stock_data[symbol]['decrease_count'] = 0  # Reset counter
+
+            # Check if there are any owned positions
+            if not positions:
+                print("No positions are currently owned.")
+            else:
+                # Iterate through owned positions
+                for position in positions:
+                    print(f"Owned Position: {position.symbol}")
+                    print(f"Shares: {position.qty}")
+                    print(f"Average Purchase Price: ${position.avg_entry_price:.4f}")
+                    print(f"Current Value: ${position.market_value:.4f}")
+                    print(f"Change Today: ${position.change_today:.4f}")
+                    print("------------------")
 
         time.sleep(2)
 
