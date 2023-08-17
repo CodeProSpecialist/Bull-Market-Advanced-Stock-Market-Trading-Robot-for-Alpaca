@@ -87,6 +87,29 @@ def get_day_trades_count(api):
     return api.get_account().daytrade_count
 
 
+def check_atr_buy_sell_signals(symbol, current_price, atr_value):
+    buy_multiplier = 3  # Adjust this based on your strategy
+    sell_multiplier = 3  # Adjust this based on your strategy
+
+    # Calculate the Buy and Sell signal price
+    buy_signal_price = float(current_price - buy_multiplier * atr_value)
+    sell_signal_price = float(current_price + sell_multiplier * atr_value)
+
+    if current_price < buy_signal_price and can_buy_based_on_time():
+        # Execute buy
+        buy_stock(symbol, current_price, api)
+        # Logging buy signal
+        logging.info(f"ATR Buy Signal: {symbol} at ${current_price:.4f}. Buy Signal Price: ${buy_signal_price:.4f}")
+
+    positions = api.list_positions()
+    for position in positions:
+        if position.symbol == symbol and current_price > sell_signal_price:
+            # Execute sell
+            sell_stock(symbol, int(position.qty), api)
+            # Logging sell signal
+            logging.info(f"ATR Sell Signal: {symbol} at ${current_price:.4f}. Sell Signal Price: ${sell_signal_price:.4f}")
+
+
 def buy_stock(symbol, price, api):
     cash_available = float(api.get_account().cash)
     if cash_available > price and api.get_account().daytrade_count < 3:
