@@ -89,7 +89,7 @@ def get_day_trades_count(api):
 
 def buy_stock(symbol, price, api):
     cash_available = float(api.get_account().cash)
-    if cash_available > price and api.get_account().daytrade_count < 3:
+    if cash_available > price and api.get_account().daytrade_count <= 3:
         qty = int(cash_available // price)
         api.submit_order(
             symbol=symbol,
@@ -145,7 +145,8 @@ while True:
                 continue  # if we can't get a price, skip this iteration
 
             update_stock_data(symbol, current_price)
-
+            print("------------------------------------")
+            print("Stocks to Buy: ")
             print(f"Symbol: {symbol}")
             print(f"Current Price: ${current_price:.4}")
 
@@ -155,6 +156,7 @@ while True:
 
             print(f"Price Increase Count: {stock_data[symbol]['increase_count']}")
             print(f"Price Decrease Count: {stock_data[symbol]['decrease_count']}")
+            print("------------------------------------")
 
             atr_value = get_average_true_range(symbol)
             buy_signal_price = float(current_price - 3 * atr_value)
@@ -177,12 +179,13 @@ while True:
             else:
                 # Iterate through owned positions
                 for position in positions:
+                    print("------------------------------------")
                     print(f"Owned Position: {position.symbol}")
                     print(f"Shares: {position.qty}")
                     print(f"Average Purchase Price: ${position.avg_entry_price:.4f}")
                     print(f"Current Value: ${position.market_value:.4f}")
                     print(f"Change Today: ${position.change_today:.4f}")
-                    print("------------------")
+                    print("------------------------------------")
 
         time.sleep(2)
 
