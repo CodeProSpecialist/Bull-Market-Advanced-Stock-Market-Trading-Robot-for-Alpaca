@@ -185,6 +185,8 @@ while True:
             buy_signal_price = float(current_price - 3 * atr_value)
             sell_signal_price = float(current_price + 3 * atr_value)
 
+            check_atr_buy_sell_signals(symbol, current_price, atr_value)
+            
             # Check for buy and sell conditions
             if stock_data[symbol]['decrease_count'] == 5:
                 buy_stock(symbol, buy_signal_price, api)
