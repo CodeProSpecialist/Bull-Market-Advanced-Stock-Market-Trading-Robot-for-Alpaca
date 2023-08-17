@@ -1,10 +1,16 @@
-***** this code is currently under Construction by an experienced software programmer that is working 40 hours per week at a different job. I will do my best to make this code work as soon as I can. Once this code is in a good, working condition, it will be quite useful for stock trading. My goal is to have this code working before 14 more days go bye, although Python can sometimes be just as unpredictable as Javascript. I have been working on this project for more than a month. I do not know when it will be finished because python is an extremely challenging programming language to work with if something precise and exact is trying to be accomplished.  *****
 
-******** This software is in the process of needing an upgrade to make it work better. It might not be fully functional until after the upgrade is finished. This message will disappear after the upgrade has been completed. The Python software might be partially functional. It is in beta code testing mode for right now. ********
+
+******** This software is in the process of needing an upgrade to make it work better.
+It might not be fully functional until after the upgrade is finished. 
+This message will disappear after the upgrade has been completed. 
+The Python software might be partially functional. It is in beta code testing mode for right now. ********
 
 This is a work in progress that I will be working on during my spare time outside of my full time job. 
 
-This Python Stock Market Trading Bot has completely brand new, redesigned python 3 code today, August 13, 2023. Proceed with caution because this python code is currently in beta testing mode. I needed to stop using the strict and somewhat buggy python Pandas Library to add more flexibility to the data frames. So, I am using talib and not using Pandas at all. 
+This Python Stock Market Trading Bot has completely brand new, redesigned python 3 code today, August 13, 2023.
+Proceed with caution because this python code is currently in beta testing mode. 
+I needed to stop using the strict and somewhat buggy python Pandas Library to add more flexibility to the data frames. 
+So, I am using talib and not using Pandas at all. 
 
 This stock market robot works best if you purchase 25 to 30 different stocks in fractional shares 
 or at only 1 share per stock because the stocks are sold really soon when the price decreases. 
