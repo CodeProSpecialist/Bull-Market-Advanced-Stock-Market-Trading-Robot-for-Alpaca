@@ -128,7 +128,7 @@ def update_stock_data(symbol, current_price):
 
 while True:
     try:
-        #stop_if_stock_market_is_closed()
+        stop_if_stock_market_is_closed()
         # Display time in Eastern Time
         current_time = datetime.now(pytz.timezone('US/Eastern'))
         print(current_time.strftime('%A %B %d, %Y %I:%M:%S %p'))
