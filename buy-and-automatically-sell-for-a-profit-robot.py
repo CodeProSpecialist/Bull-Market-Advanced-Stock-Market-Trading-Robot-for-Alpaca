@@ -90,7 +90,7 @@ def get_day_trades_count(api):
 def buy_stock(symbol, price, api):
     cash_available = float(api.get_account().cash)
     if cash_available > price and api.get_account().daytrade_count < 3:
-        qty = int(cash_available // price)
+        qty = int(cash_available / price)
         api.submit_order(
             symbol=symbol,
             qty=qty,
