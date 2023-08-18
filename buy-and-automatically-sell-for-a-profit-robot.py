@@ -196,9 +196,9 @@ while True:
             
             # Check for buy and sell conditions
             if stock_data[symbol]['decrease_count'] == 5:
-                
-                buy_stock(symbol, buy_signal_price, api)
-                stock_data[symbol]['decrease_count'] = 0  # Reset counter
+                if can_buy_based_on_time():
+                    buy_stock(symbol, buy_signal_price, api)
+                    stock_data[symbol]['decrease_count'] = 0  # Reset counter
 
             positions = api.list_positions()
             for position in positions:
