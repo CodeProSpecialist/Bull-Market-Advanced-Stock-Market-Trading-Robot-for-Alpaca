@@ -136,6 +136,13 @@ def sell_stock(symbol, qty, api):
     logging.info(f"Sold {qty} shares of {symbol}.")
 
 
+def can_buy_based_on_time():
+    current_time = datetime.now(pytz.timezone('US/Eastern'))
+    if current_time.time() >= time2(15, 45):
+        return True
+    return False
+
+
 def update_stock_data(symbol, current_price):
     if symbol not in stock_data:
         stock_data[symbol] = {'prev_price': current_price, 'increase_count': 0, 'decrease_count': 0}
@@ -189,6 +196,7 @@ while True:
             
             # Check for buy and sell conditions
             if stock_data[symbol]['decrease_count'] == 5:
+                
                 buy_stock(symbol, buy_signal_price, api)
                 stock_data[symbol]['decrease_count'] = 0  # Reset counter
 
