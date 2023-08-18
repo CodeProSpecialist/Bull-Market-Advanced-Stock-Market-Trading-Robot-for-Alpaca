@@ -6,7 +6,7 @@ I needed to stop using the strict and somewhat buggy python Pandas Library to ad
 So, I am using talib and not using Pandas at all. 
 
 This stock market robot works best if you purchase 25 to 30 different stocks in fractional shares 
-or at only 1 share per stock because the stocks are sold really soon when the price decreases. 
+or at only 1 share per stock because the stocks are sold really soon when the price decreases. This Stock Trading Robot has a strategy to buy stocks today for selling tomorrow because this allows for much more stock trading activity to take place within the stock trading rules of day trading 3 maximum times. 
 
 Buying stocks during the 2023 Recession is not easy for anyone: not even easy for computers and robots. 
 
