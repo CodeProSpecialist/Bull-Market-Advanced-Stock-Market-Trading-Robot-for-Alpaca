@@ -17,6 +17,8 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
+DEBUG = False
+
 eastern = pytz.timezone('US/Eastern')
 
 # Dictionary to maintain previous prices and counts
@@ -54,6 +56,8 @@ def stop_if_stock_market_is_closed():
         print("Waiting until Stock Market Hours to begin the Stockbot Trading Program.")
         print("Stocks will strictly only be purchased at 3:50pm Eastern Time to maximize profits and to increase ")
         print("the number of stocks traded per day to the maximum number of positions. ")
+        print("This program will only work correctly if there is at least 1 stock symbol ")
+        print("in the file named electricity-or-utility-stocks-to-buy-list.txt ")
         time.sleep(60)  # Sleep for 1 minute and check again
 
 
@@ -103,7 +107,7 @@ def monitor_price_changes(stocks_to_trade):
         stocks_to_buy = [symbol for symbol, trend in price_trends.items() if
                          trend['increases'] > trend['decreases']]
 
-        time.sleep(15)  # Check every 15 seconds, number can be adjusted.
+        time.sleep(900)  # Check every 15 minutes, number can be adjusted.
 
 
 def main():
@@ -152,7 +156,7 @@ def main():
 
             # Check if it's time to buy stocks at 15:50 Eastern Time
             now = datetime.now(pytz.timezone('US/Eastern'))
-            if now.hour == 15 and now.minute == 50:
+            if now.hour == 15 and 50 <= now.minute <= 59:
                 stocks_to_buy_copy = stocks_to_buy[:]  # Create a copy of the list to iterate over
                 for symbol in stocks_to_buy_copy:  # Work on the copy
                     current_price = get_current_price(symbol)
@@ -188,19 +192,29 @@ def main():
 
             print("--------------------------------------------------")
 
-            # Print Stocks to Purchase
-            print("\nStocks to Purchase:")
-            for symbol in stocks_to_trade:
-                if symbol not in bought_stocks:
-                    current_price = get_current_price(symbol)
-                    atr_high_price = get_atr_high_price(symbol)
-                    print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
+            print("Stocks to Purchase will only be listed here if DEBUG mode = True ")
+            print("or between 3:50pm and 3:59pm Eastern Time ")
+            print("to make this program work substantially faster. ")
+            print("Remember that: ")
+            print("This program will only work correctly if there is at least 1 stock symbol ")
+            print("in the file named electricity-or-utility-stocks-to-buy-list.txt ")
 
-            time.sleep(2)
+            # Check if it's time to buy stocks at 15:50 Eastern Time or if DEBUG mode is True
+            if now.hour == 15 and 50 <= now.minute <= 59 or DEBUG:
+                # Print Stocks to Purchase after 3:50pm to make the python code run faster
+                print("--------------------------------------------------")
+                print("\nStocks to Purchase:")
+                for symbol in stocks_to_trade:
+                    if symbol not in bought_stocks:
+                        current_price = get_current_price(symbol)
+                        atr_high_price = get_atr_high_price(symbol)
+                        print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
+
+            time.sleep(0.25)
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
-            time.sleep(2)  # To ensure that the loop continues even after an error
+            time.sleep(0.25)  # To ensure that the loop continues even after an error
 
 
 if __name__ == '__main__':
@@ -211,4 +225,4 @@ if __name__ == '__main__':
 
     except Exception as e:
         logging.error(f"Error encountered: {e}")
-        time.sleep(2)  # To ensure that the loop continues even after an error
+        time.sleep(0.25)  # To ensure that the loop continues even after an error
