@@ -51,6 +51,8 @@ def stop_if_stock_market_is_closed():
         print(f'Current date & time (Eastern Time): {now.strftime("%A, %B %d, %Y, %I:%M:%S %p")}\n')
         print("Stockbot only works Monday through Friday: 9:30 am - 4:00 pm Eastern Time.")
         print("Waiting until Stock Market Hours to begin the Stockbot Trading Program.")
+        print("Stocks will strictly only be purchased at 3:50pm Eastern Time to maximize profits and to increase ")
+        print("the number of stocks traded per day to the maximum number of positions. ")
         time.sleep(60)  # Sleep for 1 minute and check again
 
 
@@ -88,6 +90,9 @@ def main():
 
         # Print the current details
         print(f"{current_time_str} - Cash Balance: ${cash_balance}")
+        
+        print("Stocks will strictly only be purchased at 3:50pm Eastern Time to maximize profits and to increase ")
+        print("the number of stocks traded per day to the maximum number of positions. ")
 
         # Buy stocks at 15:50 Eastern Time
         if now.hour == 15 and now.minute == 50:
