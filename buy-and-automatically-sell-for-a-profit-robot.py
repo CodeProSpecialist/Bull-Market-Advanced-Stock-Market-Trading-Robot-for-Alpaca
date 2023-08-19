@@ -8,7 +8,6 @@ import pytz
 import talib
 import yfinance as yf
 
-
 # Load environment variables for Alpaca API
 APIKEYID = os.getenv('APCA_API_KEY_ID')
 APISECRETKEY = os.getenv('APCA_API_SECRET_KEY')
