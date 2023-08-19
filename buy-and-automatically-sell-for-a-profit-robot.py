@@ -62,20 +62,24 @@ def get_stocks_to_trade():
     with open('electricity-or-utility-stocks-to-buy-list.txt', 'r') as file:
         return [line.strip() for line in file.readlines()]
 
+
 def get_current_price(symbol):
     stock_data = yf.Ticker(symbol)
-    return stock_data.history(period="5d")["Close"].iloc[-1]
+    return round(stock_data.history(period="5d")["Close"].iloc[-1], 4)
+
 
 def get_atr_high_price(symbol):
     atr_value = get_average_true_range(symbol)
     current_price = get_current_price(symbol)
-    return current_price + 3 * atr_value
+    return round(current_price + 3 * atr_value, 4)
+
 
 def get_average_true_range(symbol):
     ticker = yf.Ticker(symbol)
     data = ticker.history(period='30d')
     atr = talib.ATR(data['High'].values, data['Low'].values, data['Close'].values, timeperiod=22)
     return atr[-1]
+
 
 def main():
     api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)   # Setup your API credentials here
@@ -118,7 +122,7 @@ def main():
                 if cash_available > current_price:
                     api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market', time_in_force='day')
                     print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
-                    bought_stocks[symbol] = current_price
+                    bought_stocks[symbol] = round(current_price, 4)  # Updated line to round the price to 4 digits or 0.0000   
                     stocks_to_trade.remove(symbol) # Remove the symbol from the list after buying
         
         # Check for selling condition based on ATR
