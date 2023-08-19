@@ -57,24 +57,20 @@ def stop_if_stock_market_is_closed():
         time.sleep(60)  # Sleep for 1 minute and check again
 
 
-# Load stock symbols from file
-def load_stock_symbols():
-    with open('successful-stocks-list.txt', 'r') as f:
-        return [line.strip() for line in f]
-
-
-# Logging setup
 logging.basicConfig(filename='log-file-of-buy-and-sell-signals.txt', level=logging.INFO)
 
+def get_stocks_to_trade():
+    with open('electricity-or-utility-stocks-to-buy-list.txt', 'r') as file:
+        return [line.strip() for line in file.readlines()]
 
 def get_current_price(symbol):
-    try:
-        stock_data = yf.Ticker(symbol)
-        return stock_data.history(period="5d")["Close"].iloc[-1]  # get the latest close price
-    except Exception as e:
-        logging.error(f"Error fetching current price for {symbol}: {str(e)}")
-        return None
+    stock_data = yf.Ticker(symbol)
+    return stock_data.history(period="5d")["Close"].iloc[-1]
 
+def get_atr_high_price(symbol):
+    atr_value = get_average_true_range(symbol)
+    current_price = get_current_price(symbol)
+    return current_price + 3 * atr_value
 
 def get_average_true_range(symbol):
     ticker = yf.Ticker(symbol)
@@ -82,145 +78,45 @@ def get_average_true_range(symbol):
     atr = talib.ATR(data['High'].values, data['Low'].values, data['Close'].values, timeperiod=22)
     return atr[-1]
 
+def main():
+    api = tradeapi.REST() # Setup your API credentials here
+    stocks_to_trade = get_stocks_to_trade()
+    bought_stocks = {}
 
-def get_day_trades_count(api):
-    return api.get_account().daytrade_count
+    while True:
+        now = datetime.now(pytz.timezone('US/Eastern'))
+        current_time_str = now.strftime("%m-%d-%Y %I:%M:%S %p")
+        cash_balance = round(float(api.get_account().cash), 2)
 
+        # Print the current details
+        print(f"{current_time_str} - Cash Balance: ${cash_balance}")
 
-def check_atr_buy_sell_signals(symbol, current_price, atr_value):
-    buy_multiplier = 3  # Adjust this based on your strategy
-    sell_multiplier = 3  # Adjust this based on your strategy
+        # Buy stocks at 15:58 Eastern Time
+        if now.hour == 15 and now.minute == 58:
+            for symbol in stocks_to_trade:
+                current_price = get_current_price(symbol)
+                cash_available = cash_balance - bought_stocks.get(symbol, 0)
+                fractional_qty = (cash_available / current_price) * 0.025
+                if cash_available > current_price:
+                    api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market', time_in_force='gtc')
+                    print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
+                    bought_stocks[symbol] = current_price
 
-    # Calculate the Buy and Sell signal price
-    buy_signal_price = float(current_price - buy_multiplier * atr_value)
-    sell_signal_price = float(current_price + sell_multiplier * atr_value)
-
-    if current_price < buy_signal_price and can_buy_based_on_time():
-        # Execute buy
-        buy_stock(symbol, current_price, api)
-        # Logging buy signal
-        logging.info(f"ATR Buy Signal: {symbol} at ${current_price:.4f}. Buy Signal Price: ${buy_signal_price:.4f}")
-
-    positions = api.list_positions()
-    for position in positions:
-        if position.symbol == symbol and current_price > sell_signal_price:
-            # Execute sell
-            sell_stock(symbol, int(position.qty), api)
-            # Logging sell signal
-            logging.info(f"ATR Sell Signal: {symbol} at ${current_price:.4f}. Sell Signal Price: ${sell_signal_price:.4f}")
-
-
-def buy_stock(symbol, price, api):
-    cash_available = float(api.get_account().cash)
-    if cash_available > price and api.get_account().daytrade_count < 3:
-        qty = int(cash_available / price)
-        api.submit_order(
-            symbol=symbol,
-            qty=qty,
-            side='buy',
-            type='market',
-            time_in_force='day',
-        )
-        logging.info(f"Bought {qty} shares of {symbol} at {price}.")
-        time.sleep(300)  # Wait 5 minutes for the order to update
-
-
-def sell_stock(symbol, qty, api):
-    api.submit_order(
-        symbol=symbol,
-        qty=qty,
-        side='sell',
-        type='market',
-        time_in_force='day',
-    )
-    logging.info(f"Sold {qty} shares of {symbol}.")
-
-
-def can_buy_based_on_time():
-    current_time = datetime.now(pytz.timezone('US/Eastern'))
-    if current_time.time() >= time2(15, 45):
-        return True
-    return False
-
-
-def update_stock_data(symbol, current_price):
-    if symbol not in stock_data:
-        stock_data[symbol] = {'prev_price': current_price, 'increase_count': 0, 'decrease_count': 0}
-    else:
-        # Check if the price has increased compared to previous price
-        if current_price > stock_data[symbol]['prev_price']:
-            stock_data[symbol]['increase_count'] += 1
-            stock_data[symbol]['decrease_count'] = 0
-        # Check if the price has decreased compared to previous price
-        elif current_price < stock_data[symbol]['prev_price']:
-            stock_data[symbol]['decrease_count'] += 1
-            stock_data[symbol]['increase_count'] = 0
-        # Update the previous price for next comparison
-        stock_data[symbol]['prev_price'] = current_price
-
-
-while True:
-    try:
-        stop_if_stock_market_is_closed()
-        # Display time in Eastern Time
-        current_time = datetime.now(pytz.timezone('US/Eastern'))
-        print("---------------------------------------------------")
-        print(current_time.strftime('%A %B %d, %Y %I:%M:%S %p'))
-        print(f"Day Trades Count: {get_day_trades_count(api)} out of 3 in 5 business days. ")
-        stock_symbols = load_stock_symbols()
-        for symbol in stock_symbols:
-
+        # Check for selling condition based on ATR
+        for symbol, bought_price in bought_stocks.items():
             current_price = get_current_price(symbol)
-            if current_price is None:
-                continue  # if we can't get a price, skip this iteration
-
-            update_stock_data(symbol, current_price)
-            print("------------------------------------")
-            print("Stocks to Buy: ")
-            print(f"Symbol: {symbol}")
-            print(f"Current Price: ${current_price:.4}")
-
-            prev_price = stock_data[symbol].get('prev_price', None)
-            formatted_price = f"{prev_price:.4f}" if prev_price is not None else 'N/A'
-            print(f"Previous Buy Signal Price: ${formatted_price}")
-
-            print(f"Price Increase Count: {stock_data[symbol]['increase_count']}")
-            print(f"Price Decrease Count: {stock_data[symbol]['decrease_count']}")
-            print("------------------------------------")
-
-            atr_value = get_average_true_range(symbol)
-            buy_signal_price = float(current_price - 3 * atr_value)
-            sell_signal_price = float(current_price + 3 * atr_value)
-
-            check_atr_buy_sell_signals(symbol, current_price, atr_value)
-            
-            # Check for buy and sell conditions
-            if stock_data[symbol]['decrease_count'] == 5:
-                if can_buy_based_on_time():
-                    buy_stock(symbol, buy_signal_price, api)
-                    stock_data[symbol]['decrease_count'] = 0  # Reset counter
-
-            positions = api.list_positions()
-            for position in positions:
-                if position.symbol == symbol and stock_data[symbol]['decrease_count'] == 3:
-                    sell_stock(symbol, int(position.qty), api)
-                    stock_data[symbol]['decrease_count'] = 0  # Reset counter
-
-            # Check if there are any owned positions
-            if not positions:
-                print("No positions are currently owned.")
-            else:
-                # Iterate through owned positions
-                for position in positions:
-                    print("------------------------------------")
-                    print(f"Owned Position: {position.symbol}")
-                    print(f"Shares: {position.qty}")
-                    print(f"Average Purchase Price: ${position.avg_entry_price:.4f}")
-                    print(f"Current Value: ${position.market_value:.4f}")
-                    print(f"Change Today: ${position.change_today:.4f}")
-                    print("------------------------------------")
+            atr_high_price = get_atr_high_price(symbol)
+            if current_price >= atr_high_price:
+                qty = api.get_position(symbol).qty
+                api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='gtc')
+                print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
+                del bought_stocks[symbol]
 
         time.sleep(2)
+
+if __name__ == '__main__':
+    main()
+    
 
     except Exception as e:
         logging.error(f"Error encountered: {e}")
