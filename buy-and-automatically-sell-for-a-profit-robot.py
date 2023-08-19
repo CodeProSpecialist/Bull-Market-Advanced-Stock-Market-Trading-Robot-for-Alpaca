@@ -19,8 +19,6 @@ api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
 eastern = pytz.timezone('US/Eastern')
 
-global stock_symbols, stock_data, symbol
-
 # Dictionary to maintain previous prices and counts
 stock_data = {}
 
