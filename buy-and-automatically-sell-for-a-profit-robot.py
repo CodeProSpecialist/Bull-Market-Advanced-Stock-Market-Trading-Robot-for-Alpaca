@@ -93,13 +93,22 @@ def main():
         for position in positions:
             if position.symbol in stocks_to_trade:
                 bought_stocks[position.symbol] = float(position.avg_entry_price)
-        
+
+        print("--------------------------------------------------")
         # Print the current details
-        print(f"{current_time_str} - Cash Balance: ${cash_balance}")
+        print(f"{current_time_str}    Cash Balance: ${cash_balance}")
+
+        # Get the account information
+        account = api.get_account()
+
+        # Get the day trade count
+        day_trade_count = account.daytrade_count
         
+        print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
         print("Stocks will strictly only be purchased at 3:50pm Eastern Time to maximize profits and to increase ")
         print("the number of stocks traded per day to the maximum number of positions. ")
-
+        print("                                                                            ")
+        
         # Buy stocks at 15:50 Eastern Time
         if now.hour == 15 and now.minute == 50:
             for symbol in stocks_to_trade[:]: # Create a copy of the list to iterate over
@@ -122,6 +131,23 @@ def main():
                 print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
                 del bought_stocks[symbol]
 
+         # Print Owned Positions
+        print("Owned Positions:")
+        for symbol, bought_price in bought_stocks.items():
+            current_price = get_current_price(symbol)
+            atr_high_price = get_atr_high_price(symbol)
+            print(f"Symbol: {symbol} | Current Price: {current_price} | ATR High Price: {atr_high_price}")
+
+        print("--------------------------------------------------")
+        
+        # Print Stocks to Purchase
+        print("\nStocks to Purchase:")
+        for symbol in stocks_to_trade:
+            if symbol not in bought_stocks:
+                current_price = get_current_price(symbol)
+                atr_high_price = get_atr_high_price(symbol)
+                print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
+        
         time.sleep(2)
 
 if __name__ == '__main__':
