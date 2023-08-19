@@ -81,9 +81,37 @@ def get_average_true_range(symbol):
     return atr[-1]
 
 
+# New function to monitor price changes
+def monitor_price_changes(stocks_to_trade):
+    price_trends = {symbol: {'increases': 0, 'decreases': 0} for symbol in stocks_to_trade}
+    last_prices = {symbol: get_current_price(symbol) for symbol in stocks_to_trade}
+
+    # Monitoring from 9:30 am to 3:49 pm
+    while True:
+        now = datetime.now(pytz.timezone('US/Eastern'))
+        if now.hour == 9 and now.minute == 30:
+            break
+
+        if now.hour == 15 and now.minute == 49:
+            break
+
+        for symbol in stocks_to_trade:
+            current_price = get_current_price(symbol)
+            if current_price > last_prices[symbol]:
+                price_trends[symbol]['increases'] += 1
+            elif current_price < last_prices[symbol]:
+                price_trends[symbol]['decreases'] += 1
+            last_prices[symbol] = current_price
+
+        time.sleep(2)  # Check every 2 seconds, seconds number can be adjusted
+
+    return [symbol for symbol, trend in price_trends.items() if trend['increases'] > trend['decreases']]
+
+
 def main():
     api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)   # Setup your API credentials here
     stocks_to_trade = get_stocks_to_trade()
+    stocks_to_buy = monitor_price_changes(stocks_to_trade)  # Monitor the stocks for price changes before buying
     bought_stocks = {}
 
     while True:
@@ -115,7 +143,7 @@ def main():
         
         # Buy stocks at 15:50 Eastern Time
         if now.hour == 15 and now.minute == 50:
-            for symbol in stocks_to_trade[:]: # Create a copy of the list to iterate over
+            for symbol in stocks_to_buy[:]: # Create a copy of the list to iterate over
                 current_price = get_current_price(symbol)
                 cash_available = cash_balance - bought_stocks.get(symbol, 0)
                 fractional_qty = (cash_available / current_price) * 0.025
