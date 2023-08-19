@@ -100,7 +100,8 @@ def main():
                     api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market', time_in_force='gtc')
                     print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
                     bought_stocks[symbol] = current_price
-
+                    stocks_to_trade.remove(symbol)  # Remove the symbol from the list after buying
+        
         # Check for selling condition based on ATR
         for symbol, bought_price in bought_stocks.items():
             current_price = get_current_price(symbol)
