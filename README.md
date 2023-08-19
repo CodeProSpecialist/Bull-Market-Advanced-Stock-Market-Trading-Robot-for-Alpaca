@@ -32,7 +32,7 @@ Harnessing the power of cutting-edge Python 3 programming code and sophisticated
 
 our Day Trading Robot is designed to operate with precision and speed that's beyond human capabilities. 
 
-It leverages the renowned MACD Indicator for reliable buy and sell signals. 
+It leverages the renowned Average True Range Indicator for reliable price signals that can be utulized to trade stocks at the best price possible.  
 
 It's programmed in Python 3 to analyze market data at lightning speed, 
 
