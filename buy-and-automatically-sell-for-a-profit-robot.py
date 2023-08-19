@@ -88,6 +88,12 @@ def main():
         current_time_str = now.strftime("%m-%d-%Y %I:%M:%S %p")
         cash_balance = round(float(api.get_account().cash), 2)
 
+         # Update the bought_stocks dictionary with current owned positions
+        positions = api.list_positions()
+        for position in positions:
+            if position.symbol in stocks_to_trade:
+                bought_stocks[position.symbol] = float(position.avg_entry_price)
+        
         # Print the current details
         print(f"{current_time_str} - Cash Balance: ${cash_balance}")
         
