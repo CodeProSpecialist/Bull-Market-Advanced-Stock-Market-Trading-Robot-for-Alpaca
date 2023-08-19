@@ -92,8 +92,8 @@ def main():
         # Print the current details
         print(f"{current_time_str} - Cash Balance: ${cash_balance}")
 
-        # Buy stocks at 15:58 Eastern Time
-        if now.hour == 15 and now.minute == 58:
+        # Buy stocks at 15:50 Eastern Time
+        if now.hour == 15 and now.minute == 50:
             for symbol in stocks_to_trade:
                 current_price = get_current_price(symbol)
                 cash_available = cash_balance - bought_stocks.get(symbol, 0)
