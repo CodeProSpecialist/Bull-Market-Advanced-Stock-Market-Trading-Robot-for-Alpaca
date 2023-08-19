@@ -7,6 +7,7 @@ import alpaca_trade_api as tradeapi
 import pytz
 import talib
 import yfinance as yf
+import threading
 
 # Load environment variables for Alpaca API
 APIKEYID = os.getenv('APCA_API_KEY_ID')
@@ -83,17 +84,13 @@ def get_average_true_range(symbol):
 
 # New function to monitor price changes
 def monitor_price_changes(stocks_to_trade):
+    global stocks_to_buy
+    stocks_to_buy = []
     price_trends = {symbol: {'increases': 0, 'decreases': 0} for symbol in stocks_to_trade}
     last_prices = {symbol: get_current_price(symbol) for symbol in stocks_to_trade}
 
-    # Monitoring from 9:30 am to 3:49 pm
     while True:
         now = datetime.now(pytz.timezone('US/Eastern'))
-        if now.hour == 9 and now.minute == 30:
-            break
-
-        if now.hour == 15 and now.minute == 49:
-            break
 
         for symbol in stocks_to_trade:
             current_price = get_current_price(symbol)
@@ -103,84 +100,106 @@ def monitor_price_changes(stocks_to_trade):
                 price_trends[symbol]['decreases'] += 1
             last_prices[symbol] = current_price
 
-        time.sleep(2)  # Check every 2 seconds, seconds number can be adjusted
+        stocks_to_buy = [symbol for symbol, trend in price_trends.items() if
+                         trend['increases'] > trend['decreases']]
 
-    return [symbol for symbol, trend in price_trends.items() if trend['increases'] > trend['decreases']]
+        time.sleep(15)  # Check every 15 seconds, number can be adjusted.
 
 
 def main():
-    api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)   # Setup your API credentials here
+    global stocks_to_buy
     stocks_to_trade = get_stocks_to_trade()
-    stocks_to_buy = monitor_price_changes(stocks_to_trade)  # Monitor the stocks for price changes before buying
+    stocks_to_buy = []
+
     bought_stocks = {}
 
+    # Create a thread that runs monitor_price_changes
+    monitor_thread = threading.Thread(target=monitor_price_changes, args=(stocks_to_trade,))
+    monitor_thread.daemon = True
+    monitor_thread.start()
+
     while True:
-        stop_if_stock_market_is_closed()
-        now = datetime.now(pytz.timezone('US/Eastern'))
-        current_time_str = now.strftime("%m-%d-%Y %I:%M:%S %p")
-        cash_balance = round(float(api.get_account().cash), 2)
+        try:
+            pass
 
-         # Update the bought_stocks dictionary with current owned positions
-        positions = api.list_positions()
-        for position in positions:
-            if position.symbol in stocks_to_trade:
-                bought_stocks[position.symbol] = float(position.avg_entry_price)
+            stop_if_stock_market_is_closed()
+            now = datetime.now(pytz.timezone('US/Eastern'))
+            current_time_str = now.strftime("%m-%d-%Y %I:%M:%S %p")
+            cash_balance = round(float(api.get_account().cash), 2)
 
-        print("--------------------------------------------------")
-        # Print the current details
-        print(f"{current_time_str}    Cash Balance: ${cash_balance}")
+             # Update the bought_stocks dictionary with current owned positions
+            positions = api.list_positions()
+            for position in positions:
+                if position.symbol in stocks_to_trade:
+                    bought_stocks[position.symbol] = float(position.avg_entry_price)
 
-        # Get the account information
-        account = api.get_account()
+            print("--------------------------------------------------")
+            # Print the current details
+            print(f"{current_time_str}    Cash Balance: ${cash_balance}")
 
-        # Get the day trade count
-        day_trade_count = account.daytrade_count
-        
-        print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
-        print("Stocks will strictly only be purchased at 3:50pm Eastern Time to maximize profits and to increase ")
-        print("the number of stocks traded per day to the maximum number of positions. ")
-        print("                                                                            ")
-        
-        # Buy stocks at 15:50 Eastern Time
-        if now.hour == 15 and now.minute == 50:
-            for symbol in stocks_to_buy[:]: # Create a copy of the list to iterate over
-                current_price = get_current_price(symbol)
-                cash_available = cash_balance - bought_stocks.get(symbol, 0)
-                fractional_qty = (cash_available / current_price) * 0.025
-                if cash_available > current_price:
-                    api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market', time_in_force='day')
-                    print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
-                    bought_stocks[symbol] = round(current_price, 4)  # Updated line to round the price to 4 digits or 0.0000   
-                    stocks_to_trade.remove(symbol) # Remove the symbol from the list after buying
-        
-        # Check for selling condition based on ATR
-        for symbol, bought_price in bought_stocks.items():
-            current_price = get_current_price(symbol)
-            atr_high_price = get_atr_high_price(symbol)
-            if current_price >= atr_high_price:
-                qty = api.get_position(symbol).qty
-                api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
-                print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
-                del bought_stocks[symbol]
+            # Get the account information
+            account = api.get_account()
 
-         # Print Owned Positions
-        print("Owned Positions:")
-        for symbol, bought_price in bought_stocks.items():
-            current_price = get_current_price(symbol)
-            atr_high_price = get_atr_high_price(symbol)
-            print(f"Symbol: {symbol} | Current Price: {current_price} | ATR High Price: {atr_high_price}")
+            # Get the day trade count
+            day_trade_count = account.daytrade_count
 
-        print("--------------------------------------------------")
-        
-        # Print Stocks to Purchase
-        print("\nStocks to Purchase:")
-        for symbol in stocks_to_trade:
-            if symbol not in bought_stocks:
+            print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
+            print("Stocks will strictly only be purchased at 3:50pm Eastern Time to maximize profits and to increase ")
+            print("the number of stocks traded per day to the maximum number of positions. ")
+            print("                                                                            ")
+
+            # Check if it's time to buy stocks at 15:50 Eastern Time
+            now = datetime.now(pytz.timezone('US/Eastern'))
+            if now.hour == 15 and now.minute == 50:
+                stocks_to_buy_copy = stocks_to_buy[:]  # Create a copy of the list to iterate over
+                for symbol in stocks_to_buy_copy:  # Work on the copy
+                    current_price = get_current_price(symbol)
+                    cash_available = cash_balance - bought_stocks.get(symbol, 0)
+                    fractional_qty = (cash_available / current_price) * 0.025
+                    if cash_available > current_price:
+                        api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market',
+                                         time_in_force='day')
+                        print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
+                        bought_stocks[symbol] = round(current_price,
+                                                      4)  # Updated line to round the price to 4 digits or 0.0000
+                        stocks_to_buy.remove(symbol)  # Remove the symbol from the original list after buying
+
+                # Optionally, you can clear the copy list if you want
+                stocks_to_buy_copy = []
+
+            # Check for selling condition based on ATR
+            for symbol, bought_price in bought_stocks.items():
                 current_price = get_current_price(symbol)
                 atr_high_price = get_atr_high_price(symbol)
-                print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
-        
-        time.sleep(2)
+                if current_price >= atr_high_price:
+                    qty = api.get_position(symbol).qty
+                    api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
+                    print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
+                    del bought_stocks[symbol]
+
+             # Print Owned Positions
+            print("Owned Positions:")
+            for symbol, bought_price in bought_stocks.items():
+                current_price = get_current_price(symbol)
+                atr_high_price = get_atr_high_price(symbol)
+                print(f"Symbol: {symbol} | Current Price: {current_price} | ATR High Price: {atr_high_price}")
+
+            print("--------------------------------------------------")
+
+            # Print Stocks to Purchase
+            print("\nStocks to Purchase:")
+            for symbol in stocks_to_trade:
+                if symbol not in bought_stocks:
+                    current_price = get_current_price(symbol)
+                    atr_high_price = get_atr_high_price(symbol)
+                    print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
+
+            time.sleep(2)
+
+        except Exception as e:
+            logging.error(f"Error encountered: {e}")
+            time.sleep(2)  # To ensure that the loop continues even after an error
+
 
 if __name__ == '__main__':
     try:
