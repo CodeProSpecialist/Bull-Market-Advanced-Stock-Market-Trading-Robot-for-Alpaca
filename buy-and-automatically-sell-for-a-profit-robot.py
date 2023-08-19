@@ -96,7 +96,7 @@ def main():
                 cash_available = cash_balance - bought_stocks.get(symbol, 0)
                 fractional_qty = (cash_available / current_price) * 0.025
                 if cash_available > current_price:
-                    api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market', time_in_force='gtc')
+                    api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market', time_in_force='day')
                     print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
                     bought_stocks[symbol] = current_price
                     stocks_to_trade.remove(symbol) # Remove the symbol from the list after buying
@@ -107,7 +107,7 @@ def main():
             atr_high_price = get_atr_high_price(symbol)
             if current_price >= atr_high_price:
                 qty = api.get_position(symbol).qty
-                api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='gtc')
+                api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
                 print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
                 del bought_stocks[symbol]
 
