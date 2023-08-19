@@ -84,6 +84,7 @@ def main():
     bought_stocks = {}
 
     while True:
+        stop_if_stock_market_is_closed()
         now = datetime.now(pytz.timezone('US/Eastern'))
         current_time_str = now.strftime("%m-%d-%Y %I:%M:%S %p")
         cash_balance = round(float(api.get_account().cash), 2)
