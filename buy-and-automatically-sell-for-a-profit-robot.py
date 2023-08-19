@@ -108,8 +108,10 @@ def monitor_price_changes(stocks_to_trade):
 
 def main():
     global stocks_to_buy
+    global stocks_to_buy_copy
     stocks_to_trade = get_stocks_to_trade()
     stocks_to_buy = []
+    stocks_to_buy_copy = []
 
     bought_stocks = {}
 
@@ -122,7 +124,7 @@ def main():
         try:
             pass
 
-            stop_if_stock_market_is_closed()
+            #stop_if_stock_market_is_closed()
             now = datetime.now(pytz.timezone('US/Eastern'))
             current_time_str = now.strftime("%m-%d-%Y %I:%M:%S %p")
             cash_balance = round(float(api.get_account().cash), 2)
