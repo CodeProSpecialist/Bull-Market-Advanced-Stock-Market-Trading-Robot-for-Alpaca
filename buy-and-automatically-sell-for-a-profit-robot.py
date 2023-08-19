@@ -79,7 +79,7 @@ def get_average_true_range(symbol):
     return atr[-1]
 
 def main():
-    api = tradeapi.REST() # Setup your API credentials here
+    api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)   # Setup your API credentials here
     stocks_to_trade = get_stocks_to_trade()
     bought_stocks = {}
 
