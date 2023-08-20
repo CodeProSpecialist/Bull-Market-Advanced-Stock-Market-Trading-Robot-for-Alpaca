@@ -214,8 +214,7 @@ def main():
                     if symbol not in bought_stocks:
                         current_price = get_current_price(symbol)
                         atr_high_price = get_atr_high_price(symbol)
-                        print(
-                            f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
+                        print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
 
             time.sleep(0.001)
 
