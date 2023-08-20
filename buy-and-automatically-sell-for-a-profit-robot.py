@@ -169,8 +169,8 @@ def main():
                         api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market',
                                          time_in_force='day')
                         print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
-                        bought_stocks[symbol] = round(current_price,
-                                                      4)  # Updated line to round the price to 4 digits or 0.0000
+                        # below is an Updated line to round the price to 4 digits or 0.0000
+                        bought_stocks[symbol] = round(current_price, 4)
                         stocks_to_buy.remove(symbol)  # Remove the symbol from the original list after buying
 
                 # Optionally, you can clear the copy list if you want
