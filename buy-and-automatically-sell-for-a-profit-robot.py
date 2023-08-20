@@ -226,7 +226,6 @@ if __name__ == '__main__':
         pass
         main()
 
-
     except Exception as e:
         logging.error(f"Error encountered: {e}")
         time.sleep(2)  # To ensure that the loop continues even after an error
