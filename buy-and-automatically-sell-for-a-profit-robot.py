@@ -120,6 +120,9 @@ def main():
     global stocks_to_buy_copy
     stocks_to_trade = get_stocks_to_trade()
 
+    stocks_to_buy = []
+    stocks_to_buy_copy = []
+
     bought_stocks = {}
 
     # Create a thread that runs monitor_price_changes
