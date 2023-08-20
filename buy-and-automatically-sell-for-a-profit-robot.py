@@ -50,7 +50,7 @@ def stop_if_stock_market_is_closed():
          ___/ / / /_  / /_/ // /__   / ,<           / _, _/ / /_/ / / /_/ // /_/ // /_  
         /____/  \__/  \____/ \___/  /_/|_|         /_/ |_|  \____/ /_.___/ \____/ \__/  
 
-                       2023                      https://github.com/CodeProSpecialist
+                       2023                       https://github.com/CodeProSpecialist
 
          ''')
         print(f'Current date & time (Eastern Time): {now.strftime("%A, %B %d, %Y, %I:%M:%S %p")}\n')
@@ -204,9 +204,8 @@ def main():
             print("This program will only work correctly if there is at least 1 stock symbol ")
             print("in the file named electricity-or-utility-stocks-to-buy-list.txt ")
 
-            # Check if it's time to buy stocks at 15:50 Eastern Time or if DEBUG mode is True
             if DEBUG:
-                # Print Stocks to Purchase after 3:50pm to make the python code run faster
+                # Print Stocks to Purchase in DEBUG mode to keep the program running faster.
                 print("--------------------------------------------------")
                 print("\nStocks to Purchase:")
                 for symbol in stocks_to_trade:
