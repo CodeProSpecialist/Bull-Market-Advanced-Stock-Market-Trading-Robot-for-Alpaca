@@ -1,9 +1,9 @@
 ***** Please download the newest version of this python program. 
 The program code had some bugs removed. Some errors were fixed. 
-This python program has been updated at 11:31pm, August 19, 2023. *****
+This python program has been updated on August 20, 2023. *****
 
 
-     This Python Stock Market Trading Bot has completely brand new, redesigned python 3 code today, August 19, 2023.
+     This Python Stock Market Trading Bot has completely brand new, redesigned python 3 code. 
 Proceed with caution because this python code is currently in beta testing mode. 
 
 I needed to stop using the strict and somewhat buggy python Pandas Library to add more flexibility to the data frames. 
