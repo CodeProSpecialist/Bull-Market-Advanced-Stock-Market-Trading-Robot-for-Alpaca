@@ -1,3 +1,4 @@
+import threading
 import logging
 import os, sys
 import time
@@ -16,7 +17,7 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-DEBUG = False
+DEBUG = True
 
 eastern = pytz.timezone('US/Eastern')
 
@@ -24,6 +25,8 @@ eastern = pytz.timezone('US/Eastern')
 stock_data = {}
 
 global stocks_to_buy
+
+logging.basicConfig(filename='log-file-of-buy-and-sell-signals.txt', level=logging.INFO)
 
 
 def stop_if_stock_market_is_closed():
@@ -59,9 +62,6 @@ def stop_if_stock_market_is_closed():
         print("This program will only work correctly if there is at least 1 stock symbol ")
         print("in the file named electricity-or-utility-stocks-to-buy-list.txt ")
         time.sleep(60)  # Sleep for 1 minute and check again
-
-
-logging.basicConfig(filename='log-file-of-buy-and-sell-signals.txt', level=logging.INFO)
 
 
 def get_stocks_to_trade():
@@ -117,7 +117,6 @@ def load_bought_stocks_from_file():
                 parts = line.strip().split()
                 symbol = parts[0]
                 price = float(parts[1])
-                # If the purchase date is available, use it; otherwise, use today's date
                 purchase_date = datetime.strptime(parts[2], "%Y-%m-%d").date() if len(
                     parts) > 2 else datetime.today().date()
                 bought_stocks[symbol] = (price, purchase_date)
@@ -133,14 +132,51 @@ def update_bought_stocks_from_api():
     for position in positions:
         symbol = position.symbol
         avg_entry_price = position.avg_entry_price
-        # Use today's date as the purchase date
         purchase_date = datetime.today().date()
         bought_stocks[symbol] = (float(avg_entry_price), purchase_date)
 
-    # Save to file
     save_bought_stocks_to_file(bought_stocks)
 
     return bought_stocks
+
+
+def buy_stocks():
+    global stocks_to_buy
+    global bought_stocks
+    global cash_balance
+
+    stocks_to_remove = []
+    for symbol in stocks_to_buy:
+        current_price = get_current_price(symbol)
+        atr_low_price = get_atr_low_price(symbol)
+        cash_available = cash_balance - bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else cash_balance
+        fractional_qty = (cash_available / current_price) * 0.025
+        if cash_available > current_price and current_price <= atr_low_price:
+            api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market', time_in_force='day')
+            print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
+            bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
+            stocks_to_remove.append(symbol)
+
+    for symbol in stocks_to_remove:
+        stocks_to_buy.remove(symbol)
+        remove_symbol_from_trade_list(symbol)
+          # the buy thread will stop and allow the sell_stocks thread to keep running
+    time.sleep(240) # sleep 240 seconds after each buy order
+    update_bought_stocks_from_api()
+
+
+def sell_stocks():
+    global bought_stocks
+
+    for symbol, (bought_price, bought_date) in bought_stocks.items():
+        current_price = get_current_price(symbol)
+        atr_high_price = get_atr_high_price(symbol)
+        today_date = datetime.today().date()
+        if current_price >= atr_high_price and today_date > bought_date:
+            qty = api.get_position(symbol).qty
+            api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
+            print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
+            del bought_stocks[symbol]
 
 
 def main():
@@ -157,7 +193,7 @@ def main():
         try:
             pass
 
-            stop_if_stock_market_is_closed()
+            #stop_if_stock_market_is_closed()
             now = datetime.now(pytz.timezone('US/Eastern'))
             current_time_str = now.strftime("Eastern Time, %m-%d-%Y,   %I:%M:%S %p")
             cash_balance = round(float(api.get_account().cash), 2)
@@ -179,39 +215,17 @@ def main():
             if not bought_stocks:
                 bought_stocks = update_bought_stocks_from_api()
 
-            stocks_to_remove = []  # a new variable for a list of stocks to remove
-            for symbol in stocks_to_buy:
-                current_price = get_current_price(symbol)
-                atr_low_price = get_atr_low_price(symbol)  # Get the ATR low price for the symbol
-                cash_available = cash_balance - bought_stocks.get(symbol, 0)[
-                    0] if symbol in bought_stocks else cash_balance
-                fractional_qty = (cash_available / current_price) * 0.025
-                if cash_available > current_price and current_price <= atr_low_price:  # Check if the current price is less than or equal to ATR low price
-                    api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market', time_in_force='day')
-                    print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
-                    bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
-                    stocks_to_remove.append(symbol)  # Append or add the symbol to a list of stocks to remove
-                    logging.info(f"Bought {fractional_qty} shares of {symbol} at {current_price}")  # Logging the buy order
+                # Create and start the buying thread
+                buy_thread = threading.Thread(target=buy_stocks)
+                buy_thread.start()
 
-                    for symbol in stocks_to_remove:
-                        stocks_to_buy.remove(symbol)  # Remove the symbol from the original variable memory list after
-                        # placing a buy order for the stock symbol
-                        remove_symbol_from_trade_list(symbol)  # Remove the symbol from the text file
+                # Create and start the selling thread
+                sell_thread = threading.Thread(target=sell_stocks)
+                sell_thread.start()
 
-            # Check for selling condition within bought_stocks based on ATR
-            for symbol, (bought_price, bought_date) in bought_stocks.items():
-                current_price = get_current_price(symbol)
-                atr_high_price = get_atr_high_price(symbol)
-                today_date = datetime.today().date()
-                bought_date = bought_date  # Assuming the date is already a date object, otherwise convert the dates
-                # into exactly the same date format.
-
-                if current_price >= atr_high_price and today_date > bought_date:
-                    qty = api.get_position(symbol).qty
-                    api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
-                    print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
-                    logging.info(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")  # Logging the sell order
-                    del bought_stocks[symbol]
+                # Optionally, wait for both threads to finish
+                buy_thread.join()
+                sell_thread.join()
 
             if DEBUG:
                 print("                                                                        ")
@@ -230,7 +244,7 @@ def main():
                     print(
                         f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
                     print("----------------------------------------------------")
-            time.sleep(0.5)  # uncomment this line if the program is going too fast.
+            time.sleep(0.75)  # uncomment this line if the program is going too fast.
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
