@@ -21,10 +21,10 @@ DEBUG = False
 
 eastern = pytz.timezone('US/Eastern')
 
-# Dictionary to maintain previous prices and counts
+# Dictionary to maintain previous prices and price increase and price decrease counts
 stock_data = {}
-stocks_to_buy = []
-stocks_to_buy_copy = []
+
+global stocks_to_buy
 
 
 def stop_if_stock_market_is_closed():
@@ -91,15 +91,16 @@ def get_average_true_range(symbol):
 
 # New function to monitor price changes
 def monitor_price_changes(stocks_to_trade):
-    global stocks_to_buy
-    stocks_to_buy = []
+
     price_trends = {symbol: {'increases': 0, 'decreases': 0} for symbol in stocks_to_trade}
     last_prices = {symbol: get_current_price(symbol) for symbol in stocks_to_trade}
 
     while True:
         pass
 
-        now = datetime.now(pytz.timezone('US/Eastern'))
+        global stocks_to_buy
+
+        get_stocks_to_trade()
 
         for symbol in stocks_to_trade:
             current_price = get_current_price(symbol)
@@ -119,7 +120,6 @@ def main():
     global stocks_to_buy
     global stocks_to_buy_copy
     stocks_to_trade = get_stocks_to_trade()
-
     stocks_to_buy = []
     stocks_to_buy_copy = []
 
@@ -156,6 +156,7 @@ def main():
             day_trade_count = account.daytrade_count
 
             print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
+            print("                                                  ")
             print("Stocks will strictly only be purchased at 3:50pm Eastern Time to maximize profits and to increase ")
             print("the number of stocks traded per day to the maximum number of positions. ")
             print("                                                                            ")
@@ -179,7 +180,7 @@ def main():
                 # Optionally, you can clear the copy list if you want
                 stocks_to_buy_copy = []
 
-            # Check for selling condition based on ATR
+            # Check for selling condition within bought_stocks based on ATR
             for symbol, bought_price in bought_stocks.items():
                 current_price = get_current_price(symbol)
                 atr_high_price = get_atr_high_price(symbol)
@@ -189,22 +190,58 @@ def main():
                     print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
                     del bought_stocks[symbol]
 
-            # Print Owned Positions
-            print("Owned Positions:")
-            for symbol, bought_price in bought_stocks.items():
+            # below python code will sell owned positions directly from the alpaca api
+            # Check for selling condition within owned positions based on ATR
+            positions = api.list_positions()
+            for position in positions:
+                symbol = position.symbol
                 current_price = get_current_price(symbol)
                 atr_high_price = get_atr_high_price(symbol)
-                print(f"Symbol: {symbol} | Current Price: {current_price} | ATR High Price: {atr_high_price}")
+                if current_price >= atr_high_price:
+                    qty = position.qty
+                    api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
+                    print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
+                    del bought_stocks[symbol]
 
             print("--------------------------------------------------")
 
-            print("Stocks to Purchase will only be listed here if DEBUG mode = True ")
+            print("Owned Positions will only be listed here if DEBUG mode = True ")
             print("to make this program work substantially faster. ")
+            print("                                                  ")
+            print("Stocks to Purchase will only be listed here if DEBUG mode = True ")
+            print("to make this program work without slowing down. ")
             print("Remember that: ")
             print("This program will only work correctly if there is at least 1 stock symbol ")
             print("in the file named electricity-or-utility-stocks-to-buy-list.txt ")
 
             if DEBUG:
+                # Print all owned positions returned from the Alpaca API
+                print("                                                  ")
+                print("All owned positions from Alpaca API:")
+                for position in positions:
+                    print(
+                        f"Symbol: {position.symbol} | Quantity: {position.qty} | Average Entry Price: {position.avg_entry_price}")
+
+                print("--------------------------------------------------")
+                # Print Owned Positions listed in the bought_stocks dictionary variable
+                print("The bought_stocks dictionary variable has the purpose of keeping ")
+                print("track of stocks that are owned and that are still in the ")
+                print("electricity-or-utility-stocks-to-buy-list.txt ")
+                print("This bought_stocks dictionary variable tries to prevent ")
+                print("buying stocks that are already owned positions. ")
+                print("                                                                ")
+                print("Owned Positions listed in the bought_stocks dictionary variable:")
+
+                if bought_stocks:
+                    for symbol, bought_price in bought_stocks.items():
+                        current_price = get_current_price(symbol)
+                        atr_high_price = get_atr_high_price(symbol)
+                        print(f"Symbol: {symbol} | Current Price: {current_price} | ATR High Price: {atr_high_price}")
+                else:
+                    print("No owned positions in the bought_stocks dictionary variable. ")
+                    print("This is usually because the stocks are not listed in the text file named ")
+                    print("electricity-or-utility-stocks-to-buy-list.txt ")
+
                 # Print Stocks to Purchase in DEBUG mode to keep the program running faster.
                 print("--------------------------------------------------")
                 print("\nStocks to Purchase:")
@@ -212,11 +249,12 @@ def main():
                     if symbol not in bought_stocks:
                         current_price = get_current_price(symbol)
                         atr_high_price = get_atr_high_price(symbol)
-                        print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
+                        print(
+                            f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
 
-                #print(account)
+                # print(account)  # uncomment this line to print account to view alpaca account details
 
-            time.sleep(0.25)
+            time.sleep(0.05)
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
