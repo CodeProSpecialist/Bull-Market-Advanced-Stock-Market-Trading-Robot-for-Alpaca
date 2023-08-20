@@ -103,17 +103,14 @@ Let's break down the code to understand its working step by step. This code appe
     If the current price is greater than or equal to the ATR high price, it fetches the quantity of that stock held and submits a sell order.
     The sold stock is removed from the bought_stocks dictionary.
 
-3.4 Time Sleep
-
-    The code then sleeps for 2 seconds before starting the next iteration.
-
 4. Exception Handling
 
     If an exception is encountered in the main function, it's logged, and the program sleeps for 2 seconds before continuing.
 
 Summary
 
-The code effectively manages a trading bot for electricity or utility stocks, making buying decisions at a specific time, and selling based on calculated ATR high price. The bot continues to run, constantly checking the market hours and performing buying or selling actions as necessary.
+The code effectively manages a trading bot for electricity or utility stocks, making buying decisions at a specific time,
+and selling based on calculated ATR high price. The bot continues to run, constantly checking the market hours and performing buying or selling actions as necessary.
 
 Please note that this script is designed to run during the stock market's operating hours. 
 
