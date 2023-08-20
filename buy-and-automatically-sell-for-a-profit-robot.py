@@ -164,12 +164,15 @@ def main():
             cash_balance = round(float(api.get_account().cash), 2)
 
             # Print the current details
+            print("                                                                        ")
             print(f"{current_time_str},    Cash Balance: ${cash_balance}")
 
             # Get the day trade count
             day_trade_count = api.get_account().daytrade_count
+            print("                                                                        ")
             print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
-
+            print("                                                                        ")
+            
             stocks_to_buy = get_stocks_to_trade()
 
             # Load bought_stocks from the file or update from the API
@@ -213,19 +216,22 @@ def main():
                     del bought_stocks[symbol]
 
             if DEBUG:
+                print("                                                                        ")
                 print("\nStocks to Purchase:")
+                print("                                                                        ")
                 for symbol in stocks_to_buy:
                     current_price = get_current_price(symbol)
                     atr_low_price = get_atr_low_price(symbol)
                     print(
                         f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
-
+                print("--------------------------------------------------------------------------------------------------------")
+                print("                                                                        ")
                 print("\nStocks to Sell:")
                 for symbol, _ in bought_stocks.items():  # Unpacking the symbol from the items
                     current_price = get_current_price(symbol)
                     atr_high_price = get_atr_high_price(symbol)
                     print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
-
+                    print("--------------------------------------------------------------------------------------------------------")
             # time.sleep(0.25) # uncomment this line if the program is going too fast.
 
         except Exception as e:
