@@ -210,11 +210,11 @@ def main():
                         atr_high_price = get_atr_high_price(symbol)
                         print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
 
-            time.sleep(0.25)
+            time.sleep(0.001)
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
-            time.sleep(0.25)  # To ensure that the loop continues even after an error
+            time.sleep(30)  # To ensure that the loop continues even after an error
 
 
 if __name__ == '__main__':
@@ -225,4 +225,4 @@ if __name__ == '__main__':
 
     except Exception as e:
         logging.error(f"Error encountered: {e}")
-        time.sleep(0.25)  # To ensure that the loop continues even after an error
+        time.sleep(30)  # To ensure that the loop continues even after an error
