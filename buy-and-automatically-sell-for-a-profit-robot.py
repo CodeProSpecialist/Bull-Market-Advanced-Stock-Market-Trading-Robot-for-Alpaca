@@ -230,7 +230,7 @@ def main():
                     atr_high_price = get_atr_high_price(symbol)
                     print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
                     print("--------------------------------------------------------------------------------------------------------")
-            # time.sleep(0.25) # uncomment this line if the program is going too fast.
+            time.sleep(0.5) # uncomment this line if the program is going too fast.
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
