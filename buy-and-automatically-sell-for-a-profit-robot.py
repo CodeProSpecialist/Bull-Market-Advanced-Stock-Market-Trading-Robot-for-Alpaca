@@ -191,8 +191,7 @@ def main():
                     print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
                     bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
                     stocks_to_remove.append(symbol)  # Append or add the symbol to a list of stocks to remove
-                    logging.info(
-                        f"Bought {fractional_qty} shares of {symbol} at {current_price}")  # Logging the buy order
+                    logging.info(f"Bought {fractional_qty} shares of {symbol} at {current_price}")  # Logging the buy order
 
                     for symbol in stocks_to_remove:
                         stocks_to_buy.remove(symbol)  # Remove the symbol from the original variable memory list after
