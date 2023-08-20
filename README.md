@@ -18,6 +18,21 @@ You can modify the python script to make DEBUG = True   and this will print out 
 Printing out the stock information slows down this python program, and it is recommended to change debug back to:  
 DEBUG = False
 
+Use a python code IDE like Pycharm to edit 
+this python code. 
+
+This python code is currently programmed to 
+spend less money during a stock market 
+recession by buying only stocks that can 
+be purchased in fractional shares. 
+If you want to buy stocks that can only 
+be purchased at full price, then in 
+the program main loop, locate the buy order and change the buy order code qty= to look like qty=1 as shown below: 
+
+if cash_available > current_price:
+    api.submit_order(symbol=symbol, qty=1, side='buy', type='market', time_in_force='day')
+
+
 This stock market robot works best if you purchase 25 to 30 different stocks in fractional shares 
 or at only 1 share per stock because the stocks are sold really soon when the price decreases. This Stock Trading Robot has a strategy to buy stocks today for selling tomorrow because this allows for much more stock trading activity to take place within the stock trading rules of day trading 3 maximum times in 5 business days. 
 
