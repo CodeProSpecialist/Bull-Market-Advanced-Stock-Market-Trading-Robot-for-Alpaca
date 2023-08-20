@@ -211,8 +211,7 @@ def main():
                     qty = api.get_position(symbol).qty
                     api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
                     print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
-                    logging.info(
-                        f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")  # Logging the sell order
+                    logging.info(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")  # Logging the sell order
                     del bought_stocks[symbol]
 
             if DEBUG:
@@ -222,8 +221,7 @@ def main():
                 for symbol in stocks_to_buy:
                     current_price = get_current_price(symbol)
                     atr_low_price = get_atr_low_price(symbol)
-                    print(
-                        f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
+                    print(f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
                 print("--------------------------------------------------------------------------------------------------------")
                 print("                                                                        ")
                 print("\nStocks to Sell:")
