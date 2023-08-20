@@ -8,7 +8,6 @@ import pytz
 import talib
 import yfinance as yf
 
-
 # Load environment variables for Alpaca API
 APIKEYID = os.getenv('APCA_API_KEY_ID')
 APISECRETKEY = os.getenv('APCA_API_SECRET_KEY')
@@ -172,7 +171,7 @@ def main():
             print("                                                                        ")
             print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
             print("                                                                        ")
-            
+
             stocks_to_buy = get_stocks_to_trade()
 
             # Load bought_stocks from the file or update from the API
@@ -183,20 +182,21 @@ def main():
             stocks_to_remove = []  # a new variable for a list of stocks to remove
             for symbol in stocks_to_buy:
                 current_price = get_current_price(symbol)
+                atr_low_price = get_atr_low_price(symbol)  # Get the ATR low price for the symbol
                 cash_available = cash_balance - bought_stocks.get(symbol, 0)[
                     0] if symbol in bought_stocks else cash_balance
                 fractional_qty = (cash_available / current_price) * 0.025
-                if cash_available > current_price:
-                    api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market',
-                                     time_in_force='day')
+                if cash_available > current_price and current_price <= atr_low_price:  # Check if the current price is less than or equal to ATR low price
+                    api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market', time_in_force='day')
                     print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
                     bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
                     stocks_to_remove.append(symbol)  # Append or add the symbol to a list of stocks to remove
-                    logging.info(f"Bought {fractional_qty} shares of {symbol} at {current_price}")  # Logging the buy order
+                    logging.info(
+                        f"Bought {fractional_qty} shares of {symbol} at {current_price}")  # Logging the buy order
 
                     for symbol in stocks_to_remove:
                         stocks_to_buy.remove(symbol)  # Remove the symbol from the original variable memory list after
-                            # placing a buy order for the stock symbol
+                        # placing a buy order for the stock symbol
                         remove_symbol_from_trade_list(symbol)  # Remove the symbol from the text file
 
             # Check for selling condition within bought_stocks based on ATR
@@ -222,15 +222,16 @@ def main():
                     current_price = get_current_price(symbol)
                     atr_low_price = get_atr_low_price(symbol)
                     print(f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
-                print("--------------------------------------------------------------------------------------------------------")
+                print("----------------------------------------------------")
                 print("                                                                        ")
                 print("\nStocks to Sell:")
                 for symbol, _ in bought_stocks.items():  # Unpacking the symbol from the items
                     current_price = get_current_price(symbol)
                     atr_high_price = get_atr_high_price(symbol)
-                    print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
-                    print("--------------------------------------------------------------------------------------------------------")
-            # time.sleep(0.25) # uncomment this line if the program is going too fast.
+                    print(
+                        f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
+                    print("----------------------------------------------------")
+            time.sleep(0.5)  # uncomment this line if the program is going too fast.
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
