@@ -52,7 +52,6 @@ It's programmed in Python 3 to analyze market data at lightning speed,
 
 monitoring multiple stocks simultaneously for optimal trade execution.
 
-
 Getting started is as easy as a few clicks. Just load your stock list, set up your Alpaca trade API keys, 
 
 and let the Robot do the heavy lifting. 
@@ -71,13 +70,76 @@ Remember, the success in trading stocks and other securities can never be guaran
 Please trade responsibly and do your own research before making any investment. 
 This does not constitute financial advice.
 
+Below is an analysis of the given code, detailing the purpose and functionality of each part:
+Import Statements
 
-   I also recommend to not select stocks that are valued less than 200 dollars to have the stocks work well 
-with this stock bot because it is more worth your time to use your single or last few day trades 
-to generate a larger dollar amount of profit from a 2 percent profit before the stock is sold. 
-I also recommend only having this stock bot monitor your favorite stock that you have 
-noticed increasing in price numbers. This will make this stock bot generate the most profit for 
-you in the least amount of time. 
+    Various modules are imported to facilitate date and time handling, logging, 
+    and to interface with Alpaca's trading API and other financial tools.
+
+Global Variables and API Initialization
+
+    Environment variables are loaded to configure the Alpaca API.
+    The Alpaca API is initialized for trading actions.
+    A timezone (eastern) is defined, and a global dictionary (stock_data) is initialized for storing stock information.
+
+stop_if_stock_market_is_closed()
+
+    This function runs an infinite loop, checking if the current time is within the stock market's open hours.
+    If the market is closed, a message is printed and the program sleeps for one minute before checking again.
+
+Logging Configuration
+
+    Configures logging to write buy and sell signals to a file.
+
+get_stocks_to_trade()
+
+    Reads a file containing a list of electricity or utility stocks to buy and returns them as a list.
+
+remove_symbol_from_trade_list(symbol)
+
+    Removes a given stock symbol from the list of stocks to buy in the file.
+
+get_current_price(symbol)
+
+    Retrieves the current closing price of a given stock symbol using the Yahoo Finance library.
+
+get_atr_high_price(symbol) and get_atr_low_price(symbol)
+
+    Calculate and return the high and low price levels for a given symbol based on the Average True Range (ATR), using the TA-Lib library.
+
+get_average_true_range(symbol)
+
+    Calculates the Average True Range (ATR) of a given stock symbol for the past 30 days.
+
+save_bought_stocks_to_file(bought_stocks) and load_bought_stocks_from_file()
+
+    These functions save and load the details of bought stocks to and from a file, including the symbol, price, and purchase date.
+
+update_bought_stocks_from_api()
+
+    Retrieves the details of bought stocks from the Alpaca API and saves them to a file.
+
+main()
+
+    The main function orchestrates the trading logic:
+        Loops indefinitely, executing the trading logic.
+        Calls stop_if_stock_market_is_closed() to ensure trading only during market hours.
+        Retrieves the list of stocks to buy and the details of bought stocks.
+        Iterates through the stocks to buy, placing buy orders if conditions are met, and updating the list of bought stocks.
+        Checks for sell conditions based on ATR and sells if conditions are met.
+        Handles exceptions and logs errors.
+
+if __name__ == '__main__':
+
+    Executes the main() function if the script is run as the main program, and handles exceptions at the top level.
+
+Summary
+
+The code represents a stock trading bot specifically designed to trade electricity or utility stocks. 
+It follows specific buy and sell strategies based on price and Average True Range (ATR), 
+and it ensures that trading only happens during market hours. 
+The code interacts with the Alpaca API for trading actions and uses other libraries for financial data analysis. 
+It also maintains logs and handles files for storing the list of stocks to trade and the details of bought stocks.
 
 Advanced Stock Market Trading Bot
 
