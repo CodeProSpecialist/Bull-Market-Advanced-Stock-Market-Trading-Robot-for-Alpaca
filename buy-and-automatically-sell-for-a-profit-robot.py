@@ -70,6 +70,16 @@ def get_stocks_to_trade():
         return [line.strip() for line in file.readlines()]
 
 
+def remove_symbol_from_trade_list(symbol):
+    with open('electricity-or-utility-stocks-to-buy-list.txt', 'r') as file:
+        lines = file.readlines()
+
+    with open('electricity-or-utility-stocks-to-buy-list.txt', 'w') as file:
+        for line in lines:
+            if line.strip() != symbol:
+                file.write(line)
+
+
 def get_current_price(symbol):
     stock_data = yf.Ticker(symbol)
     return round(stock_data.history(period="5d")["Close"].iloc[-1], 4)
@@ -136,25 +146,32 @@ def update_bought_stocks_from_api():
 
 def main():
     global stocks_to_buy
-    #stocks_to_trade = get_stocks_to_trade()
-    stocks_to_buy = []
+    global bought_stocks
 
+    stocks_to_buy = []
+    stocks_to_buy = get_stocks_to_trade()
+
+    # Load bought_stocks from the Alpaca server API when starting a brand-new instance of the program
+    bought_stocks = update_bought_stocks_from_api()
 
     while True:
         try:
+            pass
+
             stop_if_stock_market_is_closed()
             now = datetime.now(pytz.timezone('US/Eastern'))
-            current_time_str = now.strftime("%m-%d-%Y %I:%M:%S %p")
+            current_time_str = now.strftime("Eastern Time, %m-%d-%Y,   %I:%M:%S %p")
             cash_balance = round(float(api.get_account().cash), 2)
 
             # Print the current details
-            print(f"{current_time_str}    Cash Balance: ${cash_balance}")
+            print(f"{current_time_str},    Cash Balance: ${cash_balance}")
 
             # Get the day trade count
             day_trade_count = api.get_account().daytrade_count
             print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
 
             stocks_to_buy = get_stocks_to_trade()
+
             # Load bought_stocks from the file or update from the API
             bought_stocks = load_bought_stocks_from_file()
             if not bought_stocks:
@@ -162,14 +179,19 @@ def main():
 
             for symbol in stocks_to_buy:
                 current_price = get_current_price(symbol)
-                cash_available = cash_balance - bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else cash_balance
+                cash_available = cash_balance - bought_stocks.get(symbol, 0)[
+                    0] if symbol in bought_stocks else cash_balance
                 fractional_qty = (cash_available / current_price) * 0.025
                 if cash_available > current_price:
                     api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market',
                                      time_in_force='day')
                     print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
                     bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
-                    stocks_to_buy.remove(symbol)
+                    logging.info(
+                        f"Bought {fractional_qty} shares of {symbol} at {current_price}")  # Logging the buy order
+                    stocks_to_buy.remove(symbol)  # Remove the symbol from the original variable memory list after
+                    # placing a buy order for the stock symbol
+                    remove_symbol_from_trade_list(symbol)  # Remove the symbol from the text file
 
             # Check for selling condition within bought_stocks based on ATR
             for symbol, (bought_price, bought_date) in bought_stocks.items():
@@ -181,6 +203,8 @@ def main():
                     qty = api.get_position(symbol).qty
                     api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
                     print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
+                    logging.info(
+                        f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")  # Logging the sell order
                     del bought_stocks[symbol]
 
             if DEBUG:
@@ -192,13 +216,12 @@ def main():
                         f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
 
                 print("\nStocks to Sell:")
-                for symbol, _ in bought_stocks.items():
+                for symbol, _ in bought_stocks.items():  # Unpacking the symbol from the items
                     current_price = get_current_price(symbol)
                     atr_high_price = get_atr_high_price(symbol)
-                    print(
-                        f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
+                    print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
 
-            #time.sleep(0.25) # uncomment this line if the program is going too fast.
+            # time.sleep(0.25) # uncomment this line if the program is going too fast.
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
