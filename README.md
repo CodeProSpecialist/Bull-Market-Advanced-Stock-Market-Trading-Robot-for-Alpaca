@@ -101,7 +101,7 @@ remove_symbol_from_trade_list(symbol)
 
 get_current_price(symbol)
 
-    Retrieves the current closing price of a given stock symbol using the Yahoo Finance library.
+    Retrieves the current closing price of a given stock symbol. 
 
 get_atr_high_price(symbol) and get_atr_low_price(symbol)
 
