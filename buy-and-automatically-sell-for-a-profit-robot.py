@@ -23,6 +23,8 @@ eastern = pytz.timezone('US/Eastern')
 
 # Dictionary to maintain previous prices and counts
 stock_data = {}
+stocks_to_buy = []
+stocks_to_buy_copy = []
 
 
 def stop_if_stock_market_is_closed():
@@ -94,6 +96,8 @@ def monitor_price_changes(stocks_to_trade):
     last_prices = {symbol: get_current_price(symbol) for symbol in stocks_to_trade}
 
     while True:
+        pass
+
         now = datetime.now(pytz.timezone('US/Eastern'))
 
         for symbol in stocks_to_trade:
@@ -107,15 +111,13 @@ def monitor_price_changes(stocks_to_trade):
         stocks_to_buy = [symbol for symbol, trend in price_trends.items() if
                          trend['increases'] > trend['decreases']]
 
-        time.sleep(900)  # Check every 15 minutes, number can be adjusted.
+        time.sleep(480)  # 480 seconds is to check every 8 minutes, number can be adjusted.
 
 
 def main():
     global stocks_to_buy
     global stocks_to_buy_copy
     stocks_to_trade = get_stocks_to_trade()
-    stocks_to_buy = []
-    stocks_to_buy_copy = []
 
     bought_stocks = {}
 
@@ -214,7 +216,7 @@ def main():
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
-            time.sleep(30)  # To ensure that the loop continues even after an error
+            time.sleep(2)  # To ensure that the loop continues even after an error
 
 
 if __name__ == '__main__':
@@ -225,4 +227,4 @@ if __name__ == '__main__':
 
     except Exception as e:
         logging.error(f"Error encountered: {e}")
-        time.sleep(30)  # To ensure that the loop continues even after an error
+        time.sleep(2)  # To ensure that the loop continues even after an error
