@@ -1,3 +1,0 @@
-Erase the successful stocks list to stop buying stocks today. 
-
-This includes when you want to sell stocks with this program. 
