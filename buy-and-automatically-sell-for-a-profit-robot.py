@@ -7,7 +7,7 @@ import alpaca_trade_api as tradeapi
 import pytz
 import talib
 import yfinance as yf
-import threading
+
 
 # Load environment variables for Alpaca API
 APIKEYID = os.getenv('APCA_API_KEY_ID')
@@ -177,6 +177,7 @@ def main():
             if not bought_stocks:
                 bought_stocks = update_bought_stocks_from_api()
 
+            stocks_to_remove = []  # a new variable for a list of stocks to remove
             for symbol in stocks_to_buy:
                 current_price = get_current_price(symbol)
                 cash_available = cash_balance - bought_stocks.get(symbol, 0)[
@@ -187,17 +188,21 @@ def main():
                                      time_in_force='day')
                     print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
                     bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
-                    logging.info(
-                        f"Bought {fractional_qty} shares of {symbol} at {current_price}")  # Logging the buy order
-                    stocks_to_buy.remove(symbol)  # Remove the symbol from the original variable memory list after
-                    # placing a buy order for the stock symbol
-                    remove_symbol_from_trade_list(symbol)  # Remove the symbol from the text file
+                    stocks_to_remove.append(symbol)  # Append or add the symbol to a list of stocks to remove
+                    logging.info(f"Bought {fractional_qty} shares of {symbol} at {current_price}")  # Logging the buy order
+
+                    for symbol in stocks_to_remove:
+                        stocks_to_buy.remove(symbol)  # Remove the symbol from the original variable memory list after
+                            # placing a buy order for the stock symbol
+                        remove_symbol_from_trade_list(symbol)  # Remove the symbol from the text file
 
             # Check for selling condition within bought_stocks based on ATR
             for symbol, (bought_price, bought_date) in bought_stocks.items():
                 current_price = get_current_price(symbol)
                 atr_high_price = get_atr_high_price(symbol)
                 today_date = datetime.today().date()
+                bought_date = bought_date  # Assuming the date is already a date object, otherwise convert the dates
+                # into exactly the same date format.
 
                 if current_price >= atr_high_price and today_date > bought_date:
                     qty = api.get_position(symbol).qty
