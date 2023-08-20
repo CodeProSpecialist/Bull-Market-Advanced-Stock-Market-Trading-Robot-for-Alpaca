@@ -199,14 +199,13 @@ def main():
             print("--------------------------------------------------")
 
             print("Stocks to Purchase will only be listed here if DEBUG mode = True ")
-            print("or between 3:50pm and 3:59pm Eastern Time ")
             print("to make this program work substantially faster. ")
             print("Remember that: ")
             print("This program will only work correctly if there is at least 1 stock symbol ")
             print("in the file named electricity-or-utility-stocks-to-buy-list.txt ")
 
             # Check if it's time to buy stocks at 15:50 Eastern Time or if DEBUG mode is True
-            if now.hour == 15 and 50 <= now.minute <= 59 or DEBUG:
+            if DEBUG:
                 # Print Stocks to Purchase after 3:50pm to make the python code run faster
                 print("--------------------------------------------------")
                 print("\nStocks to Purchase:")
