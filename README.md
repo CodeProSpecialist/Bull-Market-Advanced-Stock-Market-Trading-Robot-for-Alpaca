@@ -32,7 +32,7 @@ recession by buying only stocks that can
 be purchased in fractional shares. 
 If you want to buy stocks that can only 
 be purchased at full price, then in 
-the program main loop, locate the buy order and change the buy order code qty= to look like qty=1 as shown below: 
+the program section "def buy_stocks()", locate the buy order and change the buy order code qty= to look like qty=1 as shown below: 
 
 if cash_available > current_price:
     api.submit_order(symbol=symbol, qty=1, side='buy', type='market', time_in_force='day')
