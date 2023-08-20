@@ -56,8 +56,7 @@ def stop_if_stock_market_is_closed():
         print(f'Current date & time (Eastern Time): {now.strftime("%A, %B %d, %Y, %I:%M:%S %p")}\n')
         print("Stockbot only works Monday through Friday: 9:30 am - 4:00 pm Eastern Time.")
         print("Waiting until Stock Market Hours to begin the Stockbot Trading Program.")
-        print("Stocks will strictly only be purchased at 3:50pm Eastern Time to maximize profits and to increase ")
-        print("the number of stocks traded per day to the maximum number of positions. ")
+        print("                                                                       ")
         print("This program will only work correctly if there is at least 1 stock symbol ")
         print("in the file named electricity-or-utility-stocks-to-buy-list.txt ")
         time.sleep(60)  # Sleep for 1 minute and check again
@@ -82,6 +81,12 @@ def get_atr_high_price(symbol):
     return round(current_price + 3 * atr_value, 4)
 
 
+def get_atr_low_price(symbol):
+    atr_value = get_average_true_range(symbol)
+    current_price = get_current_price(symbol)
+    return round(current_price - 3 * atr_value, 4)
+
+
 def get_average_true_range(symbol):
     ticker = yf.Ticker(symbol)
     data = ticker.history(period='30d')
@@ -89,172 +94,111 @@ def get_average_true_range(symbol):
     return atr[-1]
 
 
-# New function to monitor price changes
-def monitor_price_changes(stocks_to_trade):
+def save_bought_stocks_to_file(bought_stocks):
+    with open('stock-database.txt', 'w') as file:
+        for symbol, (price, purchase_date) in bought_stocks.items():
+            file.write(f"{symbol} {price} {purchase_date}\n")
 
-    price_trends = {symbol: {'increases': 0, 'decreases': 0} for symbol in stocks_to_trade}
-    last_prices = {symbol: get_current_price(symbol) for symbol in stocks_to_trade}
 
-    while True:
+def load_bought_stocks_from_file():
+    bought_stocks = {}
+    try:
+        with open('stock-database.txt', 'r') as file:
+            for line in file.readlines():
+                parts = line.strip().split()
+                symbol = parts[0]
+                price = float(parts[1])
+                # If the purchase date is available, use it; otherwise, use today's date
+                purchase_date = datetime.strptime(parts[2], "%Y-%m-%d").date() if len(
+                    parts) > 2 else datetime.today().date()
+                bought_stocks[symbol] = (price, purchase_date)
+    except FileNotFoundError:
         pass
 
-        global stocks_to_buy
+    return bought_stocks
 
-        get_stocks_to_trade()
 
-        for symbol in stocks_to_trade:
-            current_price = get_current_price(symbol)
-            if current_price > last_prices[symbol]:
-                price_trends[symbol]['increases'] += 1
-            elif current_price < last_prices[symbol]:
-                price_trends[symbol]['decreases'] += 1
-            last_prices[symbol] = current_price
+def update_bought_stocks_from_api():
+    positions = api.list_positions()
+    bought_stocks = {}
+    for position in positions:
+        symbol = position.symbol
+        avg_entry_price = position.avg_entry_price
+        # Use today's date as the purchase date
+        purchase_date = datetime.today().date()
+        bought_stocks[symbol] = (float(avg_entry_price), purchase_date)
 
-        stocks_to_buy = [symbol for symbol, trend in price_trends.items() if
-                         trend['increases'] > trend['decreases']]
+    # Save to file
+    save_bought_stocks_to_file(bought_stocks)
 
-        time.sleep(480)  # 480 seconds is to check every 8 minutes, number can be adjusted.
+    return bought_stocks
 
 
 def main():
     global stocks_to_buy
-    global stocks_to_buy_copy
-    stocks_to_trade = get_stocks_to_trade()
+    #stocks_to_trade = get_stocks_to_trade()
     stocks_to_buy = []
-    stocks_to_buy_copy = []
 
-    bought_stocks = {}
-
-    # Create a thread that runs monitor_price_changes
-    monitor_thread = threading.Thread(target=monitor_price_changes, args=(stocks_to_trade,))
-    monitor_thread.daemon = True
-    monitor_thread.start()
 
     while True:
         try:
-            pass
-
             stop_if_stock_market_is_closed()
             now = datetime.now(pytz.timezone('US/Eastern'))
             current_time_str = now.strftime("%m-%d-%Y %I:%M:%S %p")
             cash_balance = round(float(api.get_account().cash), 2)
 
-            # Update the bought_stocks dictionary with current owned positions
-            positions = api.list_positions()
-            for position in positions:
-                if position.symbol in stocks_to_trade:
-                    bought_stocks[position.symbol] = float(position.avg_entry_price)
-
-            print("--------------------------------------------------")
             # Print the current details
             print(f"{current_time_str}    Cash Balance: ${cash_balance}")
 
-            # Get the account information
-            account = api.get_account()
-
             # Get the day trade count
-            day_trade_count = account.daytrade_count
-
+            day_trade_count = api.get_account().daytrade_count
             print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
-            print("                                                  ")
-            print("Stocks will strictly only be purchased at 3:50pm Eastern Time to maximize profits and to increase ")
-            print("the number of stocks traded per day to the maximum number of positions. ")
-            print("                                                                            ")
 
-            # Check if it's time to buy stocks at 15:50 Eastern Time
-            now = datetime.now(pytz.timezone('US/Eastern'))
-            if now.hour == 15 and 50 <= now.minute <= 59:
-                stocks_to_buy_copy = stocks_to_buy[:]  # Create a copy of the list to iterate over
-                for symbol in stocks_to_buy_copy:  # Work on the copy
-                    current_price = get_current_price(symbol)
-                    cash_available = cash_balance - bought_stocks.get(symbol, 0)
-                    fractional_qty = (cash_available / current_price) * 0.025
-                    if cash_available > current_price:
-                        api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market',
-                                         time_in_force='day')
-                        print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
-                        # below is an Updated line to round the price to 4 digits or 0.0000
-                        bought_stocks[symbol] = round(current_price, 4)
-                        stocks_to_buy.remove(symbol)  # Remove the symbol from the original list after buying
+            stocks_to_buy = get_stocks_to_trade()
+            # Load bought_stocks from the file or update from the API
+            bought_stocks = load_bought_stocks_from_file()
+            if not bought_stocks:
+                bought_stocks = update_bought_stocks_from_api()
 
-                # Optionally, you can clear the copy list if you want
-                stocks_to_buy_copy = []
+            for symbol in stocks_to_buy:
+                current_price = get_current_price(symbol)
+                cash_available = cash_balance - bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else cash_balance
+                fractional_qty = (cash_available / current_price) * 0.025
+                if cash_available > current_price:
+                    api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market',
+                                     time_in_force='day')
+                    print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
+                    bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
+                    stocks_to_buy.remove(symbol)
 
             # Check for selling condition within bought_stocks based on ATR
-            for symbol, bought_price in bought_stocks.items():
+            for symbol, (bought_price, bought_date) in bought_stocks.items():
                 current_price = get_current_price(symbol)
                 atr_high_price = get_atr_high_price(symbol)
-                if current_price >= atr_high_price:
+                today_date = datetime.today().date()
+
+                if current_price >= atr_high_price and today_date > bought_date:
                     qty = api.get_position(symbol).qty
                     api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
                     print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
                     del bought_stocks[symbol]
 
-            # below python code will sell owned positions directly from the alpaca api
-            # Check for selling condition within owned positions based on ATR
-            positions = api.list_positions()
-            for position in positions:
-                symbol = position.symbol
-                current_price = get_current_price(symbol)
-                atr_high_price = get_atr_high_price(symbol)
-                if current_price >= atr_high_price:
-                    qty = position.qty
-                    api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
-                    print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
-                    del bought_stocks[symbol]
-
-            print("--------------------------------------------------")
-
-            print("Owned Positions will only be listed here if DEBUG mode = True ")
-            print("to make this program work substantially faster. ")
-            print("                                                  ")
-            print("Stocks to Purchase will only be listed here if DEBUG mode = True ")
-            print("to make this program work without slowing down. ")
-            print("Remember that: ")
-            print("This program will only work correctly if there is at least 1 stock symbol ")
-            print("in the file named electricity-or-utility-stocks-to-buy-list.txt ")
-
             if DEBUG:
-                # Print all owned positions returned from the Alpaca API
-                print("                                                  ")
-                print("All owned positions from Alpaca API:")
-                for position in positions:
-                    print(
-                        f"Symbol: {position.symbol} | Quantity: {position.qty} | Average Entry Price: {position.avg_entry_price}")
-
-                print("--------------------------------------------------")
-                # Print Owned Positions listed in the bought_stocks dictionary variable
-                print("The bought_stocks dictionary variable has the purpose of keeping ")
-                print("track of stocks that are owned and that are still in the ")
-                print("electricity-or-utility-stocks-to-buy-list.txt ")
-                print("This bought_stocks dictionary variable tries to prevent ")
-                print("buying stocks that are already owned positions. ")
-                print("                                                                ")
-                print("Owned Positions listed in the bought_stocks dictionary variable:")
-
-                if bought_stocks:
-                    for symbol, bought_price in bought_stocks.items():
-                        current_price = get_current_price(symbol)
-                        atr_high_price = get_atr_high_price(symbol)
-                        print(f"Symbol: {symbol} | Current Price: {current_price} | ATR High Price: {atr_high_price}")
-                else:
-                    print("No owned positions in the bought_stocks dictionary variable. ")
-                    print("This is usually because the stocks are not listed in the text file named ")
-                    print("electricity-or-utility-stocks-to-buy-list.txt ")
-
-                # Print Stocks to Purchase in DEBUG mode to keep the program running faster.
-                print("--------------------------------------------------")
                 print("\nStocks to Purchase:")
-                for symbol in stocks_to_trade:
-                    if symbol not in bought_stocks:
-                        current_price = get_current_price(symbol)
-                        atr_high_price = get_atr_high_price(symbol)
-                        print(
-                            f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
+                for symbol in stocks_to_buy:
+                    current_price = get_current_price(symbol)
+                    atr_low_price = get_atr_low_price(symbol)
+                    print(
+                        f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
 
-                # print(account)  # uncomment this line to print account to view alpaca account details
+                print("\nStocks to Sell:")
+                for symbol, _ in bought_stocks.items():
+                    current_price = get_current_price(symbol)
+                    atr_high_price = get_atr_high_price(symbol)
+                    print(
+                        f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
 
-            time.sleep(0.05)
+            #time.sleep(0.25) # uncomment this line if the program is going too fast.
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
@@ -263,9 +207,7 @@ def main():
 
 if __name__ == '__main__':
     try:
-        pass
         main()
-
     except Exception as e:
         logging.error(f"Error encountered: {e}")
         time.sleep(2)  # To ensure that the loop continues even after an error
