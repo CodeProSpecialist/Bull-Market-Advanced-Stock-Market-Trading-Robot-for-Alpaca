@@ -1,5 +1,5 @@
 import logging
-import os,sys
+import os, sys
 import time
 from datetime import datetime
 from datetime import time as time2
@@ -64,6 +64,7 @@ def stop_if_stock_market_is_closed():
 
 
 logging.basicConfig(filename='log-file-of-buy-and-sell-signals.txt', level=logging.INFO)
+
 
 def get_stocks_to_trade():
     with open('electricity-or-utility-stocks-to-buy-list.txt', 'r') as file:
@@ -135,7 +136,7 @@ def main():
             current_time_str = now.strftime("%m-%d-%Y %I:%M:%S %p")
             cash_balance = round(float(api.get_account().cash), 2)
 
-             # Update the bought_stocks dictionary with current owned positions
+            # Update the bought_stocks dictionary with current owned positions
             positions = api.list_positions()
             for position in positions:
                 if position.symbol in stocks_to_trade:
@@ -185,7 +186,7 @@ def main():
                     print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
                     del bought_stocks[symbol]
 
-             # Print Owned Positions
+            # Print Owned Positions
             print("Owned Positions:")
             for symbol, bought_price in bought_stocks.items():
                 current_price = get_current_price(symbol)
@@ -210,7 +211,8 @@ def main():
                     if symbol not in bought_stocks:
                         current_price = get_current_price(symbol)
                         atr_high_price = get_atr_high_price(symbol)
-                        print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
+                        print(
+                            f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
 
             time.sleep(0.001)
 
@@ -223,7 +225,7 @@ if __name__ == '__main__':
     try:
         pass
         main()
-    
+
 
     except Exception as e:
         logging.error(f"Error encountered: {e}")
