@@ -4,7 +4,12 @@ This python program has been updated on August 20, 2023. *****
 
 
      This Python Stock Market Trading Bot has completely brand new, redesigned python 3 code. 
-Proceed with caution because this python code is currently in beta testing mode. 
+Proceed with caution because this python code is currently in beta testing mode, although 
+this Python 3 code has successfully passed numerous software experimental tests to determine that this stock market trading robot is ready to accomplish more amazing work. 
+An Advanced Artificial Intelligence Software 
+platform has analyzed this Python 3 code to 
+be designed, functional, and working 
+correctly. 
 
 I needed to stop using the strict and somewhat buggy python Pandas Library to add more flexibility to the data frames. 
 So, I am using talib and not using Pandas at all. 
@@ -12,10 +17,32 @@ So, I am using talib and not using Pandas at all.
 ***** This program will only work if you have 
 at least 1 stock symbol in the electricity-or-utility-stocks-to-buy-list.txt 
 because of the functionality of the python code to analyze stocks to buy 
-at a future time. Otherwise, you might see errors. *****
+at a future time. Otherwise, you will most likely see errors in the log-file-of-buy-and-sell-signals.txt. *****
+
+You can modify the python script to make DEBUG = True   and this will print out your stocks with the price information. 
+Printing out the stock information slows down this python program, and it is recommended to change debug back to:  
+DEBUG = False
+
+Use a python code IDE like Pycharm to edit 
+this python code. 
+
+This python code is currently programmed to 
+spend less money during a stock market 
+recession by buying only stocks that can 
+be purchased in fractional shares. 
+If you want to buy stocks that can only 
+be purchased at full price, then in 
+the program main loop, locate the buy order and change the buy order code qty= to look like qty=1 as shown below: 
+
+if cash_available > current_price:
+    api.submit_order(symbol=symbol, qty=1, side='buy', type='market', time_in_force='day')
+
 
 This stock market robot works best if you purchase 25 to 30 different stocks in fractional shares 
 or at only 1 share per stock because the stocks are sold really soon when the price decreases. This Stock Trading Robot has a strategy to buy stocks today for selling tomorrow because this allows for much more stock trading activity to take place within the stock trading rules of day trading 3 maximum times in 5 business days. 
+
+Any stocks purchased today will not begin to sell until tomorrow or until a future day when the stock price increases during stock market 
+trading hours, Monday through Friday. 
 
 Buying stocks during the 2023 Recession is not easy for anyone: not even easy for computers and robots. 
 
@@ -28,8 +55,9 @@ Recession stocks are defensive stocks that can sustain growth or
 limit their losses during an economic downturn because their products are always in demand. 
 The best recession stocks include consumer staples, utilities and healthcare companies, 
 all of which produce goods and services that consumers can’t do without, no matter how bad the economy gets.
- Extremely important: invest in Electricity, Natural Gas, and perhaps even Crude Oil stocks. 
-  Some Energy stocks include: XLE, XOM, AEE, CMS, PCG, EQT, SLB, and CVX. 
+ Extremely important: invest in Electricity and Natural Gas stocks.  
+  Some Energy stocks include: VST, PCG, NEE, SO, DUK, NEE-PR, 
+  NGG, AEP, D, EXC, WEC, AWK, EIX, ES, and DTE. 
    
    In the ever-changing world of the stock market, opportunity can rise and fall in an instant...
 
@@ -46,7 +74,6 @@ It leverages the renowned Average True Range Indicator for reliable price signal
 It's programmed in Python 3 to analyze market data at lightning speed, 
 
 monitoring multiple stocks simultaneously for optimal trade execution.
-
 
 Getting started is as easy as a few clicks. Just load your stock list, set up your Alpaca trade API keys, 
 
@@ -66,79 +93,79 @@ Remember, the success in trading stocks and other securities can never be guaran
 Please trade responsibly and do your own research before making any investment. 
 This does not constitute financial advice.
 
-Let's break down the code to understand its working step by step. This code appears to be part of a stock trading bot specifically for electricity or utility stocks. Here's a detailed explanation:
-1. Initialization and Environment Variables
+Below is an analysis of the given code, detailing the purpose and functionality of each part:
+Import Statements
 
-    Import Modules: The necessary libraries for logging, datetime operations, trading APIs, etc., are imported.
-    Alpaca API Initialization: Alpaca's trading API is initialized using environment variables for API keys and base URL.
-    Timezone Setting: Eastern Time is used, as it corresponds to the New York Stock Exchange's time zone.
+    Various modules are imported to facilitate date and time handling, logging, 
+    and to interface with Alpaca's trading API and other financial tools.
 
-2. Functions Defined
+Global Variables and API Initialization
 
-    stop_if_stock_market_is_closed(): This function checks whether the stock market is open or not. If closed, it waits in a loop and prints a waiting message until the market opens.
+    Environment variables are loaded to configure the Alpaca API.
+    The Alpaca API is initialized for trading actions.
+    A timezone (eastern) is defined, and a global dictionary (stock_data) is initialized for storing stock information.
 
-    get_stocks_to_trade(): Reads a list of stock symbols (electricity or utility stocks) from a file.
+stop_if_stock_market_is_closed()
 
-    get_current_price(symbol): Fetches the current closing price of a given stock symbol.
+    This function runs an infinite loop, checking if the current time is within the stock market's open hours.
+    If the market is closed, a message is printed and the program sleeps for one minute before checking again.
 
-    get_atr_high_price(symbol): Calculates a high price based on the Average True Range (ATR) and current price.
+Logging Configuration
 
-    get_average_true_range(symbol): Calculates the Average True Range (ATR) for a given symbol.
+    Configures logging to write buy and sell signals to a file.
 
-3. Main Logic
-3.1 Checking Market Hours
+get_stocks_to_trade()
 
-    The main loop of the code first calls stop_if_stock_market_is_closed(), which makes the program wait if the market is closed.
+    Reads a file containing a list of electricity or utility stocks to buy and returns them as a list.
 
-3.2 Buying Stocks
+remove_symbol_from_trade_list(symbol)
 
-    The code then gets the current time and cash balance.
-    It checks if the time is 3:50 pm (15:50 Eastern Time). If so, it iterates through the stocks to trade.
-    For each stock, it calculates a "fractional quantity" based on the available cash and current price.
-    If enough cash is available, it submits a buy order for that fractional quantity and stores the current price in the bought_stocks dictionary.
+    Removes a given stock symbol from the list of stocks to buy in the file.
 
-3.3 Selling Stocks
+get_current_price(symbol)
 
-    For each bought stock, the code checks the current price and calculates the ATR high price.
-    If the current price is greater than or equal to the ATR high price, it fetches the quantity of that stock held and submits a sell order.
-    The sold stock is removed from the bought_stocks dictionary.
+    Retrieves the current closing price of a given stock symbol. 
 
-4. Exception Handling
+get_atr_high_price(symbol) and get_atr_low_price(symbol)
 
-    If an exception is encountered in the main function, it's logged, and the program sleeps for 2 seconds before continuing.
+    Calculate and return the high and low price levels for a given symbol based on the Average True Range (ATR), using the TA-Lib library.
+
+get_average_true_range(symbol)
+
+    Calculates the Average True Range (ATR) of a given stock symbol for the past 30 days.
+
+save_bought_stocks_to_file(bought_stocks) and load_bought_stocks_from_file()
+
+    These functions save and load the details of bought stocks to and from a file, including the symbol, price, and purchase date.
+
+update_bought_stocks_from_api()
+
+    Retrieves the details of bought stocks from the Alpaca API and saves them to a file.
+
+main()
+
+    The main function orchestrates the trading logic:
+        Loops indefinitely, executing the trading logic.
+        Calls stop_if_stock_market_is_closed() to ensure trading only during market hours.
+        Retrieves the list of stocks to buy and the details of bought stocks.
+        Iterates through the stocks to buy, placing buy orders if conditions are met, and updating the list of bought stocks.
+        Checks for sell conditions based on ATR and sells if conditions are met.
+        Handles exceptions and logs errors.
+
+if __name__ == '__main__':
+
+    Executes the main() function if the script is run as the main program, and handles exceptions at the top level.
 
 Summary
 
-The code effectively manages a trading bot for electricity or utility stocks, making buying decisions at a specific time,
-and selling based on calculated ATR high price. The bot continues to run, constantly checking the market hours and performing buying or selling actions as necessary.
-
-Please note that this script is designed to run during the stock market's operating hours. 
-
-This Advanced Stock Market Robot seems to be working great. 
-Important note: This Stock Market Robot will quickly sell any stocks 
-that decrease in value, sometimes even selling just by 1 percent to prevent losing any money 
-at all during the 2023 Stock Market Recession. 
-
-Important Instructions: 
-     To buy and sell stocks, run the python script named buy-and-automatically-sell-for-a-profit-robot.py 
-with the command: python3 buy-and-automatically-sell-for-a-profit-robot.py 
- Place this program into "buy more stocks mode" 
- when you put stock symbols in the text file "electricity-or-utility-stocks-to-buy-list.txt"
- and the stock market trading robot keeps looking for chances to buy more stocks
- from the list of stock symbols.
-
-   I also recommend to not select stocks that are valued less than 200 dollars to have the stocks work well 
-with this stock bot because it is more worth your time to use your single or last few day trades 
-to generate a larger dollar amount of profit from a 2 percent profit before the stock is sold. 
-I also recommend only having this stock bot monitor your favorite stock that you have 
-noticed increasing in price numbers. This will make this stock bot generate the most profit for 
-you in the least amount of time. 
+The code represents a stock trading bot specifically designed to trade electricity or utility stocks. 
+It follows specific buy and sell strategies based on price and Average True Range (ATR), 
+and it ensures that trading only happens during market hours. 
+The code interacts with the Alpaca API for trading actions and uses other libraries for financial data analysis. 
+It also maintains logs and handles files for storing the list of stocks to trade and the details of bought stocks.
 
 Advanced Stock Market Trading Bot
 
-This is a stock market portfolio management application that helps minimize losses and maximize profits.
-This works with the Alpaca stock market trading broker. 
-Advanced Stock Market Trading Bot only works Monday through Friday: 9:30am - 4:00pm Eastern Time.
 
 This is an Advanced buying and selling Python 3 Trading Robot 
 to monitor a stock market symbol or a number of stock symbols that you place in the file "electricity-or-utility-stocks-to-buy-list.txt". 
