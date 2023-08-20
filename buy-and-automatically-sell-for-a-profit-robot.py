@@ -214,7 +214,9 @@ def main():
                         atr_high_price = get_atr_high_price(symbol)
                         print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
 
-            time.sleep(0.001)
+                #print(account)
+
+            time.sleep(0.25)
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
