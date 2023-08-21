@@ -108,6 +108,11 @@ After placing your alpaca keys at the bottom of /home/nameofyourhomefolderhere/.
 
 python3 buy-and-automatically-sell-for-a-profit-robot.py 
 
+There is a known situation where this program will not work until you buy at least 1 share of stock 
+or a fractional share of stock because when this program starts running, it needs at least 1 stock 
+to save in the database to create a new database. That is just how databases work and there is really 
+no other way around creating a new database with at least 1 stock symbol to add to the database. 
+
 Make sure to not modify or edit the file named stocks.db because 
 it is storing information to remember when the program is working. It is a professional database file. 
 
