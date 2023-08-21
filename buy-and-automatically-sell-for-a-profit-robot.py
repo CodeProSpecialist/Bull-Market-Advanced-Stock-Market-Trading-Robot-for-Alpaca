@@ -196,7 +196,7 @@ def buy_stocks():
             qty_of_one_stock = 1
             if cash_available > current_price and current_price <= atr_low_price:
                 api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
-                print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
+                print(f"Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
                 bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
                 stocks_to_remove.append(symbol)
 
