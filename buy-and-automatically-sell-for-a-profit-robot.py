@@ -18,13 +18,14 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-DEBUG = False
+DEBUG = True
 
 eastern = pytz.timezone('US/Eastern')
 
 # Dictionary to maintain previous prices and price increase and price decrease counts
 stock_data = {}
-stocks_to_buy = []
+
+global stocks_to_buy
 
 # the below variable was recommended by Artificial Intelligence
 buy_sell_lock = threading.Lock()
@@ -64,10 +65,6 @@ def stop_if_stock_market_is_closed():
         print("                                                                       ")
         print("This program will only work correctly if there is at least 1 stock symbol ")
         print("in the file named electricity-or-utility-stocks-to-buy-list.txt ")
-        print("                                                                       ")
-        print("This software is not affiliated or endorsed by Alpaca Securities, LLC ")
-        print("This software does, however try to be a useful, profitable, and valuable ")
-        print("stock market trading application. ")
         time.sleep(60)  # Sleep for 1 minute and check again
 
 
@@ -195,9 +192,9 @@ def buy_stocks():
         for symbol in stocks_to_remove:
             stocks_to_buy.remove(symbol)
             remove_symbol_from_trade_list(symbol)
-            # the buy thread will stop and allow the sell_stocks thread to keep running
+              # the buy thread will stop and allow the sell_stocks thread to keep running
         time.sleep(240)  # sleep 240 seconds after each buy order
-        refresh_after_buy()  # this was recommended by Artificial Intelligence
+        refresh_after_buy()   # this was recommended by Artificial Intelligence
 
 
 # the below variable and list refresh function was recommended by Artificial Intelligence
@@ -221,7 +218,7 @@ def sell_stocks():
                 print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
                 del bought_stocks[symbol]
                 time.sleep(120)  # sleep 120 seconds after each sell order
-                refresh_after_sell()  # this was recommended by Artificial Intelligence
+                refresh_after_sell()   # this was recommended by Artificial Intelligence
 
 
 # the below variable and list refresh function was recommended by Artificial Intelligence
@@ -236,24 +233,14 @@ def main():
     global stocks_to_buy
     global bought_stocks
 
+    stocks_to_buy = []
     stocks_to_buy = get_stocks_to_trade()
 
     # Load bought_stocks when starting a brand-new instance of the program
     # the below code was recommended by Artificial Intelligence
     # Use database functions instead of file-based functions
     bought_stocks = load_bought_stocks_from_database(conn)
-
     if not bought_stocks:
-        print("Database is empty. Please purchase at least 1 share of stock before running this Stock Market Robot.")
-        print("The Stock Market Robot requires that you own at least 1 share or a fractional share of stock ")
-        print("before you run the Stock Market Robot to allow the database to not be empty ")
-        print("because the database can not be created when it is completely empty. ")
-        print("A database needs to be created when this Stock Market Robot begins working ")
-        print("to keep track of all of the stock position buying and selling. ")
-        print("Thanks for understanding. Stocks can be purchased at the Alpaca website. ")
-        print("This software is not affiliated or endorsed by Alpaca Securities, LLC ")
-        print("This software does, however try to be a useful, profitable, and valuable ")
-        print("stock market trading application. ")
         bought_stocks = update_bought_stocks_from_api(conn)
 
     while True:
@@ -282,14 +269,15 @@ def main():
             bought_stocks = load_bought_stocks_from_database(conn)
 
             # the below code was recommended by Artificial Intelligence
-
-            # Create and start the buying and selling threads
-            buy_thread = threading.Thread(target=buy_stocks)
-            sell_thread = threading.Thread(target=sell_stocks)
-            buy_thread.start()
-            sell_thread.start()
-            buy_thread.join()
-            sell_thread.join()
+            if not bought_stocks:
+                bought_stocks = update_bought_stocks_from_api(conn)  # Include conn argument
+                # Create and start the buying and selling threads
+                buy_thread = threading.Thread(target=buy_stocks)
+                buy_thread.start()
+                sell_thread = threading.Thread(target=sell_stocks)
+                sell_thread.start()
+                buy_thread.join()
+                sell_thread.join()
 
             if DEBUG:
                 print("                                                                        ")
@@ -298,8 +286,7 @@ def main():
                 for symbol in stocks_to_buy:
                     current_price = get_current_price(symbol)
                     atr_low_price = get_atr_low_price(symbol)
-                    print(
-                        f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
+                    print(f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
                 print("----------------------------------------------------")
                 print("                                                                        ")
                 print("\nStocks to Sell:")
@@ -309,7 +296,7 @@ def main():
                     print(
                         f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
                     print("----------------------------------------------------")
-                time.sleep(1)  # wait 1 second
+            time.sleep(1)  # wait 1 second 
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
