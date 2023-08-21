@@ -193,8 +193,9 @@ def buy_stocks():
             cash_balance = round(float(api.get_account().cash), 2)
             cash_available = cash_balance - bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else cash_balance
             fractional_qty = (cash_available / current_price) * 0.025
+            qty_of_one_stock = 1
             if cash_available > current_price and current_price <= atr_low_price:
-                api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market', time_in_force='day')
+                api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
                 print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
                 bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
                 stocks_to_remove.append(symbol)
