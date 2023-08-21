@@ -7,6 +7,7 @@ from datetime import time as time2
 import alpaca_trade_api as tradeapi
 import pytz
 import talib
+import sqlite3
 import yfinance as yf
 
 # Load environment variables for Alpaca API
@@ -106,40 +107,66 @@ def get_average_true_range(symbol):
     return atr[-1]
 
 
-def save_bought_stocks_to_file(bought_stocks):
-    with open('stock-database.txt', 'w') as file:
-        for symbol, (price, purchase_date) in bought_stocks.items():
-            file.write(f"{symbol} {price} {purchase_date}\n")
+# the below database keeps track of bought and sold stocks, including dates
+# the below database was recommended by artificial intelligence
+def initialize_database():
+    conn = sqlite3.connect('stocks.db')
+    cursor = conn.cursor()
 
-
-def load_bought_stocks_from_file():
-    bought_stocks = {}
+    # Check for database corruption
     try:
-        with open('stock-database.txt', 'r') as file:
-            for line in file.readlines():
-                parts = line.strip().split()
-                symbol = parts[0]
-                price = float(parts[1])
-                purchase_date = datetime.strptime(parts[2], "%Y-%m-%d").date() if len(
-                    parts) > 2 else datetime.today().date()
-                bought_stocks[symbol] = (price, purchase_date)
-    except FileNotFoundError:
-        pass
+        cursor.execute("PRAGMA integrity_check;")
+        result = cursor.fetchone()
+        if result[0] != 'ok':
+            raise sqlite3.DatabaseError("Database is corrupted")
+    except sqlite3.DatabaseError:
+        # If corrupted, delete and recreate the database
+        os.remove('stocks.db')
+        conn = sqlite3.connect('stocks.db')
+        cursor = conn.cursor()
 
+    # Create tables if they don't exist
+    cursor.execute('''CREATE TABLE IF NOT EXISTS bought_stocks
+                      (symbol TEXT PRIMARY KEY,
+                       price REAL,
+                       purchase_date TEXT)''')
+
+    conn.commit()
+    return conn
+
+
+# the below code was recommended by Artificial Intelligence
+def save_bought_stocks_to_database(bought_stocks, conn):
+    cursor = conn.cursor()
+    for symbol, (price, purchase_date) in bought_stocks.items():
+        cursor.execute("INSERT OR REPLACE INTO bought_stocks (symbol, price, purchase_date) VALUES (?, ?, ?)",
+                       (symbol, price, purchase_date))
+    conn.commit()
+
+
+# the below code was recommended by Artificial Intelligence
+def load_bought_stocks_from_database(conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT symbol, price, purchase_date FROM bought_stocks")
+    bought_stocks = {row[0]: (row[1], datetime.strptime(row[2], "%Y-%m-%d").date()) for row in cursor.fetchall()}
     return bought_stocks
 
 
-def update_bought_stocks_from_api():
+# the below code was recommended by Artificial Intelligence
+def update_bought_stocks_from_api(conn):
     positions = api.list_positions()
     bought_stocks = {}
     for position in positions:
         symbol = position.symbol
         avg_entry_price = position.avg_entry_price
-        purchase_date = datetime.today().date()
+        # Get the purchase date from the database if it exists
+        cursor = conn.cursor()
+        cursor.execute("SELECT purchase_date FROM bought_stocks WHERE symbol=?", (symbol,))
+        row = cursor.fetchone()
+        purchase_date = datetime.strptime(row[0], "%Y-%m-%d").date() if row else datetime.today().date()
         bought_stocks[symbol] = (float(avg_entry_price), purchase_date)
 
-    save_bought_stocks_to_file(bought_stocks)
-
+    save_bought_stocks_to_database(bought_stocks, conn)
     return bought_stocks
 
 
@@ -200,14 +227,20 @@ def refresh_after_sell():
 
 
 def main():
+    # the below code was recommended by Artificial Intelligence
+    conn = initialize_database()
     global stocks_to_buy
     global bought_stocks
 
     stocks_to_buy = []
     stocks_to_buy = get_stocks_to_trade()
 
-    # Load bought_stocks from the Alpaca server API when starting a brand-new instance of the program
-    bought_stocks = update_bought_stocks_from_api()
+    # Load bought_stocks when starting a brand-new instance of the program
+    # the below code was recommended by Artificial Intelligence
+    # Use database functions instead of file-based functions
+    bought_stocks = load_bought_stocks_from_database(conn)
+    if not bought_stocks:
+        bought_stocks = update_bought_stocks_from_api(conn)
 
     while True:
         try:
@@ -230,20 +263,18 @@ def main():
 
             stocks_to_buy = get_stocks_to_trade()
 
-            # Load bought_stocks from the file or update from the API
-            bought_stocks = load_bought_stocks_from_file()
+            # the below code was recommended by Artificial Intelligence
+            # Load bought_stocks from the database
+            bought_stocks = load_bought_stocks_from_database(conn)
+
+            # the below code was recommended by Artificial Intelligence
             if not bought_stocks:
-                bought_stocks = update_bought_stocks_from_api()
-                # the below threads were recommended by Artificial Intelligence
-                # Create and start the buying thread
+                bought_stocks = update_bought_stocks_from_api(conn)  # Include conn argument
+                # Create and start the buying and selling threads
                 buy_thread = threading.Thread(target=buy_stocks)
                 buy_thread.start()
-
-                # Create and start the selling thread
                 sell_thread = threading.Thread(target=sell_stocks)
                 sell_thread.start()
-
-                # Optionally, wait for both threads to finish
                 buy_thread.join()
                 sell_thread.join()
 
