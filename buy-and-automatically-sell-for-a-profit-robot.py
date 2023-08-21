@@ -295,7 +295,7 @@ def main():
                     print(
                         f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
                     print("----------------------------------------------------")
-            time.sleep(0.75)  # uncomment this line if the program is going too fast.
+            time.sleep(1)  # wait 1 second 
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
