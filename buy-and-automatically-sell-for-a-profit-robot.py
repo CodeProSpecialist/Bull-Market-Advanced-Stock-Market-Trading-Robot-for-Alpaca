@@ -180,6 +180,7 @@ def buy_stocks():
         for symbol in stocks_to_buy:
             current_price = get_current_price(symbol)
             atr_low_price = get_atr_low_price(symbol)
+            cash_balance = round(float(api.get_account().cash), 2)
             cash_available = cash_balance - bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else cash_balance
             fractional_qty = (cash_available / current_price) * 0.025
             if cash_available > current_price and current_price <= atr_low_price:
