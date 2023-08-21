@@ -21,7 +21,7 @@ fi
 # Install TA-Lib dependencies
 echo "Installing TA-Lib dependencies..."
 
-sudo apt-get install libatlas-base-dev gfortran -y
+sudo apt-get install libatlas-base-dev sqlite3 gfortran -y
 
 # Download and install TA-Lib
 echo "Downloading TA-Lib..."
