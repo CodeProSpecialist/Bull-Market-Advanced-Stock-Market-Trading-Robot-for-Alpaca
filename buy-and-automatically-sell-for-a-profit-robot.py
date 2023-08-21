@@ -297,9 +297,9 @@ def main():
                     print("----------------------------------------------------")
                 time.sleep(1)  # wait 1 second 
 
-            except Exception as e:
-                logging.error(f"Error encountered: {e}")
-                time.sleep(2)  # To ensure that the loop continues even after an error
+        except Exception as e:
+            logging.error(f"Error encountered: {e}")
+            time.sleep(2)  # To ensure that the loop continues even after an error
 
 
 if __name__ == '__main__':
