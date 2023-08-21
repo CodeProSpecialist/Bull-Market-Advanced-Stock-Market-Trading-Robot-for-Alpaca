@@ -18,8 +18,8 @@ then
     sudo apt install -y python3-pip
 fi
 
-# Install TA-Lib dependencies
-echo "Installing TA-Lib dependencies..."
+# Install TA-Lib dependencies and sqlite3
+echo "Installing TA-Lib dependencies and sqlite3..."
 
 sudo apt-get install libatlas-base-dev sqlite3 gfortran -y
 
