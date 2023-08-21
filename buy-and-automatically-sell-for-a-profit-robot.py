@@ -18,7 +18,7 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-DEBUG = True
+DEBUG = False
 
 eastern = pytz.timezone('US/Eastern')
 
@@ -75,7 +75,7 @@ def stop_if_stock_market_is_closed():
         print("This software is not affiliated or endorsed by Alpaca Securities, LLC ")
         print("This software does, however try to be a useful, profitable, and valuable ")
         print("stock market trading application. ")
-        time.sleep(60)  # Sleep for 1 minute and check again
+        time.sleep(60)   # Sleep for 1 minute and check again
 
 
 def get_stocks_to_trade():
