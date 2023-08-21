@@ -26,6 +26,9 @@ stock_data = {}
 
 global stocks_to_buy
 
+# the below variable was recommended by Artificial Intelligence
+buy_sell_lock = threading.Lock()
+
 logging.basicConfig(filename='log-file-of-buy-and-sell-signals.txt', level=logging.INFO)
 
 
@@ -141,42 +144,59 @@ def update_bought_stocks_from_api():
 
 
 def buy_stocks():
-    global stocks_to_buy
-    global bought_stocks
-    global cash_balance
+    with buy_sell_lock:
+        global stocks_to_buy
+        global bought_stocks
+        global cash_balance
 
-    stocks_to_remove = []
-    for symbol in stocks_to_buy:
-        current_price = get_current_price(symbol)
-        atr_low_price = get_atr_low_price(symbol)
-        cash_available = cash_balance - bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else cash_balance
-        fractional_qty = (cash_available / current_price) * 0.025
-        if cash_available > current_price and current_price <= atr_low_price:
-            api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market', time_in_force='day')
-            print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
-            bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
-            stocks_to_remove.append(symbol)
+        stocks_to_remove = []
+        for symbol in stocks_to_buy:
+            current_price = get_current_price(symbol)
+            atr_low_price = get_atr_low_price(symbol)
+            cash_available = cash_balance - bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else cash_balance
+            fractional_qty = (cash_available / current_price) * 0.025
+            if cash_available > current_price and current_price <= atr_low_price:
+                api.submit_order(symbol=symbol, qty=fractional_qty, side='buy', type='market', time_in_force='day')
+                print(f"Bought {fractional_qty} shares of {symbol} at {current_price}")
+                bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
+                stocks_to_remove.append(symbol)
 
-    for symbol in stocks_to_remove:
-        stocks_to_buy.remove(symbol)
-        remove_symbol_from_trade_list(symbol)
-          # the buy thread will stop and allow the sell_stocks thread to keep running
-    time.sleep(240) # sleep 240 seconds after each buy order
-    update_bought_stocks_from_api()
+        for symbol in stocks_to_remove:
+            stocks_to_buy.remove(symbol)
+            remove_symbol_from_trade_list(symbol)
+              # the buy thread will stop and allow the sell_stocks thread to keep running
+        time.sleep(240)  # sleep 240 seconds after each buy order
+        refresh_after_buy()   # this was recommended by Artificial Intelligence
+
+
+# the below variable and list refresh function was recommended by Artificial Intelligence
+def refresh_after_buy():
+    global stocks_to_buy, bought_stocks
+    stocks_to_buy = get_stocks_to_trade()
+    bought_stocks = update_bought_stocks_from_api()
 
 
 def sell_stocks():
-    global bought_stocks
+    with buy_sell_lock:
+        global bought_stocks
 
-    for symbol, (bought_price, bought_date) in bought_stocks.items():
-        current_price = get_current_price(symbol)
-        atr_high_price = get_atr_high_price(symbol)
-        today_date = datetime.today().date()
-        if current_price >= atr_high_price and today_date > bought_date:
-            qty = api.get_position(symbol).qty
-            api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
-            print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
-            del bought_stocks[symbol]
+        for symbol, (bought_price, bought_date) in bought_stocks.items():
+            current_price = get_current_price(symbol)
+            atr_high_price = get_atr_high_price(symbol)
+            today_date = datetime.today().date()
+            if current_price >= atr_high_price and today_date > bought_date:
+                qty = api.get_position(symbol).qty
+                api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
+                print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
+                del bought_stocks[symbol]
+                time.sleep(120)  # sleep 120 seconds after each sell order
+                refresh_after_sell()   # this was recommended by Artificial Intelligence
+
+
+# the below variable and list refresh function was recommended by Artificial Intelligence
+def refresh_after_sell():
+    global bought_stocks
+    bought_stocks = update_bought_stocks_from_api()
 
 
 def main():
@@ -214,7 +234,7 @@ def main():
             bought_stocks = load_bought_stocks_from_file()
             if not bought_stocks:
                 bought_stocks = update_bought_stocks_from_api()
-
+                # the below threads were recommended by Artificial Intelligence
                 # Create and start the buying thread
                 buy_thread = threading.Thread(target=buy_stocks)
                 buy_thread.start()
