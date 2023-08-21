@@ -269,15 +269,14 @@ def main():
             bought_stocks = load_bought_stocks_from_database(conn)
 
             # the below code was recommended by Artificial Intelligence
-            if not bought_stocks:
-                bought_stocks = update_bought_stocks_from_api(conn)  # Include conn argument
-                # Create and start the buying and selling threads
-                buy_thread = threading.Thread(target=buy_stocks)
-                buy_thread.start()
-                sell_thread = threading.Thread(target=sell_stocks)
-                sell_thread.start()
-                buy_thread.join()
-                sell_thread.join()
+           
+            # Create and start the buying and selling threads
+            buy_thread = threading.Thread(target=buy_stocks)
+            buy_thread.start()
+            sell_thread = threading.Thread(target=sell_stocks)
+            sell_thread.start()
+            buy_thread.join()
+            sell_thread.join()
 
             if DEBUG:
                 print("                                                                        ")
@@ -296,11 +295,11 @@ def main():
                     print(
                         f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
                     print("----------------------------------------------------")
-            time.sleep(1)  # wait 1 second 
+                time.sleep(1)  # wait 1 second 
 
-        except Exception as e:
-            logging.error(f"Error encountered: {e}")
-            time.sleep(2)  # To ensure that the loop continues even after an error
+            except Exception as e:
+                logging.error(f"Error encountered: {e}")
+                time.sleep(2)  # To ensure that the loop continues even after an error
 
 
 if __name__ == '__main__':
