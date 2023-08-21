@@ -112,7 +112,13 @@ There is a known situation where this program will not work until you buy at lea
 or a fractional share of stock because when this program starts running, it needs at least 1 stock 
 to save in the database to create a new database. That is just how databases work and there is really 
 no other way around creating a new database with at least 1 stock symbol to add to the database. 
-
+ A database needs to be created when this Stock Market Robot begins working 
+to keep track of all of the stock position buying and selling. 
+Thanks for understanding. Stocks can be purchased at the Alpaca website. 
+This software is not affiliated or endorsed by Alpaca Securities, LLC 
+This software does, however try to be a useful, profitable, 
+and valuable stock market trading application.
+   
 Make sure to not modify or edit the file named stocks.db because 
 it is storing information to remember when the program is working. It is a professional database file. 
 
