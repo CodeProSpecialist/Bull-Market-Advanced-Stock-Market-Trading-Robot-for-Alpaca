@@ -240,7 +240,18 @@ def main():
     # the below code was recommended by Artificial Intelligence
     # Use database functions instead of file-based functions
     bought_stocks = load_bought_stocks_from_database(conn)
+
     if not bought_stocks:
+        print("Database is empty. Please purchase at least 1 share of stock before running this Stock Market Robot.")
+        print("The Stock Market Robot requires that you own at least 1 share or a fractional share of stock ")
+        print("before you run the Stock Market Robot to allow the database to not be empty ")
+        print("because the database can not be created when it is completely empty. ")
+        print("A database needs to be created when this Stock Market Robot begins working ")
+        print("to keep track of all of the stock position buying and selling. ")
+        print("Thanks for understanding. Stocks can be purchased at the Alpaca website. ")
+        print("This software is not affiliated or endorsed by Alpaca Securities, LLC ")
+        print("This software does, however try to be a useful, profitable, and valuable ")
+        print("stock market trading application. ")
         bought_stocks = update_bought_stocks_from_api(conn)
 
     while True:
