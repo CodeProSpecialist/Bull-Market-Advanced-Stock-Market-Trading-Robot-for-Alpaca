@@ -189,6 +189,10 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
             if cash_available > current_price and current_price <= atr_low_price:
                 api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
+                print(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
+                logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
+                print(" Waiting 60 seconds after buying stock to update the database. ")
+                #time.sleep(60)  # wait 60 seconds before updating the sqlite3 database
                 bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
                 stocks_to_remove.append(symbol)
 
@@ -196,18 +200,14 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             stocks_to_buy.remove(symbol)
             remove_symbol_from_trade_list(symbol)
 
-        print(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
-        logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
-        print(" Waiting 4 minutes after buying stock to allow the remote server to update the order in the account. ")
-        time.sleep(240)  # sleep 240 seconds after each buy order
         refresh_after_buy()
-
+        time.sleep(2)
 
 # the below variable and list refresh function was recommended by Artificial Intelligence
-def refresh_after_buy():
+def refresh_after_buy(conn):
     global stocks_to_buy, bought_stocks
     stocks_to_buy = get_stocks_to_trade()
-    bought_stocks = update_bought_stocks_from_api()
+    bought_stocks = update_bought_stocks_from_api(conn)   # need (conn)  here
 
 
 # the below function was recommended by Artificial Intelligence
