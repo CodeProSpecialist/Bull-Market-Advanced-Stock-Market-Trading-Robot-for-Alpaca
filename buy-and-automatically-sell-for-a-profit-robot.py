@@ -145,7 +145,6 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         refresh_after_buy()   # this is under the f in for
 
 
-
 # the below variable and list refresh function was recommended by Artificial Intelligence
 def refresh_after_buy():
     global stocks_to_buy, bought_stocks
