@@ -288,11 +288,11 @@ def main():
 
             # the below code was recommended by Artificial Intelligence
             # Load bought_stocks from the database
-            bought_stocks = load_bought_stocks_from_database(conn)
+            #bought_stocks = load_bought_stocks_from_database(conn)   # comment this line to remove a bug that stops the main loop
 
             # the below code was recommended by Artificial Intelligence
-            if not bought_stocks:
-                bought_stocks = update_bought_stocks_from_api(conn)  # Include conn argument
+            #if not bought_stocks:   # comment this line to remove a bug that stops the main loop
+           #     bought_stocks = update_bought_stocks_from_api(conn)  # Include conn argument
 
             # Create and start the buying and selling threads
             buy_thread = threading.Thread(target=buy_stocks)   # keep the buy and sell thread lines to the far left
