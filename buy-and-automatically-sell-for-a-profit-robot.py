@@ -201,10 +201,9 @@ def buy_stocks():
             cash_available = cash_balance - bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else cash_balance
             fractional_qty = (cash_available / current_price) * 0.025
             qty_of_one_stock = 1
-            if cash_available > current_price:
-            #if cash_available > current_price and current_price <= atr_low_price:
+            # if cash_available > current_price:   # debug code is on this line to make sure stock is buying correctly
+            if cash_available > current_price and current_price <= atr_low_price:
                 api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
-                #print(f"Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
                 bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
                 stocks_to_remove.append(symbol)
 
@@ -212,7 +211,7 @@ def buy_stocks():
             stocks_to_buy.remove(symbol)
             remove_symbol_from_trade_list(symbol)
 
-        print(f"Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
+        print(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
         logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
         print(" Waiting 4 minutes after buying stock to allow the remote server to update the order in the account. ")
               # the buy thread will stop and allow the sell_stocks thread to keep running
@@ -243,7 +242,7 @@ def sell_stocks():
                 qty = api.get_position(symbol).qty
                 api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
                 del bought_stocks[symbol]
-                print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
+                print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
                 logging.info(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
                 print(" Waiting 2 minutes after selling stock to allow the remote server to update the order in the account. ")
                 time.sleep(120)  # sleep 120 seconds after each sell order
