@@ -248,8 +248,8 @@ def main():
     buy_sell_lock = threading.Lock()
 
     # Create and start the buying and selling threads
-    buy_thread = threading.Thread(target=buy_stocks, args=(bought_stocks, stocks_to_buy, buy_sell_lock))
-    sell_thread = threading.Thread(target=sell_stocks, args=(bought_stocks, buy_sell_lock))
+    buy_thread = threading.Thread(target=buy_stocks, args=(bought_stocks, stocks_to_buy, buy_sell_lock, conn))
+    sell_thread = threading.Thread(target=sell_stocks, args=(bought_stocks, buy_sell_lock, conn))
     buy_thread.start()
     sell_thread.start()
 
