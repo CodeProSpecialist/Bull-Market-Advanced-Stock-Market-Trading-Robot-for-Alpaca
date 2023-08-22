@@ -18,7 +18,7 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-DEBUG = True
+DEBUG = False
 
 eastern = pytz.timezone('US/Eastern')
 
@@ -269,7 +269,7 @@ def main():
         try:
             pass
 
-            #stop_if_stock_market_is_closed()
+            stop_if_stock_market_is_closed()
             now = datetime.now(pytz.timezone('US/Eastern'))
             current_time_str = now.strftime("Eastern Time, %m-%d-%Y,   %I:%M:%S %p")
             cash_balance = round(float(api.get_account().cash), 2)
