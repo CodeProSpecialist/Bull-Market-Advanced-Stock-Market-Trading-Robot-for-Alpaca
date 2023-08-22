@@ -293,13 +293,16 @@ def main():
             # the below code was recommended by Artificial Intelligence
             if not bought_stocks:
                 bought_stocks = update_bought_stocks_from_api(conn)  # Include conn argument
-                # Create and start the buying and selling threads
-                buy_thread = threading.Thread(target=buy_stocks)
-                buy_thread.start()
-                sell_thread = threading.Thread(target=sell_stocks)
-                sell_thread.start()
-                buy_thread.join()
-                sell_thread.join()
+
+            # Create and start the buying and selling threads
+            buy_thread = threading.Thread(target=buy_stocks)   # keep the buy and sell thread lines to the far left
+            # for the "b" in buy to be in the same line as the "i" in the above if not statement.
+            # or else this code will not be in the main loop to buy and sell stocks.
+            buy_thread.start()   # keep the buy and sell thread lines to the far left
+            sell_thread = threading.Thread(target=sell_stocks)   # keep the buy and sell thread lines to the far left
+            sell_thread.start()   # keep the buy and sell thread lines to the far left
+            buy_thread.join()   # keep the buy and sell thread lines to the far left
+            sell_thread.join()  # keep the buy and sell thread lines to the far left
 
             if DEBUG:
                 print("                                                                        ")
