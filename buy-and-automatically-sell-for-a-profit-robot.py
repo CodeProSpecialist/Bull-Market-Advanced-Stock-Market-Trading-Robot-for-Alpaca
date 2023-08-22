@@ -175,7 +175,7 @@ def update_bought_stocks_from_api(conn):
 
 
 # the below function was recommended by Artificial Intelligence
-def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
+def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock, conn):
     with buy_sell_lock:
         stocks_to_remove = []
 
@@ -200,7 +200,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             stocks_to_buy.remove(symbol)
             remove_symbol_from_trade_list(symbol)
 
-        refresh_after_buy()
+        refresh_after_buy(conn)
         time.sleep(2)
 
 # the below variable and list refresh function was recommended by Artificial Intelligence
@@ -227,7 +227,6 @@ def sell_stocks(bought_stocks, buy_sell_lock):
                     " Waiting 2 minutes after selling stock to allow the remote server to update the order in the account. ")
                 time.sleep(120)  # sleep 120 seconds after each sell order
                 refresh_after_sell()
-
 
 # the below variable and list refresh function was recommended by Artificial Intelligence
 def refresh_after_sell():
