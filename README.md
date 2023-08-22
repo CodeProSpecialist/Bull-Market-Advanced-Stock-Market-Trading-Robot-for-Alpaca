@@ -73,18 +73,16 @@ this python code.
 
 This python code is currently programmed to 
 spend less money during a stock market 
-recession by buying only stocks that can 
-be purchased in fractional shares. 
-If you want to buy stocks that can only 
-be purchased at full price, then in 
-the program section "def buy_stocks()", locate the buy order and change the buy order code qty= to look like qty=1 as shown below: 
+recession by buying only 1 share of a stock at a time. 
+If you want to buy different quantities of stocks, then you can edit the 
+python code. To buy 20 shares of stock, in 
+the program section "def buy_stocks()", locate the buy order and change the buy order code qty= to look like qty=20 as shown below: 
 
 if cash_available > current_price:
-    api.submit_order(symbol=symbol, qty=1, side='buy', type='market', time_in_force='day')
+    api.submit_order(symbol=symbol, qty=20, side='buy', type='market', time_in_force='day')
 
 
-This stock market robot works best if you purchase 25 to 30 different stocks in fractional shares 
-or at only 1 share per stock because the stocks are sold really soon when the price decreases. This Stock Trading Robot has a strategy to buy stocks today for selling tomorrow because this allows for much more stock trading activity to take place within the stock trading rules of day trading 3 maximum times in 5 business days. 
+This stock market robot works best if you purchase 25 to 30 different stocks at only 1 share per stock because the stocks are sold really soon when the price is at a profitable position to sell the stock. This Stock Trading Robot has a strategy to buy stocks today for selling tomorrow because this allows for much more stock trading activity to take place within the stock trading rules of day trading 3 maximum times in 5 business days. 
 
 Any stocks purchased today will not begin to sell until tomorrow or until a future day when the stock price increases during stock market 
 trading hours, Monday through Friday. 
