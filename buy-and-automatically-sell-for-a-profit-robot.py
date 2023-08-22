@@ -18,7 +18,7 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-DEBUG = False
+DEBUG = True
 
 eastern = pytz.timezone('US/Eastern')
 
@@ -194,7 +194,8 @@ def buy_stocks():
             cash_available = cash_balance - bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else cash_balance
             fractional_qty = (cash_available / current_price) * 0.025
             qty_of_one_stock = 1
-            if cash_available > current_price and current_price <= atr_low_price:
+            if cash_available > current_price:
+            #if cash_available > current_price and current_price <= atr_low_price:
                 api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
                 print(f"Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
                 bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
@@ -203,6 +204,8 @@ def buy_stocks():
         for symbol in stocks_to_remove:
             stocks_to_buy.remove(symbol)
             remove_symbol_from_trade_list(symbol)
+
+        print(" Waiting 4 minutes after buying stock to allow the remote server to update the order in the account. ")
               # the buy thread will stop and allow the sell_stocks thread to keep running
         time.sleep(240)  # sleep 240 seconds after each buy order
         refresh_after_buy()   # this was recommended by Artificial Intelligence
@@ -228,6 +231,7 @@ def sell_stocks():
                 api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
                 print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
                 del bought_stocks[symbol]
+                print(" Waiting 2 minutes after selling stock to allow the remote server to update the order in the account. ")
                 time.sleep(120)  # sleep 120 seconds after each sell order
                 refresh_after_sell()   # this was recommended by Artificial Intelligence
 
@@ -288,21 +292,33 @@ def main():
 
             # the below code was recommended by Artificial Intelligence
             # Load bought_stocks from the database
-            bought_stocks = load_bought_stocks_from_database(conn)   # comment this line to see if there is a bug that stops the main loop
+            bought_stocks = load_bought_stocks_from_database(conn)
+
+            # Create and start the buying and selling threads
+            buy_thread = threading.Thread(target=buy_stocks)
+            # keep these buy and sell thread lines both outside and inside the if not statement
+            # or else this code will not be in the main loop to buy and sell stocks.
+            buy_thread.start()  # keep these buy and sell thread lines outside the if not statement
+            sell_thread = threading.Thread(target=sell_stocks)  # keep the buy and sell thread lines outside the if not statement
+            sell_thread.start()   # keep these buy and sell thread lines both outside and inside the if not statement
+            buy_thread.join()    # keep these buy and sell thread lines both outside and inside the if not statement
+            sell_thread.join()   # keep these buy and sell thread lines both outside and inside the if not statement
 
             # the below code was recommended by Artificial Intelligence
             if not bought_stocks:   # comment this if statement to check if there is a bug that stops the main loop
                 bought_stocks = update_bought_stocks_from_api(conn)  # Include conn argument
 
+                # I will duplicate the threads below to allow the threads to run in different circumstances.
                 # Create and start the buying and selling threads
-                buy_thread = threading.Thread(target=buy_stocks)   # keep the buy and sell thread lines inside the if not statement
-                # for the "b" in buy to be under the "o" in the above if not statement.
+                buy_thread = threading.Thread(target=buy_stocks)  # keep the buy and sell thread lines both outside and inside the if not statement
+                # keep the buy and sell thread lines both outside and inside the if not statement
                 # or else this code will not be in the main loop to buy and sell stocks.
-                buy_thread.start()   # keep the buy and sell thread lines inside the if not statement
-                sell_thread = threading.Thread(target=sell_stocks)   # keep the buy and sell thread lines inside the if not statement
-                sell_thread.start()   # keep the buy and sell thread lines inside the if not statement
-                buy_thread.join()   # keep the buy and sell thread lines inside the if not statement
-                sell_thread.join()   # keep the buy and sell thread lines inside the if not statement
+                buy_thread.start()  # keep the buy and sell thread lines both outside and inside the if not statement
+                sell_thread = threading.Thread(target=sell_stocks)  # keep the buy and sell thread lines both outside and inside the if not statement
+                sell_thread.start()  # keep the buy and sell thread lines both outside and inside the if not statement
+                buy_thread.join()  # keep the buy and sell thread lines both outside and inside the if not statement
+                sell_thread.join()  # keep the buy and sell thread lines both outside and inside the if not statement
+
 
             if DEBUG:
                 print("                                                                        ")
