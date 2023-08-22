@@ -188,6 +188,7 @@ def buy_stocks():
 
         stocks_to_remove = []
         for symbol in stocks_to_buy:
+            today_date = datetime.today().date()
             current_price = get_current_price(symbol)
             atr_low_price = get_atr_low_price(symbol)
             cash_balance = round(float(api.get_account().cash), 2)
@@ -198,6 +199,7 @@ def buy_stocks():
             #if cash_available > current_price and current_price <= atr_low_price:
                 api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
                 print(f"Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
+                logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
                 bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
                 stocks_to_remove.append(symbol)
 
@@ -230,6 +232,7 @@ def sell_stocks():
                 qty = api.get_position(symbol).qty
                 api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
                 print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
+                logging.info(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
                 del bought_stocks[symbol]
                 print(" Waiting 2 minutes after selling stock to allow the remote server to update the order in the account. ")
                 time.sleep(120)  # sleep 120 seconds after each sell order
