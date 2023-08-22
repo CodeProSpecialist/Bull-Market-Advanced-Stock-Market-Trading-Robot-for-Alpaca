@@ -75,7 +75,7 @@ def stop_if_stock_market_is_closed():
         print("This software is not affiliated or endorsed by Alpaca Securities, LLC ")
         print("This software does, however try to be a useful, profitable, and valuable ")
         print("stock market trading application. ")
-        time.sleep(60)   # Sleep for 1 minute and check again
+        time.sleep(60)  # Sleep for 1 minute and check again
 
 
 def get_stocks_to_trade():
@@ -122,36 +122,30 @@ def get_average_true_range(symbol):
 def initialize_database():
     conn = sqlite3.connect('stocks.db')
     cursor = conn.cursor()
-
-    # Check for database corruption
     try:
         cursor.execute("PRAGMA integrity_check;")
         result = cursor.fetchone()
         if result[0] != 'ok':
             raise sqlite3.DatabaseError("Database is corrupted")
     except sqlite3.DatabaseError:
-        # If corrupted, delete and recreate the database
         os.remove('stocks.db')
         conn = sqlite3.connect('stocks.db')
         cursor = conn.cursor()
-
-    # Create tables if they don't exist
     cursor.execute('''CREATE TABLE IF NOT EXISTS bought_stocks
                       (symbol TEXT PRIMARY KEY,
                        price REAL,
                        purchase_date TEXT)''')
-
     conn.commit()
     return conn
 
 
 # the below code was recommended by Artificial Intelligence
 def save_bought_stocks_to_database(bought_stocks, conn):
-    cursor = conn.cursor()
-    for symbol, (price, purchase_date) in bought_stocks.items():
-        cursor.execute("INSERT OR REPLACE INTO bought_stocks (symbol, price, purchase_date) VALUES (?, ?, ?)",
-                       (symbol, price, purchase_date))
-    conn.commit()
+    with conn: # Using context management for transactions
+        cursor = conn.cursor()
+        for symbol, (price, purchase_date) in bought_stocks.items():
+            cursor.execute("INSERT OR REPLACE INTO bought_stocks (symbol, price, purchase_date) VALUES (?, ?, ?)",
+                           (symbol, price, purchase_date))
 
 
 # the below code was recommended by Artificial Intelligence
@@ -180,10 +174,8 @@ def update_bought_stocks_from_api(conn):
     return bought_stocks
 
 
-def buy_stocks():
+def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     with buy_sell_lock:
-        global stocks_to_buy
-        global bought_stocks
         global cash_balance
         global fractional_qty
         global qty_of_one_stock
@@ -214,9 +206,9 @@ def buy_stocks():
         print(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
         logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
         print(" Waiting 4 minutes after buying stock to allow the remote server to update the order in the account. ")
-              # the buy thread will stop and allow the sell_stocks thread to keep running
+        # the buy thread will stop and allow the sell_stocks thread to keep running
         time.sleep(240)  # sleep 240 seconds after each buy order
-        refresh_after_buy()   # this was recommended by Artificial Intelligence
+        refresh_after_buy()  # this was recommended by Artificial Intelligence
 
 
 # the below variable and list refresh function was recommended by Artificial Intelligence
@@ -226,9 +218,8 @@ def refresh_after_buy():
     bought_stocks = update_bought_stocks_from_api()
 
 
-def sell_stocks():
+def sell_stocks(bought_stocks, buy_sell_lock):
     with buy_sell_lock:
-        global bought_stocks
         global qty
         global today_date
         global symbol
@@ -244,9 +235,10 @@ def sell_stocks():
                 del bought_stocks[symbol]
                 print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
                 logging.info(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
-                print(" Waiting 2 minutes after selling stock to allow the remote server to update the order in the account. ")
+                print(
+                    " Waiting 2 minutes after selling stock to allow the remote server to update the order in the account. ")
                 time.sleep(120)  # sleep 120 seconds after each sell order
-                refresh_after_sell()   # this was recommended by Artificial Intelligence
+                refresh_after_sell()  # this was recommended by Artificial Intelligence
 
 
 # the below variable and list refresh function was recommended by Artificial Intelligence
@@ -256,31 +248,42 @@ def refresh_after_sell():
 
 
 def main():
+    #global stocks_to_buy
+    global bought_stocks
+    #stocks_to_buy = []
+
     # the below code was recommended by Artificial Intelligence
     conn = initialize_database()
-    global stocks_to_buy
-    global bought_stocks
 
-    stocks_to_buy = []
-    stocks_to_buy = get_stocks_to_trade()
+    # I suggested the below line on my own to update the database with the api account list of owned stocks
+    bought_stocks = update_bought_stocks_from_api(conn)   # comment out this line if there are errors
 
-    # Load bought_stocks when starting a brand-new instance of the program
     # the below code was recommended by Artificial Intelligence
-    # Use database functions instead of file-based functions
+    stocks_to_buy = get_stocks_to_trade()
     bought_stocks = load_bought_stocks_from_database(conn)
+    buy_sell_lock = threading.Lock()
 
-    if not bought_stocks:
-        print("Database is empty. Please purchase at least 1 share of stock before running this Stock Market Robot.")
-        print("The Stock Market Robot requires that you own at least 1 share or a fractional share of stock ")
-        print("before you run the Stock Market Robot to allow the database to not be empty ")
-        print("because the database can not be created when it is completely empty. ")
-        print("A database needs to be created when this Stock Market Robot begins working ")
-        print("to keep track of all of the stock position buying and selling. ")
-        print("Thanks for understanding. Stocks can be purchased at the Alpaca website. ")
-        print("This software is not affiliated or endorsed by Alpaca Securities, LLC ")
-        print("This software does, however try to be a useful, profitable, and valuable ")
-        print("stock market trading application. ")
-        bought_stocks = update_bought_stocks_from_api(conn)
+    # Create and start the buying and selling threads
+    buy_thread = threading.Thread(target=buy_stocks, args=(bought_stocks, stocks_to_buy, buy_sell_lock))
+    sell_thread = threading.Thread(target=sell_stocks, args=(bought_stocks, buy_sell_lock))
+    buy_thread.start()
+    sell_thread.start()
+
+    error_count = 0
+    MAX_ERROR_COUNT = 5
+
+    #if not bought_stocks:
+      #  print("Database is empty. Please purchase at least 1 share of stock before running this Stock Market Robot.")
+     #   print("The Stock Market Robot requires that you own at least 1 share or a fractional share of stock ")
+      #  print("before you run the Stock Market Robot to allow the database to not be empty ")
+     #   print("because the database can not be created when it is completely empty. ")
+      #  print("A database needs to be created when this Stock Market Robot begins working ")
+     #   print("to keep track of all of the stock position buying and selling. ")
+     #   print("Thanks for understanding. Stocks can be purchased at the Alpaca website. ")
+     #   print("This software is not affiliated or endorsed by Alpaca Securities, LLC ")
+      #  print("This software does, however try to be a useful, profitable, and valuable ")
+      #  print("stock market trading application. ")
+       # bought_stocks = update_bought_stocks_from_api(conn)
 
     while True:
         try:
@@ -291,47 +294,15 @@ def main():
             current_time_str = now.strftime("Eastern Time, %m-%d-%Y,   %I:%M:%S %p")
             cash_balance = round(float(api.get_account().cash), 2)
 
-            # Print the current details
-            print("                                                                        ")
             print(f"{current_time_str},    Cash Balance: ${cash_balance}")
-
-            # Get the day trade count
             day_trade_count = api.get_account().daytrade_count
-            print("                                                                        ")
             print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
-            print("                                                                        ")
 
             stocks_to_buy = get_stocks_to_trade()
-
-            # the below code was recommended by Artificial Intelligence
-            # Load bought_stocks from the database
             bought_stocks = load_bought_stocks_from_database(conn)
 
-            # Create and start the buying and selling threads
-            buy_thread = threading.Thread(target=buy_stocks)
-            # keep these buy and sell thread lines both outside and inside the if not statement
-            # or else this code will not be in the main loop to buy and sell stocks.
-            buy_thread.start()  # keep these buy and sell thread lines outside the if not statement
-            sell_thread = threading.Thread(target=sell_stocks)  # keep the buy and sell thread lines outside the if not statement
-            sell_thread.start()   # keep these buy and sell thread lines both outside and inside the if not statement
-            buy_thread.join()    # keep these buy and sell thread lines both outside and inside the if not statement
-            sell_thread.join()   # keep these buy and sell thread lines both outside and inside the if not statement
-
-            # the below code was recommended by Artificial Intelligence
-            if not bought_stocks:   # comment this if statement to check if there is a bug that stops the main loop
-                bought_stocks = update_bought_stocks_from_api(conn)  # Include conn argument
-
-                # I will duplicate the threads below to allow the threads to run in different circumstances.
-                # Create and start the buying and selling threads
-                buy_thread = threading.Thread(target=buy_stocks)  # keep the buy and sell thread lines both outside and inside the if not statement
-                # keep the buy and sell thread lines both outside and inside the if not statement
-                # or else this code will not be in the main loop to buy and sell stocks.
-                buy_thread.start()  # keep the buy and sell thread lines both outside and inside the if not statement
-                sell_thread = threading.Thread(target=sell_stocks)  # keep the buy and sell thread lines both outside and inside the if not statement
-                sell_thread.start()  # keep the buy and sell thread lines both outside and inside the if not statement
-                buy_thread.join()  # keep the buy and sell thread lines both outside and inside the if not statement
-                sell_thread.join()  # keep the buy and sell thread lines both outside and inside the if not statement
-
+            if not bought_stocks:
+                bought_stocks = update_bought_stocks_from_api(conn)
 
             if DEBUG:
                 print("                                                                        ")
@@ -340,7 +311,8 @@ def main():
                 for symbol in stocks_to_buy:
                     current_price = get_current_price(symbol)
                     atr_low_price = get_atr_low_price(symbol)
-                    print(f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
+                    print(
+                        f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
                 print("----------------------------------------------------")
                 print("                                                                        ")
                 print("\nStocks to Sell:")
@@ -352,14 +324,25 @@ def main():
                     print("----------------------------------------------------")
             time.sleep(1)  # wait 1 second
 
+
         except Exception as e:
             logging.error(f"Error encountered: {e}")
-            time.sleep(2)  # To ensure that the loop continues even after an error
+            error_count += 1
+            if error_count > MAX_ERROR_COUNT:
+                break
 
+            time.sleep(2)
+
+        buy_thread.join()
+        sell_thread.join()
+        conn.close()  # Close the database connection
 
 if __name__ == '__main__':
     try:
         main()
+
     except Exception as e:
+
         logging.error(f"Error encountered: {e}")
-        time.sleep(2)  # To ensure that the loop continues even after an error
+
+        time.sleep(2)
