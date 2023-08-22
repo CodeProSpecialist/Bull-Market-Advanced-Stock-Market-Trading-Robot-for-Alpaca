@@ -175,7 +175,8 @@ def update_bought_stocks_from_api(conn):
 
 
 # the below function was recommended by Artificial Intelligence
-def buy_stocks(conn, bought_stocks, stocks_to_buy, buy_sell_lock):
+def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock, conn):
+    conn = sqlite3.connect('stocks.db')
     with buy_sell_lock:
         stocks_to_remove = []
 
@@ -201,6 +202,7 @@ def buy_stocks(conn, bought_stocks, stocks_to_buy, buy_sell_lock):
             remove_symbol_from_trade_list(symbol)
 
         refresh_after_buy(conn)
+        conn.close()
 
 
 # the below variable and list refresh function was recommended by Artificial Intelligence
@@ -211,7 +213,8 @@ def refresh_after_buy(conn):
 
 
 # the below function was recommended by Artificial Intelligence
-def sell_stocks(conn, bought_stocks, buy_sell_lock):
+def sell_stocks(bought_stocks, buy_sell_lock, conn):
+    conn = sqlite3.connect('stocks.db')
     with buy_sell_lock:
         stocks_to_remove = []
         for symbol, (bought_price, bought_date) in bought_stocks.items():
@@ -232,6 +235,7 @@ def sell_stocks(conn, bought_stocks, buy_sell_lock):
             del bought_stocks[symbol]
 
         refresh_after_sell()
+        conn.close()
 
 
 # the below variable and list refresh function was recommended by Artificial Intelligence
@@ -248,6 +252,7 @@ def main():
     buy_sell_lock = threading.Lock()
 
     # Create and start the buying and selling threads
+    conn = sqlite3.connect('stocks.db')  # Create a database connection in the main thread
     buy_thread = threading.Thread(target=buy_stocks, args=(bought_stocks, stocks_to_buy, buy_sell_lock, conn))
     sell_thread = threading.Thread(target=sell_stocks, args=(bought_stocks, buy_sell_lock, conn))
     buy_thread.start()
