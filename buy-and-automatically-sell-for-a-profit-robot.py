@@ -18,7 +18,7 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-DEBUG = False
+DEBUG = True
 
 eastern = pytz.timezone('US/Eastern')
 
@@ -269,7 +269,7 @@ def main():
         try:
             pass
 
-            stop_if_stock_market_is_closed()
+            #stop_if_stock_market_is_closed()
             now = datetime.now(pytz.timezone('US/Eastern'))
             current_time_str = now.strftime("Eastern Time, %m-%d-%Y,   %I:%M:%S %p")
             cash_balance = round(float(api.get_account().cash), 2)
@@ -288,21 +288,21 @@ def main():
 
             # the below code was recommended by Artificial Intelligence
             # Load bought_stocks from the database
-            #bought_stocks = load_bought_stocks_from_database(conn)   # comment this line to remove a bug that stops the main loop
+            bought_stocks = load_bought_stocks_from_database(conn)   # comment this line to see if there is a bug that stops the main loop
 
             # the below code was recommended by Artificial Intelligence
-            #if not bought_stocks:   # comment this line to remove a bug that stops the main loop
-           #     bought_stocks = update_bought_stocks_from_api(conn)  # Include conn argument
+            if not bought_stocks:   # comment this if statement to check if there is a bug that stops the main loop
+                bought_stocks = update_bought_stocks_from_api(conn)  # Include conn argument
 
-            # Create and start the buying and selling threads
-            buy_thread = threading.Thread(target=buy_stocks)   # keep the buy and sell thread lines to the far left
-            # for the "b" in buy to be in the same line as the "i" in the above if not statement.
-            # or else this code will not be in the main loop to buy and sell stocks.
-            buy_thread.start()   # keep the buy and sell thread lines to the far left
-            sell_thread = threading.Thread(target=sell_stocks)   # keep the buy and sell thread lines to the far left
-            sell_thread.start()   # keep the buy and sell thread lines to the far left
-            buy_thread.join()   # keep the buy and sell thread lines to the far left
-            sell_thread.join()  # keep the buy and sell thread lines to the far left
+                # Create and start the buying and selling threads
+                buy_thread = threading.Thread(target=buy_stocks)   # keep the buy and sell thread lines inside the if not statement
+                # for the "b" in buy to be under the "o" in the above if not statement.
+                # or else this code will not be in the main loop to buy and sell stocks.
+                buy_thread.start()   # keep the buy and sell thread lines inside the if not statement
+                sell_thread = threading.Thread(target=sell_stocks)   # keep the buy and sell thread lines inside the if not statement
+                sell_thread.start()   # keep the buy and sell thread lines inside the if not statement
+                buy_thread.join()   # keep the buy and sell thread lines inside the if not statement
+                sell_thread.join()   # keep the buy and sell thread lines inside the if not statement
 
             if DEBUG:
                 print("                                                                        ")
