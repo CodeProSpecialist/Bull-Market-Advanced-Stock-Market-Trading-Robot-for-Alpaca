@@ -134,8 +134,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
             stocks_to_remove.append((symbol, current_price, today_date))  # Append tuple
 
-    print(" Waiting 60 seconds after buying stock to update the database. ")
-    time.sleep(60)  # wait 60 seconds
+    time.sleep(2)  # sleep a number of seconds after each buy loop
 
     with buy_sell_lock:
         for symbol, price, date in stocks_to_remove:  # Unpack tuple
@@ -179,8 +178,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
             logging.info(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
             stocks_to_remove.append(symbol)  # Append symbols to remove
 
-    print(" Waiting 2 minutes after selling stock to allow the remote server to update the order in the account. ")
-    time.sleep(120)  # sleep 120 seconds after each sell order
+    time.sleep(2)  # sleep a number of seconds after each sell loop
 
     with buy_sell_lock:
         for symbol in stocks_to_remove:
