@@ -175,7 +175,7 @@ def update_bought_stocks_from_api(conn):
 
 
 # the below function was recommended by Artificial Intelligence
-def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock, conn):
+def buy_stocks(conn, bought_stocks, stocks_to_buy, buy_sell_lock):
     with buy_sell_lock:
         stocks_to_remove = []
 
@@ -192,7 +192,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock, conn):
                 print(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
                 logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
                 print(" Waiting 60 seconds after buying stock to update the database. ")
-                #time.sleep(60)  # wait 60 seconds before updating the sqlite3 database
+                time.sleep(60)  # wait 60 seconds before updating the sqlite3 database
                 bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
                 stocks_to_remove.append(symbol)
 
@@ -201,7 +201,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock, conn):
             remove_symbol_from_trade_list(symbol)
 
         refresh_after_buy(conn)
-        time.sleep(2)
+
 
 # the below variable and list refresh function was recommended by Artificial Intelligence
 def refresh_after_buy(conn):
@@ -211,8 +211,9 @@ def refresh_after_buy(conn):
 
 
 # the below function was recommended by Artificial Intelligence
-def sell_stocks(bought_stocks, buy_sell_lock):
+def sell_stocks(conn, bought_stocks, buy_sell_lock):
     with buy_sell_lock:
+        stocks_to_remove = []
         for symbol, (bought_price, bought_date) in bought_stocks.items():
             current_price = get_current_price(symbol)
             atr_high_price = get_atr_high_price(symbol)
@@ -223,10 +224,15 @@ def sell_stocks(bought_stocks, buy_sell_lock):
                 del bought_stocks[symbol]
                 print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
                 logging.info(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
-                print(
-                    " Waiting 2 minutes after selling stock to allow the remote server to update the order in the account. ")
+                print(" Waiting 2 minutes after selling stock to allow the remote server to update the order in the account. ")
                 time.sleep(120)  # sleep 120 seconds after each sell order
-                refresh_after_sell()
+                stocks_to_remove.append(symbol)
+
+        for symbol in stocks_to_remove:
+            del bought_stocks[symbol]
+
+        refresh_after_sell()
+
 
 # the below variable and list refresh function was recommended by Artificial Intelligence
 def refresh_after_sell():
