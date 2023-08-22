@@ -185,8 +185,14 @@ def buy_stocks():
         global stocks_to_buy
         global bought_stocks
         global cash_balance
+        global fractional_qty
+        global qty_of_one_stock
+        global today_date
+        global symbol
+        global current_price
 
         stocks_to_remove = []
+
         for symbol in stocks_to_buy:
             today_date = datetime.today().date()
             current_price = get_current_price(symbol)
@@ -198,8 +204,7 @@ def buy_stocks():
             if cash_available > current_price:
             #if cash_available > current_price and current_price <= atr_low_price:
                 api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
-                print(f"Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
-                logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
+                #print(f"Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
                 bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
                 stocks_to_remove.append(symbol)
 
@@ -207,6 +212,8 @@ def buy_stocks():
             stocks_to_buy.remove(symbol)
             remove_symbol_from_trade_list(symbol)
 
+        print(f"Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
+        logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
         print(" Waiting 4 minutes after buying stock to allow the remote server to update the order in the account. ")
               # the buy thread will stop and allow the sell_stocks thread to keep running
         time.sleep(240)  # sleep 240 seconds after each buy order
@@ -223,6 +230,10 @@ def refresh_after_buy():
 def sell_stocks():
     with buy_sell_lock:
         global bought_stocks
+        global qty
+        global today_date
+        global symbol
+        global current_price
 
         for symbol, (bought_price, bought_date) in bought_stocks.items():
             current_price = get_current_price(symbol)
@@ -231,9 +242,9 @@ def sell_stocks():
             if current_price >= atr_high_price and today_date > bought_date:
                 qty = api.get_position(symbol).qty
                 api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
+                del bought_stocks[symbol]
                 print(f"Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
                 logging.info(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
-                del bought_stocks[symbol]
                 print(" Waiting 2 minutes after selling stock to allow the remote server to update the order in the account. ")
                 time.sleep(120)  # sleep 120 seconds after each sell order
                 refresh_after_sell()   # this was recommended by Artificial Intelligence
