@@ -234,14 +234,14 @@ def sell_stocks(bought_stocks, buy_sell_lock, conn):
         for symbol in stocks_to_remove:
             del bought_stocks[symbol]
 
-        refresh_after_sell()
+        refresh_after_sell(conn)
         conn.close()
 
 
 # the below variable and list refresh function was recommended by Artificial Intelligence
-def refresh_after_sell():
+def refresh_after_sell(conn):
     global bought_stocks
-    bought_stocks = update_bought_stocks_from_api()
+    bought_stocks = update_bought_stocks_from_api(conn)
 
 
 # the entire main and while True code loop was recommended by Artificial Intelligence
