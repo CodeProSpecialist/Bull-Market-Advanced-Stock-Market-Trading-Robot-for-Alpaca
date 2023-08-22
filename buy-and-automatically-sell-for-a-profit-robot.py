@@ -18,7 +18,7 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-DEBUG = True
+DEBUG = False
 
 eastern = pytz.timezone('US/Eastern')
 
