@@ -5,7 +5,6 @@ Welcome to the ultimate stock trading robot, designed exclusively for navigating
 The program code had some bugs removed. Some errors were fixed. 
 This python program has been updated in August 2023. *****
 
-
      This Python Stock Market Trading Bot has completely brand new, redesigned python 3 code. 
 Proceed with caution because this python code is currently in beta testing mode, although 
 this Python 3 code has successfully passed numerous software experimental tests to determine that this stock market trading robot is ready to accomplish more amazing work. 
