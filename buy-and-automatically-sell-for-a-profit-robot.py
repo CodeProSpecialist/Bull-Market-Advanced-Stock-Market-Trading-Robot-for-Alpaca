@@ -176,33 +176,36 @@ def update_bought_stocks_from_api(conn):
 
 # the below function was recommended by Artificial Intelligence
 def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock, conn):
-    conn = sqlite3.connect('stocks.db')
+    stocks_to_remove = []
+
+    for symbol in stocks_to_buy:
+        today_date = datetime.today().date()
+        current_price = get_current_price(symbol)
+        atr_low_price = get_atr_low_price(symbol)
+        cash_available = round(float(api.get_account().cash), 2)
+        cash_available -= bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else 0
+        qty_of_one_stock = 1
+
+        if cash_available > current_price and current_price <= atr_low_price:
+            api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
+            print(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
+            logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
+
+            stocks_to_remove.append(symbol)
+
+    print(" Waiting 60 seconds after buying stock to update the database. ")
+    time.sleep(60)  # wait 60 seconds before updating the sqlite3 database
+
     with buy_sell_lock:
-        stocks_to_remove = []
-
-        for symbol in stocks_to_buy:
-            today_date = datetime.today().date()
-            current_price = get_current_price(symbol)
-            atr_low_price = get_atr_low_price(symbol)
-            cash_available = round(float(api.get_account().cash), 2)
-            cash_available -= bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else 0
-            qty_of_one_stock = 1
-
-            if cash_available > current_price and current_price <= atr_low_price:
-                api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
-                print(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
-                logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
-                print(" Waiting 60 seconds after buying stock to update the database. ")
-                time.sleep(60)  # wait 60 seconds before updating the sqlite3 database
-                bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
-                stocks_to_remove.append(symbol)
-
-        for symbol in stocks_to_remove:
+        for symbol, price, date in stocks_to_remove:
+            bought_stocks[symbol] = (round(current_price, 4), datetime.today().date())
             stocks_to_buy.remove(symbol)
             remove_symbol_from_trade_list(symbol)
 
-        refresh_after_buy(conn)
-        conn.close()
+            refresh_after_buy(conn)
+    # the below code was recommended by Artificial Intelligence
+    # line up the c in conn with the w in with
+    conn.close()     # Close connection outside the function with, for, or if loop to not have errors
 
 
 # the below variable and list refresh function was recommended by Artificial Intelligence
@@ -214,28 +217,31 @@ def refresh_after_buy(conn):
 
 # the below function was recommended by Artificial Intelligence
 def sell_stocks(bought_stocks, buy_sell_lock, conn):
-    conn = sqlite3.connect('stocks.db')
-    with buy_sell_lock:
-        stocks_to_remove = []
-        for symbol, (bought_price, bought_date) in bought_stocks.items():
-            current_price = get_current_price(symbol)
-            atr_high_price = get_atr_high_price(symbol)
-            today_date = datetime.today().date()
-            if current_price >= atr_high_price and today_date > bought_date:
-                qty = api.get_position(symbol).qty
-                api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
-                del bought_stocks[symbol]
-                print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
-                logging.info(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
-                print(" Waiting 2 minutes after selling stock to allow the remote server to update the order in the account. ")
-                time.sleep(120)  # sleep 120 seconds after each sell order
-                stocks_to_remove.append(symbol)
 
+    stocks_to_remove = []
+    for symbol, (bought_price, bought_date) in bought_stocks.items():
+        current_price = get_current_price(symbol)
+        atr_high_price = get_atr_high_price(symbol)
+        today_date = datetime.today().date()
+        if current_price >= atr_high_price and today_date > bought_date:
+            qty = api.get_position(symbol).qty
+            api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
+            del bought_stocks[symbol]
+            print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
+            logging.info(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
+            stocks_to_remove.append(symbol)
+
+    print(" Waiting 2 minutes after selling stock to allow the remote server to update the order in the account. ")
+    time.sleep(120)  # sleep 120 seconds after each sell order
+    # the below code was recommended by Artificial Intelligence
+    with buy_sell_lock:
         for symbol in stocks_to_remove:
             del bought_stocks[symbol]
+        refresh_after_sell(conn)   # this lines up below the "f" in for
 
-        refresh_after_sell(conn)
-        conn.close()
+    # the below code was recommended by Artificial Intelligence
+    # line up the c in conn with the w in with
+    conn.close()  # Close connection outside the function with, for, or if loop to not have errors
 
 
 # the below variable and list refresh function was recommended by Artificial Intelligence
