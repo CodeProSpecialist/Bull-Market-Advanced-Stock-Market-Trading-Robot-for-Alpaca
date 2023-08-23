@@ -18,10 +18,10 @@ then
     sudo apt install -y python3-pip
 fi
 
-# Install TA-Lib dependencies and sqlalchemy 
-echo "Installing TA-Lib dependencies and sqlalchemy..."
+# Install TA-Lib dependencies  
+echo "Installing TA-Lib dependencies ..."
 
-sudo apt-get install libatlas-base-dev sqlalchemy gfortran -y
+sudo apt-get install libatlas-base-dev gfortran -y
 
 # Download and install TA-Lib
 echo "Downloading TA-Lib..."
@@ -47,7 +47,7 @@ echo "Installing Python packages..."
 # making sure python3.11 can install packages by renaming EXTERNALLY-MANAGED to EXTERNALLY-MANAGED.old
 sudo mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.old  
 
-pip3 install yfinance alpaca-trade-api pytz talib-binary
+pip3 install yfinance alpaca-trade-api sqlalchemy pytz talib-binary
 
 
 echo "All done! You can now run your Python script."
