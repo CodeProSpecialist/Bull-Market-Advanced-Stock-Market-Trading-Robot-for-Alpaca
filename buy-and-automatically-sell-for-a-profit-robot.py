@@ -60,17 +60,54 @@ session = Session()
 # Create tables if not exist
 Base.metadata.create_all(engine)
 
+
 def stop_if_stock_market_is_closed():
+    # Check if the current time is within the stock market hours
+    # Set the stock market open and close times
     market_open_time = time2(9, 30)
     market_close_time = time2(16, 0)
+
     while True:
+        # Get the current time in Eastern Time
         eastern = pytz.timezone('US/Eastern')
         now = datetime.now(eastern)
         current_time = now.time()
+
+        # Check if the current time is within market hours
         if now.weekday() <= 4 and market_open_time <= current_time <= market_close_time:
             break
-        print('Waiting until Stock Market Hours to begin the Stockbot Trading Program.')
+
+        print('''
+           _____   __                   __             ____            __            __ 
+          / ___/  / /_  ____   _____   / /__          / __ \  ____    / /_   ____   / /_
+          \__ \  / __/ / __ \ / ___/  / //_/         / /_/ / / __ \  / __ \ / __ \ / __/
+         ___/ / / /_  / /_/ // /__   / ,<           / _, _/ / /_/ / / /_/ // /_/ // /_  
+        /____/  \__/  \____/ \___/  /_/|_|         /_/ |_|  \____/ /_.___/ \____/ \__/  
+
+                       2023                       https://github.com/CodeProSpecialist
+
+                       Featuring an An Accelerated Database Engine with Python 3 SQLAlchemy 
+                       and Average True Range price Calculations 
+
+         ''')
+        print(f'Current date & time (Eastern Time): {now.strftime("%A, %B %d, %Y, %I:%M:%S %p")}\n')
+        print("Stockbot only works Monday through Friday: 9:30 am - 4:00 pm Eastern Time.")
+        print("Waiting until Stock Market Hours to begin the Stockbot Trading Program.")
+        print("                                                                       ")
+        print("This program will only work correctly if there is at least 1 stock symbol ")
+        print("in the file named electricity-or-utility-stocks-to-buy-list.txt ")
+        print("                                                                       ")
+        print("The Stock Market Robot requires that you own at least 1 share or a fractional share of stock ")
+        print("before you run the Stock Market Robot to allow the database to not be empty ")
+        print("because the database can not be created when it is completely empty. ")
+        print("A database needs to be created when this Stock Market Robot begins working ")
+        print("to keep track of all of the stock position buying and selling. ")
+        print("Thanks for understanding. Stocks can be purchased at the Alpaca website. ")
+        print("This software is not affiliated or endorsed by Alpaca Securities, LLC ")
+        print("This software does, however try to be a useful, profitable, and valuable ")
+        print("stock market trading application. ")
         time.sleep(60)  # Sleep for 1 minute and check again
+
 
 def get_stocks_to_trade():
     with open('electricity-or-utility-stocks-to-buy-list.txt', 'r') as file:
