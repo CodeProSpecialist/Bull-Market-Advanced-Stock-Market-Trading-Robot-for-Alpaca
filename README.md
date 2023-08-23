@@ -1,20 +1,23 @@
-Introduction:
-Welcome to the ultimate stock trading robot, designed exclusively for navigating the dynamic world of electricity stocks during recession market conditions! Harnessing the power of cutting-edge Python programming, financial analytics, and smart trading strategies, this trading robot takes your stock market journey to the next level. 
+💻 Introducing the Advanced Stock Market Trading Robot! 💻
 
-***** Please download the newest version of this python program. 
-The program code had some bugs removed. Some errors were fixed. 
-This python program has been updated in August 2023. *****
+Are you looking to trade electricity or utility stocks with unprecedented precision? Look no further! Our state-of-the-art trading robot harnesses the power of cutting-edge technologies to provide you with an unrivaled trading experience.
 
-     This Python Stock Market Trading Bot has completely brand new, redesigned python 3 code. 
-Proceed with caution because this python code is currently in beta testing mode, although 
-this Python 3 code has successfully passed numerous software experimental tests to determine that this stock market trading robot is ready to accomplish more amazing work. 
-An Advanced Artificial Intelligence Software 
-platform has analyzed this Python 3 code to 
-be designed, functional, and working 
-correctly. 
+Key Features:
 
-I needed to stop using the strict and somewhat buggy python Pandas Library to add more flexibility to the data frames. 
-So, I am using talib and not using Pandas at all. 
+🎯 Targeted Trading: Exclusively focuses on trading electricity and utility stocks, optimizing opportunities in this specific sector.
+⚡ Real-time Insights: Downloads stock prices and utilizes the Python talib to calculate real-time stock prices, providing accurate buy/sell signals.
+🔒 Thread-safe Execution: Uses threading and locks to ensure efficient and safe buy/sell operations.
+🗓 Market Timing: Considers market open/close times, making sure trades are executed only during market hours.
+💼 Portfolio Management: Maintains your trading history and positions with the use of SQLAlchemy, allowing for seamless tracking and management.
+📈 ATR-based Strategy: Leverages Average True Range (ATR) to dynamically calculate buy and sell thresholds, maximizing gains and minimizing losses.
+🌐 Alpaca API Integration: Built on top of the reliable Alpaca trading API for secure and robust execution.
+💻 Highly Configurable: Define your own stock list in a text file, giving you full control over your trading universe.
+📜 Detailed Logging: Keeps a log of all buy and sell signals, helping you to analyze your trading performance.
+Join the Future of Trading Today!
+Whether you're a novice investor or a seasoned trader, our Advanced Stock Market Trading Robot can take your trading strategy to the next level. With its innovative features and focus on electricity and utility stocks, it's the perfect tool to navigate any market condition, including recessions.
+
+
+Investing in the stock market involves risk, and past performance is not indicative of future results. Please consult with a financial professional before investing.
 
 ***** This program will only work if you have 
 at least 1 stock symbol in the electricity-or-utility-stocks-to-buy-list.txt 
