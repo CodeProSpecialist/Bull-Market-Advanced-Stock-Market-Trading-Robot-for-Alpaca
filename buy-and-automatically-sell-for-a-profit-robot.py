@@ -78,6 +78,8 @@ def stop_if_stock_market_is_closed():
             break
 
         print('''
+        
+        Advanced Stock Market Trading Robot 
            _____   __                   __             ____            __            __ 
           / ___/  / /_  ____   _____   / /__          / __ \  ____    / /_   ____   / /_
           \__ \  / __/ / __ \ / ___/  / //_/         / /_/ / / __ \  / __ \ / __ \ / __/
