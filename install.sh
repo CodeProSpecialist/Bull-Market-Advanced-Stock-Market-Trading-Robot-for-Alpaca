@@ -18,10 +18,10 @@ then
     sudo apt install -y python3-pip
 fi
 
-# Install TA-Lib dependencies and sqlite3
-echo "Installing TA-Lib dependencies and sqlite3..."
+# Install TA-Lib dependencies and sqlalchemy 
+echo "Installing TA-Lib dependencies and sqlalchemy..."
 
-sudo apt-get install libatlas-base-dev gfortran -y
+sudo apt-get install libatlas-base-dev sqlalchemy gfortran -y
 
 # Download and install TA-Lib
 echo "Downloading TA-Lib..."
