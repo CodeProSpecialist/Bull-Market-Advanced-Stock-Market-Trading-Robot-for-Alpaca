@@ -16,6 +16,12 @@ then
     echo "pip3 could not be found. Attempting to install..."
     sudo apt update
     sudo apt install -y python3-pip
+
+    # Install Python packages
+    echo "Installing Python packages..."
+    
+    sudo pip3 install yfinance alpaca-trade-api sqlalchemy pytz ta-lib
+    
 fi
 
 # Install TA-Lib dependencies  
@@ -34,20 +40,11 @@ echo "Installing TA-Lib..."
 make
 sudo make install
 
-# Install TA-Lib python wrapper
-sudo pip3 install ta-lib
-
 cd ..
 rm -r ta-lib
 rm ta-lib-0.4.0-src.tar.gz
 
-# Install Python packages
-echo "Installing Python packages..."
-
 # making sure python3.11 can install packages by renaming EXTERNALLY-MANAGED to EXTERNALLY-MANAGED.old
 sudo mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.old  
-
-sudo pip3 install yfinance alpaca-trade-api sqlalchemy pytz talib-binary
-
 
 echo "All done! You can now run your Python script."
