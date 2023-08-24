@@ -223,7 +223,11 @@ def sell_stocks(bought_stocks, buy_sell_lock):
         if bought_date >= today_date:  # Check if the stock was purchased at least one day before today
             continue  # Skip this stock if it was purchased today or in the future
         current_price = get_current_price(symbol)
+        
+        
         atr_high_price = get_atr_high_price(symbol)
+        
+        
         if current_price >= atr_high_price:
             qty = api.get_position(symbol).qty
             api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
