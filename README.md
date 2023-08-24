@@ -1,5 +1,4 @@
-******** Download the newest version of this Python Program today. Brand New Code today, 8-24-2023.    ********
-          Major software improvements, and increased stock trading activity. 
+******** Download the newest version of this Python Program today. Brand New Code today, 8-24-2023.    ******** 
 
 Introducing the Advanced Stock Market Trading Robot! 
 
