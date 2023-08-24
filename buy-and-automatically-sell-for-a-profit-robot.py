@@ -228,7 +228,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
         
         atr_high_price = get_atr_high_price(symbol)
     
-        # Check if the current price is more than 1% higher than the price at which it was bought
+        # Sell stocks if the current price is more than 1% higher than the purchase price. 
         if current_price >= bought_price * 1.01:
             qty = api.get_position(symbol).qty
             api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
