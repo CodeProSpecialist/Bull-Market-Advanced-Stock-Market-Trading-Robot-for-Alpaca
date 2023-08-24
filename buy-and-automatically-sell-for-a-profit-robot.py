@@ -160,11 +160,15 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     for symbol in stocks_to_buy:
         today_date = datetime.today().date()
         current_price = get_current_price(symbol)
+        opening_price = get_opening_price(symbol) 
+        
         atr_low_price = get_atr_low_price(symbol)
         cash_available = round(float(api.get_account().cash), 2)
         cash_available -= bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else 0
         qty_of_one_stock = 1
-        if cash_available > current_price and current_price <= atr_low_price:
+
+        # Checking if the current price is 1% less than the opening price 
+        if cash_available > current_price and current_price <= opening_price * 0.99: 
             api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
             print(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
             logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
