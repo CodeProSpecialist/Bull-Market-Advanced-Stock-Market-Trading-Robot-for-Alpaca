@@ -1,3 +1,5 @@
+******** Download the newest version of this Python Program today. Brand New Code today, 8-24-2023.    ********
+
 Introducing the Advanced Stock Market Trading Robot! 
 
 Are you looking to trade electricity or utility stocks with unprecedented precision? Look no further! Our state-of-the-art trading robot harnesses the power of cutting-edge technologies to provide you with an unrivaled trading experience.
