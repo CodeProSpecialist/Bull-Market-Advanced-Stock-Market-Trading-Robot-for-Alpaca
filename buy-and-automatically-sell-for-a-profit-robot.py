@@ -122,6 +122,13 @@ def remove_symbol_from_trade_list(symbol):
             if line.strip() != symbol:
                 file.write(line)
 
+
+def get_opening_price(symbol):
+    stock_data = yf.Ticker(symbol)
+    # Fetch the stock data for today and get the opening price
+    return round(stock_data.history(period="1d")["Open"].iloc[0], 4)
+
+
 def get_current_price(symbol):
     stock_data = yf.Ticker(symbol)
     return round(stock_data.history(period="5d")["Close"].iloc[-1], 4)
