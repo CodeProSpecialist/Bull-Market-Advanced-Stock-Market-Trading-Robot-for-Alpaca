@@ -8,7 +8,8 @@ Are you looking to trade electricity or utility stocks with unprecedented precis
 Key Features:
 
  Targeted Trading: Exclusively focuses on trading electricity and utility stocks, optimizing opportunities in this specific sector.
-Real-time Insights: Downloads stock prices and utilizes the Python talib to calculate real-time stock prices, providing accurate buy/sell signals.
+Real-time Insights: Downloads stock prices and carefully buys when the prices are low. 
+The stocks sell for a profit when the price increases. 
  Thread-safe Execution: Uses threading and locks to ensure efficient and safe buy/sell operations.
 Market Timing: Considers market open/close times, making sure trades are executed only during market hours.
 Portfolio Management: Maintains your trading history and positions with the use of SQLAlchemy, allowing for seamless tracking and management.ATR-based Strategy: Leverages Average True Range (ATR) to dynamically calculate buy and sell thresholds, maximizing gains and minimizing losses.
