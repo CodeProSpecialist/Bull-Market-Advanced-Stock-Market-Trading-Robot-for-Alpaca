@@ -223,12 +223,13 @@ def sell_stocks(bought_stocks, buy_sell_lock):
         if bought_date >= today_date:  # Check if the stock was purchased at least one day before today
             continue  # Skip this stock if it was purchased today or in the future
         current_price = get_current_price(symbol)
-        
+        position = api.get_position(symbol)  # Get the position details from Alpaca API
+        bought_price = float(position.avg_entry_price)   # The price you purchased the stock for. 
         
         atr_high_price = get_atr_high_price(symbol)
-        
-        
-        if current_price >= atr_high_price:
+    
+        # Check if the current price is more than 1% higher than the price at which it was bought
+        if current_price >= bought_price * 1.01:
             qty = api.get_position(symbol).qty
             api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
             print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
