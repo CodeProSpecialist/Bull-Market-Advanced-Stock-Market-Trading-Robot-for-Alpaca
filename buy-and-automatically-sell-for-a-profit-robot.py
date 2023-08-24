@@ -21,6 +21,7 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
 DEBUG = False
+
 eastern = pytz.timezone('US/Eastern')
 
 # Dictionary to maintain previous prices and price increase and price decrease counts
@@ -114,6 +115,7 @@ def get_stocks_to_trade():
     with open('electricity-or-utility-stocks-to-buy-list.txt', 'r') as file:
         return [line.strip() for line in file.readlines()]
 
+
 def remove_symbol_from_trade_list(symbol):
     with open('electricity-or-utility-stocks-to-buy-list.txt', 'r') as file:
         lines = file.readlines()
@@ -133,21 +135,25 @@ def get_current_price(symbol):
     stock_data = yf.Ticker(symbol)
     return round(stock_data.history(period="5d")["Close"].iloc[-1], 4)
 
+
 def get_atr_high_price(symbol):
     atr_value = get_average_true_range(symbol)
     current_price = get_current_price(symbol)
     return round(current_price + 3 * atr_value, 4)
+
 
 def get_atr_low_price(symbol):
     atr_value = get_average_true_range(symbol)
     current_price = get_current_price(symbol)
     return round(current_price - 3 * atr_value, 4)
 
+
 def get_average_true_range(symbol):
     ticker = yf.Ticker(symbol)
     data = ticker.history(period='30d')
     atr = talib.ATR(data['High'].values, data['Low'].values, data['Close'].values, timeperiod=22)
     return atr[-1]
+
 
 def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     stocks_to_remove = []
@@ -179,10 +185,12 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
         refresh_after_buy()
 
+
 def refresh_after_buy():
     global stocks_to_buy, bought_stocks
     stocks_to_buy = get_stocks_to_trade()
     bought_stocks = update_bought_stocks_from_api()
+
 
 def update_bought_stocks_from_api():
     positions = api.list_positions()
@@ -202,6 +210,7 @@ def update_bought_stocks_from_api():
             session.add(db_position)
     session.commit()
     return bought_stocks
+
 
 def sell_stocks(bought_stocks, buy_sell_lock):
     stocks_to_remove = []
@@ -230,9 +239,11 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
         refresh_after_sell()
 
+
 def refresh_after_sell():
     global bought_stocks
     bought_stocks = update_bought_stocks_from_api()
+
 
 def main():
     stocks_to_buy = get_stocks_to_trade()
@@ -268,6 +279,7 @@ def main():
         except Exception as e:
             logging.error(f"Error encountered: {e}")
             time.sleep(2)
+
 
 def load_positions_from_database():
     positions = session.query(Position).all()
