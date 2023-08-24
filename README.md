@@ -42,10 +42,9 @@ spend less money during a stock market
 recession by buying only 1 share of a stock at a time. 
 If you want to buy different quantities of stocks, then you can edit the 
 python code. To buy 20 shares of stock, in 
-the program section "def buy_stocks()", locate the buy order and change the buy order code qty= to look like qty=20 as shown below: 
+the program section "def buy_stocks()", locate qty_of_one_stock = 1 and change the buy order code qty_of_one_stock to look like qty=20 as shown below: 
 
-if cash_available > current_price:
-    api.submit_order(symbol=symbol, qty=20, side='buy', type='market', time_in_force='day')
+qty_of_one_stock = 20
 
 
 This stock market robot works best if you purchase 25 to 30 different stocks at only 1 share per stock because the stocks are sold really soon when the price is at a profitable position to sell the stock. This Stock Trading Robot has a strategy to buy stocks today for selling tomorrow because this allows for much more stock trading activity to take place within the stock trading rules of day trading 3 maximum times in 5 business days. 
