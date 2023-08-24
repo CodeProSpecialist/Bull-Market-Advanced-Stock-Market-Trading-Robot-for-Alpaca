@@ -12,15 +12,19 @@ Real-time Insights: Downloads stock prices and carefully buys when the prices ar
 The stocks sell for a profit when the price increases. 
  Thread-safe Execution: Uses threading and locks to ensure efficient and safe buy/sell operations.
 Market Timing: Considers market open/close times, making sure trades are executed only during market hours.
-Portfolio Management: Maintains your trading history and positions with the use of SQLAlchemy, allowing for seamless tracking and management.ATR-based Strategy: Leverages Average True Range (ATR) to dynamically calculate buy and sell thresholds, maximizing gains and minimizing losses.
+Portfolio Management: Maintains your trading history and positions with the use of SQLAlchemy, allowing for seamless tracking and management. 
 Alpaca API Integration: Built on top of the reliable Alpaca trading API for secure and robust execution.
 Highly Configurable: Define your own stock list in a text file, giving you full control over your trading universe.
  Detailed Logging: Keeps a log of all buy and sell signals, helping you to analyze your trading performance.
 Join the Future of Trading Today!
-Whether you're a novice investor or a seasoned trader, our Advanced Stock Market Trading Robot can take your trading strategy to the next level. With its innovative features and focus on electricity and utility stocks, it's the perfect tool to navigate any market condition, including recessions.
+Whether you're a novice investor or a seasoned trader, 
+our Advanced Stock Market Trading Robot can take your trading strategy to the next level. 
+With its innovative features and focus on electricity and utility stocks, 
+it's the perfect tool to navigate any market condition, including recessions.
 
 
-Investing in the stock market involves risk, and past performance is not indicative of future results. Please consult with a financial professional before investing.
+Investing in the stock market involves risk, and past performance is not indicative of future results. 
+Please consult with a financial professional before investing.
 
 ***** This program will only work if you have 
 at least 1 stock symbol in the electricity-or-utility-stocks-to-buy-list.txt 
