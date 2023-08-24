@@ -42,7 +42,7 @@ spend less money during a stock market
 recession by buying only 1 share of a stock at a time. 
 If you want to buy different quantities of stocks, then you can edit the 
 python code. To buy 20 shares of stock, in 
-the program section "def buy_stocks()", locate qty_of_one_stock = 1 and change the buy order code qty_of_one_stock to look like qty=20 as shown below: 
+the program section "def buy_stocks()", locate qty_of_one_stock = 1 and change the buy order code qty_of_one_stock to look as shown below: 
 
 qty_of_one_stock = 20
 
