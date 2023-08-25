@@ -1,29 +1,45 @@
-******** Download the newest version of this Python Program today. Brand New Code today, 8-24-2023.    ******** 
+  Welcome to the Future of Trading with the Advanced Stock Market Trading Robot!
 
-Introducing the Advanced Stock Market Trading Robot! 
+Why Trade Manually When You Can Automate It? 
 
-Are you looking to trade electricity or utility stocks with unprecedented precision? Look no further! Our state-of-the-art trading robot harnesses the power of cutting-edge technologies to provide you with an unrivaled trading experience.
+Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, specially designed to help you take your trading game to the next level! This state-of-the-art trading algorithm is powered by Python, and it's packed with amazing features that you'll love:
 
-Key Features:
+    Alpaca API Integration: Trade with confidence and speed using the reliable Alpaca API.
+    Smart Buy/Sell Strategies: Utilizing ATR (Average True Range) to determine optimal buy and sell points.
+    Thread-Safe Operations: Utilizing threading and locks to ensure smooth concurrent operations.
+    SQLAlchemy Database Support: Keep track of all your positions and trade history with a robust SQLite database.
+    Debugging and Database Printing: Want insights into what's happening behind the scenes? Toggle the DEBUG and PRINT_DATABASE options to see the magic unfold.
 
- Targeted Trading: Exclusively focuses on trading electricity and utility stocks, optimizing opportunities in this specific sector.
-Real-time Insights: Downloads stock prices and carefully buys when the prices are low. 
-The stocks sell for a profit when the price increases. 
- Thread-safe Execution: Uses threading and locks to ensure efficient and safe buy/sell operations.
-Market Timing: Considers market open/close times, making sure trades are executed only during market hours.
-Portfolio Management: Maintains your trading history and positions with the use of SQLAlchemy, allowing for seamless tracking and management. 
-Alpaca API Integration: Built on top of the reliable Alpaca trading API for secure and robust execution.
-Highly Configurable: Define your own stock list in a text file, giving you full control over your trading universe.
- Detailed Logging: Keeps a log of all buy and sell signals, helping you to analyze your trading performance.
-Join the Future of Trading Today!
-Whether you're a novice investor or a seasoned trader, 
-our Advanced Stock Market Trading Robot can take your trading strategy to the next level. 
-With its innovative features and focus on electricity and utility stocks, 
-it's the perfect tool to navigate any market condition, including recessions.
+But Wait, There's More!
+
+DEBUG Mode
+Tired of guessing what's happening inside your trading robot? Activate DEBUG mode, and you'll get a detailed look into the stocks you're planning to purchase and sell, along with their ATR-derived buy and sell prices. It's like having X-ray vision for your trades!
+
+PRINT_DATABASE Option
+Curious about your trading history or current positions? Turn on PRINT_DATABASE, and you'll see the entire Trade History and Positions tables printed right in your console! It's your trading journey at a glance!
+
+Market Hours Monitoring
+Never worry about trading out of hours. The bot knows when the market is open and ensures that it only trades during those times.
+
+Easy Customization
+Manage your stock selection by simply updating the 'electricity-or-utility-stocks-to-buy-list.txt' file. It's that simple!
+
+Logging
+Keep track of buy and sell signals with detailed logging. Every move is recorded, so you're never in the dark.
+
+Educational
+Learn from the code! The well-documented functions and clear structure make this a fantastic learning opportunity for aspiring traders and Python enthusiasts alike.
+
+Join the trading revolution today with the Advanced Stock Market Trading Robot! 
+Clone the code, set your API keys, and let the robot do the trading for you. It's time to trade like it's 2023!
 
 
-Investing in the stock market involves risk, and past performance is not indicative of future results. 
-Please consult with a financial professional before investing.
+Disclaimer: This software is not affiliated or endorsed by Alpaca Securities, LLC. 
+Always do your own research before investing. Investing in the stock market involves risk, and past performance is not indicative of future results. 
+Please consult with a financial professional before investing. 
+
+Happy Trading. 
+
 
 ***** This program will only work if you have 
 at least 1 stock symbol in the electricity-or-utility-stocks-to-buy-list.txt 
