@@ -288,6 +288,9 @@ def main():
             current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
             cash_balance = round(float(api.get_account().cash), 2)
             print("------------------------------------------------------------------------------------")
+            print("2023 Edition of the Advanced Stock Market Trading Robot, Version 2 ")
+            print("by https://github.com/CodeProSpecialist")
+            print("------------------------------------------------------------------------------------")
             print(f"  {current_time_str} Cash Balance: ${cash_balance}")
             day_trade_count = api.get_account().daytrade_count
             print("\n")
