@@ -20,7 +20,7 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-PRINT_DATABASE = False
+PRINT_DATABASE = True
 
 DEBUG = False
 
@@ -116,12 +116,12 @@ def stop_if_stock_market_is_closed():
 def print_database_tables():
     if PRINT_DATABASE:
         # Print TradeHistory table
-        print("\nTrade History:")
+        print("\nTrade History in the Database For This Robot:")
         for record in session.query(TradeHistory).all():
             print(record.id, record.symbol, record.action, record.quantity, record.price, record.date)
 
         # Print Position table
-        print("\nPositions:")
+        print("\nPositions in the Database to Sell 1 Day after the Date shown:")
         for record in session.query(Position).all():
             print(record.symbol, record.quantity, record.avg_price, record.purchase_date)
 
@@ -235,7 +235,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
     stocks_to_remove = []
     today_date = datetime.today().date()
     for symbol, (bought_price, bought_date) in bought_stocks.items():
-        if bought_date >= today_date:  # Check if the stock was purchased at least one day before today
+        if bought_date.date() >= today_date:   # Check if the stock was purchased at least one day before today
             continue  # Skip this stock if it was purchased today or in the future
         current_price = get_current_price(symbol)
         position = api.get_position(symbol)  # Get the position details from Alpaca API
