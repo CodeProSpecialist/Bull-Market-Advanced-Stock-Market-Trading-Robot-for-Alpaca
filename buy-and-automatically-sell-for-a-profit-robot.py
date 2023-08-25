@@ -167,8 +167,8 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         cash_available -= bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else 0
         qty_of_one_stock = 1
 
-        # Checking if the current price is 6% less than the opening price to buy stock 
-        if cash_available > current_price and current_price <= opening_price * 0.975: 
+        # Checking if the current price is 1.5% less than the opening price to buy stock 
+        if cash_available > current_price and current_price <= opening_price * 0.985: 
             api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
             print(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
             logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
