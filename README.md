@@ -5,10 +5,11 @@ Why Trade Manually When You Can Automate It?
 Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, specially designed to help you take your trading game to the next level! This state-of-the-art trading algorithm is powered by Python, and it's packed with amazing features that you'll love:
 
     Alpaca API Integration: Trade with confidence and speed using the reliable Alpaca API.
-    Smart Buy/Sell Strategies: Utilizing ATR (Average True Range) to determine optimal buy and sell points.
+    Smart Buy/Sell Strategies. 
     Thread-Safe Operations: Utilizing threading and locks to ensure smooth concurrent operations.
     SQLAlchemy Database Support: Keep track of all your positions and trade history with a robust SQLite database.
-    Debugging and Database Printing: Want insights into what's happening behind the scenes? Toggle the DEBUG and PRINT_DATABASE options to see the magic unfold.
+    Debugging and Database Printing: Want insights into what's happening behind the scenes? 
+    Toggle the DEBUG and PRINT_DATABASE options to see the magic unfold.
 
 But Wait, There's More!
 
