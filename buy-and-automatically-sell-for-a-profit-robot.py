@@ -188,7 +188,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         current_price = get_current_price(symbol)
         opening_price = get_opening_price(symbol) 
         
-        atr_low_price = get_atr_low_price(symbol)
+        #atr_low_price = get_atr_low_price(symbol)
         cash_available = round(float(api.get_account().cash), 2)
         cash_available -= bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else 0
         qty_of_one_stock = 1
@@ -253,14 +253,14 @@ def sell_stocks(bought_stocks, buy_sell_lock):
         position = api.get_position(symbol)  # Get the position details from Alpaca API
         bought_price = float(position.avg_entry_price)   # The price you purchased the stock for. 
         
-        atr_high_price = get_atr_high_price(symbol)
+        #atr_high_price = get_atr_high_price(symbol)
     
         # Sell stocks if the current price is more than 2.5% higher than the purchase price. 
         if current_price >= bought_price * 1.025:
             qty = api.get_position(symbol).qty
             api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
-            print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
-            logging.info(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on ATR high price")
+            print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
+            logging.info(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
             stocks_to_remove.append(symbol)  # Append symbols to remove
 
     time.sleep(2)  # sleep a number of seconds after each sell loop
