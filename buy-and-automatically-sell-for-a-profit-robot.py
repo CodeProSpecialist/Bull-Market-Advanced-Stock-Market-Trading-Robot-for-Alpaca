@@ -116,9 +116,9 @@ def stop_if_stock_market_is_closed():
 def print_database_tables():
     if PRINT_DATABASE:
         # Print TradeHistory table
-        print("\nTrade History in the Database For This Robot:")
+        print("\nTrade History In This Robot's Database:")
         print("\n")
-        print(" Stock | Buy or Sell | Quantity | Avg. Price | Purchase Date ")
+        print("Stock | Buy or Sell | Quantity | Avg. Price | Purchase Date ")
         print("\n")
         for record in session.query(TradeHistory).all():
             print(record.symbol, record.action, record.quantity, record.price, record.date)
