@@ -108,7 +108,7 @@ def stop_if_stock_market_is_closed():
         print("to keep track of all of the stock position buying and selling. ")
         print("Thanks for understanding. Stocks can be purchased at the Alpaca website. ")
         print("This software is not affiliated or endorsed by Alpaca Securities, LLC ")
-        print("This software does, however try to be a useful, profitable, and valuable ")
+        print("This software does, however, try to be a useful, profitable, and valuable ")
         print("stock market trading application. ")
         time.sleep(60)  # Sleep for 1 minute and check again
 
@@ -119,6 +119,7 @@ def print_database_tables():
         print("\nTrade History in the Database For This Robot:")
         print("\n")
         print("  Stock  |  Buy or Sell  |  Quantity  |  Avg. Price  |  Purchase Date  ")
+        print("\n")
         for record in session.query(TradeHistory).all():
             print(record.symbol, record.action, record.quantity, record.price, record.date)
 
@@ -127,6 +128,7 @@ def print_database_tables():
         print("\nPositions in the Database To Sell 1 or More Days After the Date Shown:")
         print("\n")
         print("Stock  |  Quantity  |  Avg. Price  |  Purchase Date  ")
+        print("\n")
         for record in session.query(Position).all():
             print(record.symbol, record.quantity, record.avg_price, record.purchase_date)
 
@@ -281,7 +283,7 @@ def main():
 
     while True:
         try:
-            stop_if_stock_market_is_closed()
+            #stop_if_stock_market_is_closed()
             now = datetime.now(pytz.timezone('US/Eastern'))
             current_time_str = now.strftime("Eastern Time,   %m-%d-%Y,   %I:%M:%S %p  ")
             cash_balance = round(float(api.get_account().cash), 2)
