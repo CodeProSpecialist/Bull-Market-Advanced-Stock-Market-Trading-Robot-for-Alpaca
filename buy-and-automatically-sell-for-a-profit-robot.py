@@ -127,7 +127,7 @@ def print_database_tables():
         # Print Position table
         print("\nPositions in the Database To Sell 1 or More Days After the Date Shown:")
         print("\n")
-        print("Stock | Quantity | Avg. Price | Purchase Date ")
+        print("Stock | Quantity | Avg. Price | Purchase Date or The 1st Day This Robot Began Working ")
         print("\n")
         for record in session.query(Position).all():
             print(record.symbol, record.quantity, record.avg_price, record.purchase_date)
