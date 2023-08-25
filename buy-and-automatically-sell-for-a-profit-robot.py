@@ -8,6 +8,7 @@ import alpaca_trade_api as tradeapi
 import pytz
 import talib
 import yfinance as yf
+import sqlalchemy
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -37,7 +38,11 @@ buy_sell_lock = threading.Lock()
 logging.basicConfig(filename='log-file-of-buy-and-sell-signals.txt', level=logging.INFO)
 
 # Define the Database Models
-Base = declarative_base()
+# Newer Data Base Model code below
+Base = sqlalchemy.orm.declarative_base()
+
+# old Data Base Model code below
+#Base = declarative_base()
 
 class TradeHistory(Base):
     __tablename__ = 'trade_history'
@@ -283,7 +288,7 @@ def main():
 
     while True:
         try:
-            stop_if_stock_market_is_closed()
+            #stop_if_stock_market_is_closed()
             now = datetime.now(pytz.timezone('US/Eastern'))
             current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
             cash_balance = round(float(api.get_account().cash), 2)
