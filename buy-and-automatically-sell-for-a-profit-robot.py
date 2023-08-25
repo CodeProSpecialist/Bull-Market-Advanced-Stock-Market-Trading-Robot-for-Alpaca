@@ -39,10 +39,9 @@ logging.basicConfig(filename='log-file-of-buy-and-sell-signals.txt', level=loggi
 
 # Define the Database Models
 # Newer Data Base Model code below
+
 Base = sqlalchemy.orm.declarative_base()
 
-# old Data Base Model code below
-#Base = declarative_base()
 
 class TradeHistory(Base):
     __tablename__ = 'trade_history'
@@ -301,6 +300,7 @@ def main():
             print("\n")
             print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
             stocks_to_buy = get_stocks_to_trade()
+
             if not bought_stocks:
                 bought_stocks = update_bought_stocks_from_api()
             buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock)
