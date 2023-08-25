@@ -9,7 +9,7 @@ Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, special
     Thread-Safe Operations: Utilizing threading and locks to ensure smooth concurrent operations.
     SQLAlchemy Database Support: Keep track of all your positions and trade history with a robust SQLite database.
     Debugging and Database Printing: Want insights into what's happening behind the scenes? 
-    Toggle the DEBUG and PRINT_DATABASE options to see the magic unfold.
+    Toggle the DEBUG and PRINT_DATABASE options to see the stored database information print out. 
 
 But Wait, There's More!
 
