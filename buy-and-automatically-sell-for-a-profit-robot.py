@@ -131,7 +131,7 @@ def print_database_tables():
         print("\n")
         for record in session.query(Position).all():
             print(record.symbol, record.quantity, record.avg_price, record.purchase_date)
-
+        print("\n")
 
 def get_stocks_to_trade():
     with open('electricity-or-utility-stocks-to-buy-list.txt', 'r') as file:
