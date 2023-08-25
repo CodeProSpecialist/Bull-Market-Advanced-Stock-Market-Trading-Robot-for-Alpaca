@@ -228,7 +228,7 @@ def update_bought_stocks_from_api():
     for position in positions:
         symbol = position.symbol
         avg_entry_price = float(position.avg_entry_price)
-        purchase_date = datetime.today().date()  # Set the date to today
+        purchase_date = datetime.today()   # Set the date to today
         bought_stocks[symbol] = (avg_entry_price, purchase_date)
         db_position = session.query(Position).filter_by(symbol=symbol).first()
         if db_position:
@@ -246,7 +246,8 @@ def sell_stocks(bought_stocks, buy_sell_lock):
     stocks_to_remove = []
     today_date = datetime.today().date()
     for symbol, (bought_price, bought_date) in bought_stocks.items():
-        if bought_date >= today_date:   # Check if the stock was purchased at least one day before today
+        # Check if the stock was purchased at least one day before today
+        if bought_date >= datetime.combine(today_date, datetime.min.time()):  # Convert today_date to datetime
             continue  # Skip this stock if it was purchased today or in the future
         current_price = get_current_price(symbol)
         position = api.get_position(symbol)  # Get the position details from Alpaca API
