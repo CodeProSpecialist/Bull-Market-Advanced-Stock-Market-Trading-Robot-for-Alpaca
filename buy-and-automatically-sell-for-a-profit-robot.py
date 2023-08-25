@@ -120,6 +120,7 @@ def print_database_tables():
         for record in session.query(TradeHistory).all():
             print(record.id, record.symbol, record.action, record.quantity, record.price, record.date)
 
+        print("----------------------------------------------------------------")
         # Print Position table
         print("\nPositions in the Database To Sell 1 or More Days After the Date Shown:")
         for record in session.query(Position).all():
@@ -280,6 +281,7 @@ def main():
             now = datetime.now(pytz.timezone('US/Eastern'))
             current_time_str = now.strftime("Eastern Time, %m-%d-%Y,   %I:%M:%S %p")
             cash_balance = round(float(api.get_account().cash), 2)
+            print("----------------------------------------------------------------")
             print(f"{current_time_str},    Cash Balance: ${cash_balance}")
             day_trade_count = api.get_account().daytrade_count
             print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
