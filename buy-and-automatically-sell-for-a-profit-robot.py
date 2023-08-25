@@ -242,7 +242,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
     stocks_to_remove = []
     today_date = datetime.today().date()
     for symbol, (bought_price, bought_date) in bought_stocks.items():
-        if bought_date.date() >= today_date:   # Check if the stock was purchased at least one day before today
+        if bought_date >= today_date:   # Check if the stock was purchased at least one day before today
             continue  # Skip this stock if it was purchased today or in the future
         current_price = get_current_price(symbol)
         position = api.get_position(symbol)  # Get the position details from Alpaca API
