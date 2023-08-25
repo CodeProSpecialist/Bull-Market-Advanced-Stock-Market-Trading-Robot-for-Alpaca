@@ -117,12 +117,16 @@ def print_database_tables():
     if PRINT_DATABASE:
         # Print TradeHistory table
         print("\nTrade History in the Database For This Robot:")
+        print("\n")
+        print("  Stock  |  Buy or Sell  |  Quantity  |  Avg. Price  |  Purchase Date  ")
         for record in session.query(TradeHistory).all():
-            print(record.id, record.symbol, record.action, record.quantity, record.price, record.date)
+            print(record.symbol, record.action, record.quantity, record.price, record.date)
 
         print("----------------------------------------------------------------")
         # Print Position table
         print("\nPositions in the Database To Sell 1 or More Days After the Date Shown:")
+        print("\n")
+        print("Stock  |  Quantity  |  Avg. Price  |  Purchase Date  ")
         for record in session.query(Position).all():
             print(record.symbol, record.quantity, record.avg_price, record.purchase_date)
 
@@ -279,7 +283,7 @@ def main():
         try:
             stop_if_stock_market_is_closed()
             now = datetime.now(pytz.timezone('US/Eastern'))
-            current_time_str = now.strftime("Eastern Time, %m-%d-%Y,   %I:%M:%S %p")
+            current_time_str = now.strftime("Eastern Time,   %m-%d-%Y,   %I:%M:%S %p  ")
             cash_balance = round(float(api.get_account().cash), 2)
             print("----------------------------------------------------------------")
             print(f"{current_time_str},    Cash Balance: ${cash_balance}")
