@@ -118,7 +118,7 @@ def print_database_tables():
         # Print TradeHistory table
         print("\nTrade History in the Database For This Robot:")
         print("\n")
-        print("  Stock  |  Buy or Sell  |  Quantity  |  Avg. Price  |  Purchase Date  ")
+        print(" Stock | Buy or Sell | Quantity | Avg. Price | Purchase Date ")
         print("\n")
         for record in session.query(TradeHistory).all():
             print(record.symbol, record.action, record.quantity, record.price, record.date)
@@ -127,7 +127,7 @@ def print_database_tables():
         # Print Position table
         print("\nPositions in the Database To Sell 1 or More Days After the Date Shown:")
         print("\n")
-        print("Stock  |  Quantity  |  Avg. Price  |  Purchase Date  ")
+        print("Stock | Quantity | Avg. Price | Purchase Date ")
         print("\n")
         for record in session.query(Position).all():
             print(record.symbol, record.quantity, record.avg_price, record.purchase_date)
@@ -285,10 +285,10 @@ def main():
         try:
             #stop_if_stock_market_is_closed()
             now = datetime.now(pytz.timezone('US/Eastern'))
-            current_time_str = now.strftime("Eastern Time,   %m-%d-%Y,   %I:%M:%S %p  ")
+            current_time_str = now.strftime("Eastern Time,  %I:%M:%S %p,  %m-%d-%Y ")
             cash_balance = round(float(api.get_account().cash), 2)
             print("----------------------------------------------------------------")
-            print(f"{current_time_str},    Cash Balance: ${cash_balance}")
+            print(f"{current_time_str},   Cash Balance: ${cash_balance}")
             day_trade_count = api.get_account().daytrade_count
             print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
             stocks_to_buy = get_stocks_to_trade()
