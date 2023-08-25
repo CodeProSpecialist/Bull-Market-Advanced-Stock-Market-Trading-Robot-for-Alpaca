@@ -20,6 +20,8 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
+PRINT_DATABASE = False
+
 DEBUG = False
 
 eastern = pytz.timezone('US/Eastern')
@@ -109,6 +111,19 @@ def stop_if_stock_market_is_closed():
         print("This software does, however try to be a useful, profitable, and valuable ")
         print("stock market trading application. ")
         time.sleep(60)  # Sleep for 1 minute and check again
+
+
+def print_database_tables():
+    if PRINT_DATABASE:
+        # Print TradeHistory table
+        print("\nTrade History:")
+        for record in session.query(TradeHistory).all():
+            print(record.id, record.symbol, record.action, record.quantity, record.price, record.date)
+
+        # Print Position table
+        print("\nPositions:")
+        for record in session.query(Position).all():
+            print(record.symbol, record.quantity, record.avg_price, record.purchase_date)
 
 
 def get_stocks_to_trade():
@@ -273,6 +288,9 @@ def main():
                 bought_stocks = update_bought_stocks_from_api()
             buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock)
             sell_stocks(bought_stocks, buy_sell_lock)
+            
+            print_database_tables()
+            
             if DEBUG:
                 print("Stocks to Purchase:")
                 for symbol in stocks_to_buy:
