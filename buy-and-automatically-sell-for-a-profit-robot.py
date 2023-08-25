@@ -285,10 +285,10 @@ def main():
         try:
             #stop_if_stock_market_is_closed()
             now = datetime.now(pytz.timezone('US/Eastern'))
-            current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y ")
+            current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
             cash_balance = round(float(api.get_account().cash), 2)
             print("------------------------------------------------------------------------------------")
-            print(f" | {current_time_str}| Cash Balance: ${cash_balance}")
+            print(f"  {current_time_str} Cash Balance: ${cash_balance}")
             day_trade_count = api.get_account().daytrade_count
             print("\n")
             print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
