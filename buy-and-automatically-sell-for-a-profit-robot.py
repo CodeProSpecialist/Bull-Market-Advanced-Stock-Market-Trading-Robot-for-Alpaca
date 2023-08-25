@@ -121,7 +121,7 @@ def print_database_tables():
             print(record.id, record.symbol, record.action, record.quantity, record.price, record.date)
 
         # Print Position table
-        print("\nPositions in the Database to Sell 1 Day after the Date shown:")
+        print("\nPositions in the Database To Sell 1 or More Days After the Date Shown:")
         for record in session.query(Position).all():
             print(record.symbol, record.quantity, record.avg_price, record.purchase_date)
 
