@@ -165,13 +165,13 @@ def get_current_price(symbol):
 def get_atr_high_price(symbol):
     atr_value = get_average_true_range(symbol)
     current_price = get_current_price(symbol)
-    return round(current_price + 3 * atr_value, 4)
+    return round(current_price + 0.40 * atr_value, 4)
 
 
 def get_atr_low_price(symbol):
     atr_value = get_average_true_range(symbol)
     current_price = get_current_price(symbol)
-    return round(current_price - 3 * atr_value, 4)
+    return round(current_price - 0.10 * atr_value, 4)
 
 
 def get_average_true_range(symbol):
@@ -187,15 +187,15 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     for symbol in stocks_to_buy:
         today_date = datetime.today().date()
         current_price = get_current_price(symbol)
-        opening_price = get_opening_price(symbol) 
+        #opening_price = get_opening_price(symbol)
         
-        #atr_low_price = get_atr_low_price(symbol)
+        atr_low_price = get_atr_low_price(symbol)
         cash_available = round(float(api.get_account().cash), 2)
         cash_available -= bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else 0
         qty_of_one_stock = 1
 
-        # Checking if the current price is 1.5% less than the opening price to buy stock 
-        if cash_available > current_price and current_price <= opening_price * 0.985: 
+        # Checking if the current price is equal to or less than the atr low price to buy stock
+        if cash_available > current_price and current_price <= atr_low_price:
             api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
             print(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
             logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
@@ -255,10 +255,10 @@ def sell_stocks(bought_stocks, buy_sell_lock):
         position = api.get_position(symbol)  # Get the position details from Alpaca API
         bought_price = float(position.avg_entry_price)   # The price you purchased the stock for. 
         
-        #atr_high_price = get_atr_high_price(symbol)
+        atr_high_price = get_atr_high_price(symbol)
     
-        # Sell stocks if the current price is more than 2.5% higher than the purchase price. 
-        if current_price >= bought_price * 1.025:
+        # Sell stocks if the current price is more than 0.8% higher than the purchase price. 
+        if current_price >= atr_high_price and bought_price:
             qty = api.get_position(symbol).qty
             api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
             print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
@@ -355,3 +355,4 @@ if __name__ == '__main__':
     except Exception as e:
         logging.error(f"Error encountered: {e}")
         session.close()
+
