@@ -257,7 +257,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
         atr_high_price = get_atr_high_price(symbol)
     
         # Sell stocks if the current price greater than or equal to both the atr_high_price and the purchase price.
-        if current_price >= atr_high_price and bought_price:
+        if current_price >= atr_high_price and current_price >= bought_price:
             qty = api.get_position(symbol).qty
             api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
             print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
