@@ -183,6 +183,12 @@ def get_average_true_range(symbol):
 
 def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     stocks_to_remove = []
+
+    account = api.get_account()
+    if account.daytrade_count >= 3:
+        print("Day trade limit reached. Not buying.")
+        return
+
     for symbol in stocks_to_buy:
         today_date = datetime.today().date()
         current_price = get_current_price(symbol)
@@ -244,6 +250,7 @@ def update_bought_stocks_from_api():
 
 def sell_stocks(bought_stocks, buy_sell_lock):
     stocks_to_remove = []
+
     today_date = datetime.today().date()
     for symbol, (bought_price, bought_date) in bought_stocks.items():
         # Check if the stock was purchased at least one day before today
