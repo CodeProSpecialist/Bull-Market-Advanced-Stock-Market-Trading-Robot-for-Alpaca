@@ -39,7 +39,6 @@ logging.basicConfig(filename='log-file-of-buy-and-sell-signals.txt', level=loggi
 
 # Define the Database Models
 # Newer Data Base Model code below
-
 Base = sqlalchemy.orm.declarative_base()
 
 
