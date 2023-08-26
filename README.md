@@ -83,6 +83,7 @@ Open a command line terminal from this folder location and type:
 
 sh install.sh
 
+Do the following with a non-root user account: 
 After placing your alpaca keys at the bottom of /home/nameofyourhomefolderhere/.bashrc you simply run the command in a command terminal like:
 
 python3 buy-and-automatically-sell-for-a-profit-robot.py 
