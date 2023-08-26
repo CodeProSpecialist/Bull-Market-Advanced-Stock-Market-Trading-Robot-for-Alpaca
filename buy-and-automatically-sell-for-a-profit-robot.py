@@ -310,16 +310,27 @@ def main():
             print_database_tables()
             
             if DEBUG:
+                print("\n")
+                print("------------------------------------------------------------------------------------")
+                print("\n")
                 print("Stocks to Purchase:")
+                print("\n")
                 for symbol in stocks_to_buy:
                     current_price = get_current_price(symbol)
                     atr_low_price = get_atr_low_price(symbol)
                     print(f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
+
+                print("\n")
+                print("------------------------------------------------------------------------------------")
+                print("\n")
                 print("\nStocks to Sell:")
+                print("\n")
                 for symbol, _ in bought_stocks.items():
                     current_price = get_current_price(symbol)
                     atr_high_price = get_atr_high_price(symbol)
                     print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
+
+                print("\n")
             time.sleep(1)
         except Exception as e:
             logging.error(f"Error encountered: {e}")
