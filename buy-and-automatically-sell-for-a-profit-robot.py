@@ -165,13 +165,13 @@ def get_current_price(symbol):
 def get_atr_high_price(symbol):
     atr_value = get_average_true_range(symbol)
     current_price = get_current_price(symbol)
-    return round(current_price + 3 * atr_value, 4)
+    return round(current_price + 0.8 * atr_value, 4)
 
 
 def get_atr_low_price(symbol):
     atr_value = get_average_true_range(symbol)
     current_price = get_current_price(symbol)
-    return round(current_price - 3 * atr_value, 4)
+    return round(current_price - 0.8 * atr_value, 4)
 
 
 def get_average_true_range(symbol):
