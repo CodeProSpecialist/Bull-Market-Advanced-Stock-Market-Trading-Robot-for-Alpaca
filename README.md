@@ -77,7 +77,7 @@ Only place one stock symbol on each line.
 
 To install:
 
-You should be the root user when installing the Python software. This installs from a regular user account. 
+You should be the root user when installing the Python software. 
 ***** The below install commands are ONLY for a Desktop or Laptop Computer x86_64 type of install. ***** 
 Open a command line terminal from this folder location and type: 
 
