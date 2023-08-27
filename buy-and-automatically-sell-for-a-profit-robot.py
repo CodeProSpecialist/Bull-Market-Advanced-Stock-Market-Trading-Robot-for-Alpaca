@@ -51,12 +51,14 @@ class TradeHistory(Base):
     price = Column(Float)
     date = Column(DateTime)
 
+
 class Position(Base):
     __tablename__ = 'positions'
     symbol = Column(String, primary_key=True)
     quantity = Column(Integer)
     avg_price = Column(Float)
     purchase_date = Column(DateTime)
+
 
 # Initialize SQLAlchemy
 engine = create_engine('sqlite:///trading_bot.db')
@@ -136,6 +138,7 @@ def print_database_tables():
             print(record.symbol, record.quantity, record.avg_price, record.purchase_date)
         print("\n")
 
+
 def get_stocks_to_trade():
     with open('electricity-or-utility-stocks-to-buy-list.txt', 'r') as file:
         return [line.strip() for line in file.readlines()]
@@ -186,15 +189,27 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     for symbol in stocks_to_buy:
         today_date = datetime.today().date()
         current_price = get_current_price(symbol)
-        #opening_price = get_opening_price(symbol)
-        
+        opening_price = get_opening_price(symbol)
         atr_low_price = get_atr_low_price(symbol)
+
         cash_available = round(float(api.get_account().cash), 2)
         cash_available -= bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else 0
+
         qty_of_one_stock = 1
 
-        # Checking if the current price is equal to or less than the atr low price to buy stock
-        if cash_available > current_price and current_price <= atr_low_price:
+        # Calculate the total cost if we buy 'qty_of_one_stock' shares
+        total_cost_for_qty = current_price * qty_of_one_stock
+
+        # profit buy price setting for 0.8% less than the opening price
+        profit_buy_price_setting = current_price < (0.992 * opening_price)
+
+        # Checking that we have enough money for the total_cost_for_qty.
+        # Checking if the current price is equal to or less than the atr low price to buy stock.
+        # It is also important to check that the current price is less than the opening price by 0.8%
+        # before buying the stock. This check is with the profit_buy_price_setting.
+        if (cash_available >= total_cost_for_qty and
+                current_price <= atr_low_price and
+                profit_buy_price_setting):
             api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
             print(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
             logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
@@ -228,7 +243,7 @@ def update_bought_stocks_from_api():
     for position in positions:
         symbol = position.symbol
         avg_entry_price = float(position.avg_entry_price)
-        purchase_date = datetime.today()   # Set the date to today
+        purchase_date = datetime.today()  # Set the date to today
         bought_stocks[symbol] = (avg_entry_price, purchase_date)
         db_position = session.query(Position).filter_by(symbol=symbol).first()
         if db_position:
@@ -236,7 +251,8 @@ def update_bought_stocks_from_api():
             db_position.avg_price = avg_entry_price
             db_position.purchase_date = purchase_date
         else:
-            db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price, purchase_date=purchase_date)
+            db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price,
+                                   purchase_date=purchase_date)
             session.add(db_position)
     session.commit()
     return bought_stocks
@@ -252,16 +268,17 @@ def sell_stocks(bought_stocks, buy_sell_lock):
             continue  # Skip this stock if it was purchased today or in the future
         current_price = get_current_price(symbol)
         position = api.get_position(symbol)  # Get the position details from Alpaca API
-        bought_price = float(position.avg_entry_price)   # The price you purchased the stock for. 
-        
+        bought_price = float(position.avg_entry_price)  # The price you purchased the stock for.
+
         atr_high_price = get_atr_high_price(symbol)
-    
+
         # Sell stocks if the current price greater than or equal to both the atr_high_price and the purchase price.
         if current_price >= atr_high_price and current_price >= bought_price:
             qty = api.get_position(symbol).qty
             api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
             print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
-            logging.info(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
+            logging.info(
+                f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
             stocks_to_remove.append(symbol)  # Append symbols to remove
 
     time.sleep(2)  # sleep a number of seconds after each sell loop
@@ -269,7 +286,8 @@ def sell_stocks(bought_stocks, buy_sell_lock):
     with buy_sell_lock:
         for symbol in stocks_to_remove:
             del bought_stocks[symbol]  # Delete symbols here
-            trade_history = TradeHistory(symbol=symbol, action='sell', quantity=qty, price=current_price, date=today_date)
+            trade_history = TradeHistory(symbol=symbol, action='sell', quantity=qty, price=current_price,
+                                         date=today_date)
             session.add(trade_history)
             session.query(Position).filter_by(symbol=symbol).delete()
         session.commit()
@@ -307,9 +325,9 @@ def main():
                 bought_stocks = update_bought_stocks_from_api()
             buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock)
             sell_stocks(bought_stocks, buy_sell_lock)
-            
+
             print_database_tables()
-            
+
             if DEBUG:
                 print("\n")
                 print("------------------------------------------------------------------------------------")
@@ -319,7 +337,8 @@ def main():
                 for symbol in stocks_to_buy:
                     current_price = get_current_price(symbol)
                     atr_low_price = get_atr_low_price(symbol)
-                    print(f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
+                    print(
+                        f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
 
                 print("\n")
                 print("------------------------------------------------------------------------------------")
@@ -329,7 +348,8 @@ def main():
                 for symbol, _ in bought_stocks.items():
                     current_price = get_current_price(symbol)
                     atr_high_price = get_atr_high_price(symbol)
-                    print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
+                    print(
+                        f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
 
                 print("\n")
             time.sleep(1)
@@ -348,10 +368,10 @@ def load_positions_from_database():
         bought_stocks[symbol] = (avg_price, purchase_date)
     return bought_stocks
 
+
 if __name__ == '__main__':
     try:
         main()
     except Exception as e:
         logging.error(f"Error encountered: {e}")
         session.close()
-
