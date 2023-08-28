@@ -269,7 +269,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
         bought_price = float(position.avg_entry_price)  # The price you purchased the stock for.
 
          # Sell stocks if the current price is more than 1.6% higher than the purchase price. 
-        if current_price >= bought_price * 1.16:
+        if current_price >= bought_price * 1.016:
             qty = api.get_position(symbol).qty
             api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
             print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
