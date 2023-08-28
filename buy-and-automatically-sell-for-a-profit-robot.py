@@ -202,6 +202,8 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         # profit buy price setting for 0.8% less than the opening price
         profit_buy_price_setting = current_price < (0.992 * opening_price)
 
+        # Never calculate ATR for a buy price or sell price because it is too slow. 1 second per stock. 
+        
         # Checking that we have enough money for the total_cost_for_qty.
         # Checking if the current price is equal to or less than the atr low price to buy stock.
         # It is also important to check that the current price is less than the opening price by 0.8%
@@ -268,6 +270,8 @@ def sell_stocks(bought_stocks, buy_sell_lock):
         position = api.get_position(symbol)  # Get the position details from Alpaca API
         bought_price = float(position.avg_entry_price)  # The price you purchased the stock for.
 
+        # Never calculate ATR for a buy price or sell price because it is too slow. 1 second per stock. 
+        
          # Sell stocks if the current price is more than 1.6% higher than the purchase price. 
         if current_price >= bought_price * 1.016:
             qty = api.get_position(symbol).qty
