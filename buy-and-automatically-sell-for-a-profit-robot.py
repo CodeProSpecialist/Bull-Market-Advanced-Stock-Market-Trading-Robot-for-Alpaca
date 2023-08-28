@@ -215,7 +215,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
             stocks_to_remove.append((symbol, current_price, today_date))  # Append tuple
 
-    time.sleep(2)  # sleep a number of seconds after each buy loop
+            time.sleep(2)  # keep this under the s in stocks
 
     with buy_sell_lock:
         for symbol, price, date in stocks_to_remove:  # Unpack tuple
@@ -226,9 +226,9 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             session.add(trade_history)
             db_position = Position(symbol=symbol, quantity=qty_of_one_stock, avg_price=price, purchase_date=date)
             session.add(db_position)
-        session.commit()
+        session.commit()   # keep this under the f in for
 
-        refresh_after_buy()
+        refresh_after_buy()   # keep this under the s in session
 
 
 def refresh_after_buy():
@@ -254,8 +254,8 @@ def update_bought_stocks_from_api():
             db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price,
                                    purchase_date=purchase_date)
             session.add(db_position)
-    session.commit()
-    return bought_stocks
+    session.commit()   # keep this under the f in for
+    return bought_stocks   # keep this under the s in session
 
 
 def sell_stocks(bought_stocks, buy_sell_lock):
@@ -281,7 +281,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
                 f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
             stocks_to_remove.append(symbol)  # Append symbols to remove
 
-    time.sleep(2)  # sleep a number of seconds after each sell loop
+            time.sleep(2)  # keep this under the s in stocks
 
     with buy_sell_lock:
         for symbol in stocks_to_remove:
@@ -290,9 +290,9 @@ def sell_stocks(bought_stocks, buy_sell_lock):
                                          date=today_date)
             session.add(trade_history)
             session.query(Position).filter_by(symbol=symbol).delete()
-        session.commit()
+        session.commit()   # keep this under the f in for
 
-        refresh_after_sell()
+        refresh_after_sell()   # keep this under the s in session
 
 
 def refresh_after_sell():
@@ -337,8 +337,7 @@ def main():
                 for symbol in stocks_to_buy:
                     current_price = get_current_price(symbol)
                     atr_low_price = get_atr_low_price(symbol)
-                    print(
-                        f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
+                    print(f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
 
                 print("\n")
                 print("------------------------------------------------------------------------------------")
@@ -348,14 +347,13 @@ def main():
                 for symbol, _ in bought_stocks.items():
                     current_price = get_current_price(symbol)
                     atr_high_price = get_atr_high_price(symbol)
-                    print(
-                        f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
+                    print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
 
                 print("\n")
-            time.sleep(1)
+            time.sleep(1)   # keep this under the i in if
         except Exception as e:
             logging.error(f"Error encountered: {e}")
-            time.sleep(2)
+            time.sleep(2)   # keep this under the l in logging
 
 
 def load_positions_from_database():
