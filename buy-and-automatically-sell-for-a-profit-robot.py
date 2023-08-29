@@ -21,9 +21,9 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-PRINT_DATABASE = True
+PRINT_DATABASE = True   # keep this as True to view the stocks to sell.
 
-DEBUG = False
+DEBUG = False   # this robot works faster when this is False.
 
 eastern = pytz.timezone('US/Eastern')
 
@@ -130,6 +130,12 @@ def print_database_tables():
 
         print("----------------------------------------------------------------")
         # Print Position table
+        print("This Robot is programmed to only Sell the stocks that are currently in ")
+        print("This Robot's Database. If no Positions are listed below, and you own stock ")
+        print("Positions then: 1.) stop this program, 2.) delete the trading_bot.db file, and ")
+        print(" 3.) restart this Robot. ")
+        print("Make sure you see your owned stock Positions listed below for the Robot ")
+        print(" To Sell the stock positions Today. ")
         print("\nPositions in the Database To Sell 1 or More Days After the Date Shown:")
         print("\n")
         print("Stock | Quantity | Avg. Price | Purchase Date or The 1st Day This Robot Began Working ")
