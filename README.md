@@ -45,7 +45,8 @@ Happy Trading.
 ***** This program will only work if you have 
 at least 1 stock symbol in the electricity-or-utility-stocks-to-buy-list.txt 
 because of the functionality of the python code to analyze stocks to buy 
-at a future time. Otherwise, you will most likely see errors in the log-file-of-buy-and-sell-signals.txt. *****
+at a future time. Otherwise, you will most likely see errors in the log-file-of-buy-and-sell-signals.txt. A new database file will need to be created if you started this robot without owning any stocks. Delete the database file named stockbot.db 
+Stop and Start the Stock Trading Robot after you have purchased at least 1 share of stock.  *****
 
 You can modify the python script to make DEBUG = True   and this will print out your stocks with the price information. 
 Printing out the stock information slows down this python program, and it is recommended to change debug back to:  
