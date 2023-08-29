@@ -375,7 +375,7 @@ def main():
 
                 print("\n")
 
-            time.sleep(0.3)   # keep this under the i in if
+            time.sleep(1)   # keep this under the i in if
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
