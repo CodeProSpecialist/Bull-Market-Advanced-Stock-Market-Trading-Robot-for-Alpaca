@@ -192,8 +192,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         opening_price = get_opening_price(symbol)
         
         cash_available = round(float(api.get_account().cash), 2)
-        cash_available -= bought_stocks.get(symbol, 0)[0] if symbol in bought_stocks else 0
-
+        
         qty_of_one_stock = 1
 
         # Calculate the total cost if we buy 'qty_of_one_stock' shares
