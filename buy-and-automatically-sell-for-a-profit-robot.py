@@ -125,17 +125,20 @@ def print_database_tables():
         print("\n")
         print("Stock | Buy or Sell | Quantity | Avg. Price | Purchase Date ")
         print("\n")
-        for record in session.query(TradeHistory).all():
-            print(record.symbol, record.action, record.quantity, record.price, record.date)
 
-        print("----------------------------------------------------------------")
-        # Print Position table
         print("This Robot is programmed to only Sell the stocks that are currently in ")
         print("This Robot's Database. If no Positions are listed below, and you own stock ")
         print("Positions then: 1.) stop this program, 2.) delete the trading_bot.db file, and ")
         print(" 3.) restart this Robot. ")
         print("Make sure you see your owned stock Positions listed below for the Robot ")
-        print(" To Sell the stock positions Today. ")
+        print("To Sell the stock positions Today. ")
+
+        for record in session.query(TradeHistory).all():
+            print(record.symbol, record.action, record.quantity, record.price, record.date)
+
+        print("----------------------------------------------------------------")
+        # Print Position table
+
         print("\nPositions in the Database To Sell 1 or More Days After the Date Shown:")
         print("\n")
         print("Stock | Quantity | Avg. Price | Purchase Date or The 1st Day This Robot Began Working ")
@@ -146,8 +149,19 @@ def print_database_tables():
 
 
 def get_stocks_to_trade():
-    with open('electricity-or-utility-stocks-to-buy-list.txt', 'r') as file:
-        return [line.strip() for line in file.readlines()]
+    try:
+        with open('electricity-or-utility-stocks-to-buy-list.txt', 'r') as file:
+            stock_symbols = [line.strip() for line in file.readlines()]
+
+        if not stock_symbols:
+            print("Error: The file electricity-or-utility-stocks-to-buy-list.txt doesn't contain any stock symbols.")
+            print("This Robot does not work until you place stock symbols in the file named: ")
+            print("electricity-or-utility-stocks-to-buy-list.txt ")
+
+        return stock_symbols
+    except FileNotFoundError:
+        print("Error: File not found.")
+        return []
 
 
 def remove_symbol_from_trade_list(symbol):
@@ -213,14 +227,15 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         # Checking if the current price is equal to or less than the atr low price to buy stock.
         # It is also important to check that the current price is less than the opening price by 0.8%
         # before buying the stock. This check is with the profit_buy_price_setting.
-        
+
+
         if (cash_available >= total_cost_for_qty and current_price <= profit_buy_price_setting):
             api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
             print(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
             logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
             stocks_to_remove.append((symbol, current_price, today_date))  # Append tuple
 
-            time.sleep(2)  # keep this under the s in stocks
+            time.sleep(1)  # keep this under the s in stocks
 
     with buy_sell_lock:
         for symbol, price, date in stocks_to_remove:  # Unpack tuple
@@ -286,7 +301,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
                 f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
             stocks_to_remove.append(symbol)  # Append symbols to remove
 
-            time.sleep(2)  # keep this under the s in stocks
+            time.sleep(1)  # keep this under the s in stocks
 
     with buy_sell_lock:
         for symbol in stocks_to_remove:
@@ -315,6 +330,7 @@ def main():
             stop_if_stock_market_is_closed()
             now = datetime.now(pytz.timezone('US/Eastern'))
             current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
+            account = api.get_account()
             cash_balance = round(float(api.get_account().cash), 2)
             print("------------------------------------------------------------------------------------")
             print("2023 Edition of the Advanced Stock Market Trading Robot, Version 2 ")
@@ -324,6 +340,7 @@ def main():
             day_trade_count = api.get_account().daytrade_count
             print("\n")
             print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
+
             stocks_to_buy = get_stocks_to_trade()
 
             if not bought_stocks:
@@ -332,6 +349,8 @@ def main():
             sell_stocks(bought_stocks, buy_sell_lock)
 
             print_database_tables()
+
+            # print(account)   # uncomment to print Alpaca Account details to debug the software
 
             if DEBUG:
                 print("\n")
@@ -355,7 +374,9 @@ def main():
                     print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
 
                 print("\n")
-            time.sleep(1)   # keep this under the i in if
+
+            time.sleep(0.3)   # keep this under the i in if
+
         except Exception as e:
             logging.error(f"Error encountered: {e}")
             time.sleep(2)   # keep this under the l in logging
