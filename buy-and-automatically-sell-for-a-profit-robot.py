@@ -392,7 +392,9 @@ def main():
 
                 print("\n")
 
-            time.sleep(1)   # keep this under the i in if
+            # keep the below time.sleep(60) to 60 seconds because yfinance api 
+            # will stop the stock data feed for the reason of exceeding the rate limit or from this program being too fast. 
+            time.sleep(60)   # keep this under the i in if
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
