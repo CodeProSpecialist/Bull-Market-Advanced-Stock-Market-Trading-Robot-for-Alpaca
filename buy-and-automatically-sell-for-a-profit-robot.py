@@ -221,6 +221,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         # It is also important to check that the current price is less than the opening price by 0.8%
         # before buying the stock. This check is with the profit_buy_price_setting.
 
+        time.sleep(1)   # wait 1 second to not move too fast for the yfinance rate limit.
 
         if (cash_available >= total_cost_for_qty and current_price <= profit_buy_price_setting):
             api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
@@ -359,7 +360,7 @@ def main():
                 current_price = get_current_price(symbol)
 
                 print(f"Symbol: {symbol} | Current Price: {current_price} ")
-
+                time.sleep(1)  # wait 1 second to not move too fast for the yfinance rate limit.
             print("\n")
             print("------------------------------------------------------------------------------------")
             print("\n")
