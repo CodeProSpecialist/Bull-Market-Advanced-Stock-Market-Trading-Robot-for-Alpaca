@@ -221,7 +221,6 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         # It is also important to check that the current price is less than the opening price by 0.8%
         # before buying the stock. This check is with the profit_buy_price_setting.
 
-        time.sleep(1)   # wait 1 second to not move too fast for the yfinance rate limit.
 
         if (cash_available >= total_cost_for_qty and current_price <= profit_buy_price_setting):
             api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
@@ -229,7 +228,9 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
             stocks_to_remove.append((symbol, current_price, today_date))  # Append tuple
 
-            time.sleep(1)  # keep this under the s in stocks
+            time.sleep(2)  # keep this under the s in stocks
+    # keep the below time.sleep(1) below the f in for.
+    time.sleep(1)  # wait 1 second to not move too fast for the yfinance rate limit.
 
     with buy_sell_lock:
         for symbol, price, date in stocks_to_remove:  # Unpack tuple
@@ -295,7 +296,10 @@ def sell_stocks(bought_stocks, buy_sell_lock):
                 f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
             stocks_to_remove.append(symbol)  # Append symbols to remove
 
-            time.sleep(1)  # keep this under the s in stocks
+            time.sleep(2)  # keep this under the s in stocks
+
+    # keep the below time.sleep(1) below the f in for.
+    time.sleep(1)  # wait 1 second to not move too fast for the yfinance rate limit.
 
     with buy_sell_lock:
         for symbol in stocks_to_remove:
@@ -395,6 +399,7 @@ def main():
 
             # keep the below time.sleep(60) to 60 seconds because yfinance api 
             # will stop the stock data feed for the reason of exceeding the rate limit or from this program being too fast. 
+            print("Waiting 60 seconds before checking price data again........")
             time.sleep(60)   # keep this under the i in if
 
         except Exception as e:
