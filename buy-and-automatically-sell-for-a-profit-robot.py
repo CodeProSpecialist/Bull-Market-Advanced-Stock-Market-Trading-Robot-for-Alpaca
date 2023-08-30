@@ -23,7 +23,7 @@ api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
 PRINT_DATABASE = True   # keep this as True to view the stocks to sell.
 
-DEBUG = False   # this robot works faster when this is False.
+DEBUG = True   # this robot works faster when this is False.
 
 eastern = pytz.timezone('US/Eastern')
 
