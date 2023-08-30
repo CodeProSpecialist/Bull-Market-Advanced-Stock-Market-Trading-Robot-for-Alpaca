@@ -126,13 +126,6 @@ def print_database_tables():
         print("Stock | Buy or Sell | Quantity | Avg. Price | Purchase Date ")
         print("\n")
 
-        print("This Robot is programmed to only Sell the stocks that are currently in ")
-        print("This Robot's Database. If no Positions are listed below, and you own stock ")
-        print("Positions then: 1.) stop this program, 2.) delete the trading_bot.db file, and ")
-        print(" 3.) restart this Robot. ")
-        print("Make sure you see your owned stock Positions listed below for the Robot ")
-        print("To Sell the stock positions Today. ")
-
         for record in session.query(TradeHistory).all():
             print(record.symbol, record.action, record.quantity, record.price, record.date)
 
@@ -153,13 +146,13 @@ def get_stocks_to_trade():
         with open('electricity-or-utility-stocks-to-buy-list.txt', 'r') as file:
             stock_symbols = [line.strip() for line in file.readlines()]
 
-        if not stock_symbols:
+        if not stock_symbols:   # keep this under the w in with
             print("Error: The file electricity-or-utility-stocks-to-buy-list.txt doesn't contain any stock symbols.")
             print("This Robot does not work until you place stock symbols in the file named: ")
             print("electricity-or-utility-stocks-to-buy-list.txt ")
 
-        return stock_symbols
-    except FileNotFoundError:
+        return stock_symbols   # keep this under the i in if
+    except FileNotFoundError:   # keep this under the t in try
         print("Error: File not found.")
         return []
 
@@ -330,7 +323,7 @@ def main():
             stop_if_stock_market_is_closed()
             now = datetime.now(pytz.timezone('US/Eastern'))
             current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
-            account = api.get_account()
+
             cash_balance = round(float(api.get_account().cash), 2)
             print("------------------------------------------------------------------------------------")
             print("2023 Edition of the Advanced Stock Market Trading Robot, Version 2 ")
@@ -340,6 +333,15 @@ def main():
             day_trade_count = api.get_account().daytrade_count
             print("\n")
             print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
+            print("\n")
+            print("This Robot is programmed to only Sell the stocks that are currently in ")
+            print("This Robot's Database. If no Positions are listed below, and you own stock ")
+            print("Positions then: 1.) Place at least 1 stock symbol to buy in the file named: ")
+            print("electricity-or-utility-stocks-to-buy-list.txt, 2.) Stop this program, ")
+            print("3.) Delete the trading_bot.db file, and ")
+            print(" 4.) restart this Robot. ")
+            print("Make sure you see your owned stock Positions listed below for the Robot ")
+            print("To Sell the stock positions Today. ")
 
             stocks_to_buy = get_stocks_to_trade()
 
@@ -350,6 +352,7 @@ def main():
 
             print_database_tables()
 
+            # account = api.get_account()
             # print(account)   # uncomment to print Alpaca Account details to debug the software
 
             if DEBUG:
