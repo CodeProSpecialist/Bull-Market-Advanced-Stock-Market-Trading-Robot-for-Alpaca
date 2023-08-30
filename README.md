@@ -1,3 +1,6 @@
+********* Download the newest version of this Python program. 
+Major software update on 8-29-2023 *********
+  
   Welcome to the Future of Trading with the Advanced Stock Market Trading Robot!
 
 Why Trade Manually When You Can Automate It? 
