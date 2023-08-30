@@ -291,8 +291,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
             qty = api.get_position(symbol).qty
             api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
             print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
-            logging.info(
-                f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
+            logging.info(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
             stocks_to_remove.append(symbol)  # Append symbols to remove
 
             time.sleep(2)  # keep this under the s in stocks
@@ -403,7 +402,7 @@ def main():
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
-            time.sleep(2)   # keep this under the l in logging
+            time.sleep(120)   # keep this under the l in logging
 
 
 def load_positions_from_database():
