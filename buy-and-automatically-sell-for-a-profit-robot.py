@@ -215,7 +215,6 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         profit_buy_price_setting = current_price < (0.992 * opening_price)
 
         # Never calculate ATR for a buy price or sell price because it is too slow. 1 second per stock. 
-        
         # Checking that we have enough money for the total_cost_for_qty.
         # Checking if the current price is equal to or less than the atr low price to buy stock.
         # It is also important to check that the current price is less than the opening price by 0.8%
