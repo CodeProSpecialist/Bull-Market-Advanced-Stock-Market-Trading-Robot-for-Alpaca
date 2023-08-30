@@ -23,7 +23,7 @@ api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
 PRINT_DATABASE = True   # keep this as True to view the stocks to sell.
 
-DEBUG = True   # this robot works faster when this is False.
+DEBUG = False   # this robot works faster when this is False.
 
 eastern = pytz.timezone('US/Eastern')
 
@@ -349,6 +349,20 @@ def main():
                 bought_stocks = update_bought_stocks_from_api()
             buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock)
             sell_stocks(bought_stocks, buy_sell_lock)
+
+            print("\n")
+            print("------------------------------------------------------------------------------------")
+            print("\n")
+            print("Stocks to Purchase:")
+            print("\n")
+            for symbol in stocks_to_buy:
+                current_price = get_current_price(symbol)
+
+                print(f"Symbol: {symbol} | Current Price: {current_price} ")
+
+            print("\n")
+            print("------------------------------------------------------------------------------------")
+            print("\n")
 
             print_database_tables()
 
