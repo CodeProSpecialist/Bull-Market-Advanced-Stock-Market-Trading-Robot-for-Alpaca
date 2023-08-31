@@ -196,15 +196,17 @@ def get_average_true_range(symbol):
     return atr[-1]
 
 
-def status_counter_buy_stocks():
+def status_printer_buy_stocks():
     print(f"\rBuy stocks function is working correctly right now. Checking stocks to buy.....", end='', flush=True)
     # After the loop, print a newline character to move to the next line with the print command below.
     print()   # keep this under the f in for
 
-def status_counter_sell_stocks():
+
+def status_printer_sell_stocks():
     print(f"\rSell stocks function is working correctly right now. Checking stocks to sell.....", end='', flush=True)
     # After the loop, print a newline character to move to the next line with the print command below.
     print()  # keep this under the f in for
+
 
 def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     stocks_to_remove = []
@@ -230,7 +232,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         # It is also important to check that the current price is less than the opening price by 0.8%
         # before buying the stock. This check is with the profit_buy_price_setting.
 
-        status_counter_buy_stocks()
+        status_printer_buy_stocks()
 
         if (cash_available >= total_cost_for_qty and current_price <= profit_buy_price_setting):
             api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
@@ -293,7 +295,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
     today_date = datetime.today().date()
     for symbol, (bought_price, bought_date) in bought_stocks.items():
 
-        status_counter_sell_stocks()
+        status_printer_sell_stocks()
 
         # Check if the stock was purchased at least one day before today
         if bought_date >= datetime.combine(today_date, datetime.min.time()):  # Convert today_date to datetime
@@ -317,9 +319,8 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
         time.sleep(1) # keep this under the i in if. this stops after checking each stock price
 
-    # I might not need the extra sleep command below
     # keep the below time.sleep(1) below the f in for.
-    #time.sleep(1)  # wait 1 second to not move too fast for the yfinance rate limit.
+    time.sleep(1)  # wait 1 second to not move too fast for the yfinance rate limit.
 
     with buy_sell_lock:
         for symbol in stocks_to_remove:
@@ -373,8 +374,22 @@ def main():
 
             if not bought_stocks:
                 bought_stocks = update_bought_stocks_from_api()
-            buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock)
-            sell_stocks(bought_stocks, buy_sell_lock)
+
+            # the below threads will run the buy_stocks and the sell_stocks functions at the same time
+            # in parallel to buy and sell more without taking more time than necessary.
+
+            # keep the below python code below the i in if not bought stocks
+            # Create threads for buy_stocks and sell_stocks
+            buy_thread = threading.Thread(target=buy_stocks, args=(bought_stocks, stocks_to_buy, buy_sell_lock))
+            sell_thread = threading.Thread(target=sell_stocks, args=(bought_stocks, buy_sell_lock))
+
+            # Start both threads
+            buy_thread.start()
+            sell_thread.start()
+
+            # Wait for both threads to finish
+            buy_thread.join()
+            sell_thread.join()
 
             print("\n")
             print("------------------------------------------------------------------------------------")
