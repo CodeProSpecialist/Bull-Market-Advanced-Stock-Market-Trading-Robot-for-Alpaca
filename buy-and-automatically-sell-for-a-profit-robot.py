@@ -242,7 +242,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
             time.sleep(2)  # keep this under the s in stocks
 
-        time.sleep(1)  # keep this under the i in if. this stops after checking each stock price
+        time.sleep(2)  # keep this under the i in if. this stops after checking each stock price
 
     # I might not need the extra sleep command below
     # keep the below time.sleep(1) below the f in for.
@@ -317,10 +317,11 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
             time.sleep(2)  # keep this under the s in stocks
 
-        time.sleep(1) # keep this under the i in if. this stops after checking each stock price
+        time.sleep(2) # keep this under the i in if. this stops after checking each stock price
 
+    # I might not need the extra sleep command below
     # keep the below time.sleep(1) below the f in for.
-    time.sleep(1)  # wait 1 second to not move too fast for the yfinance rate limit.
+    #time.sleep(1)  # wait 1 second to not move too fast for the yfinance rate limit.
 
     with buy_sell_lock:
         for symbol in stocks_to_remove:
