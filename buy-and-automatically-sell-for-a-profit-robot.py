@@ -21,9 +21,9 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-PRINT_DATABASE = True   # keep this as True to view the stocks to sell.
+PRINT_DATABASE = True  # keep this as True to view the stocks to sell.
 
-DEBUG = False   # this robot works faster when this is False.
+DEBUG = False  # this robot works faster when this is False.
 
 eastern = pytz.timezone('US/Eastern')
 
@@ -146,13 +146,13 @@ def get_stocks_to_trade():
         with open('electricity-or-utility-stocks-to-buy-list.txt', 'r') as file:
             stock_symbols = [line.strip() for line in file.readlines()]
 
-        if not stock_symbols:   # keep this under the w in with
+        if not stock_symbols:  # keep this under the w in with
             print("Error: The file electricity-or-utility-stocks-to-buy-list.txt doesn't contain any stock symbols.")
             print("This Robot does not work until you place stock symbols in the file named: ")
             print("electricity-or-utility-stocks-to-buy-list.txt ")
 
-        return stock_symbols   # keep this under the i in if
-    except FileNotFoundError:   # keep this under the t in try
+        return stock_symbols  # keep this under the i in if
+    except FileNotFoundError:  # keep this under the t in try
         print("Error: File not found.")
         return []
 
@@ -196,6 +196,16 @@ def get_average_true_range(symbol):
     return atr[-1]
 
 
+def status_counter_buy_stocks():
+    print(f"\rBuy stocks function is working correctly right now. Checking stocks to buy.....", end='', flush=True)
+    # After the loop, print a newline character to move to the next line with the print command below.
+    print()   # keep this under the f in for
+
+def status_counter_sell_stocks():
+    print(f"\rSell stocks function is working correctly right now. Checking stocks to sell.....", end='', flush=True)
+    # After the loop, print a newline character to move to the next line with the print command below.
+    print()  # keep this under the f in for
+
 def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     stocks_to_remove = []
 
@@ -203,9 +213,9 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         today_date = datetime.today().date()
         current_price = get_current_price(symbol)
         opening_price = get_opening_price(symbol)
-        
+
         cash_available = round(float(api.get_account().cash), 2)
-        
+
         qty_of_one_stock = 1
 
         # Calculate the total cost if we buy 'qty_of_one_stock' shares
@@ -220,6 +230,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         # It is also important to check that the current price is less than the opening price by 0.8%
         # before buying the stock. This check is with the profit_buy_price_setting.
 
+        status_counter_buy_stocks()
 
         if (cash_available >= total_cost_for_qty and current_price <= profit_buy_price_setting):
             api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
@@ -240,9 +251,9 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             session.add(trade_history)
             db_position = Position(symbol=symbol, quantity=qty_of_one_stock, avg_price=price, purchase_date=date)
             session.add(db_position)
-        session.commit()   # keep this under the f in for
+        session.commit()  # keep this under the f in for
 
-        refresh_after_buy()   # keep this under the s in session
+        refresh_after_buy()  # keep this under the s in session
 
 
 def refresh_after_buy():
@@ -268,8 +279,8 @@ def update_bought_stocks_from_api():
             db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price,
                                    purchase_date=purchase_date)
             session.add(db_position)
-    session.commit()   # keep this under the f in for
-    return bought_stocks   # keep this under the s in session
+    session.commit()  # keep this under the f in for
+    return bought_stocks  # keep this under the s in session
 
 
 def sell_stocks(bought_stocks, buy_sell_lock):
@@ -277,6 +288,9 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
     today_date = datetime.today().date()
     for symbol, (bought_price, bought_date) in bought_stocks.items():
+
+        status_counter_sell_stocks()
+
         # Check if the stock was purchased at least one day before today
         if bought_date >= datetime.combine(today_date, datetime.min.time()):  # Convert today_date to datetime
             continue  # Skip this stock if it was purchased today or in the future
@@ -284,14 +298,15 @@ def sell_stocks(bought_stocks, buy_sell_lock):
         position = api.get_position(symbol)  # Get the position details from Alpaca API
         bought_price = float(position.avg_entry_price)  # The price you purchased the stock for.
 
-        # Never calculate ATR for a buy price or sell price because it is too slow. 1 second per stock. 
-        
-         # Sell stocks if the current price is more than 1.6% higher than the purchase price. 
+        # Never calculate ATR for a buy price or sell price because it is too slow. 1 second per stock.
+
+        # Sell stocks if the current price is more than 1.6% higher than the purchase price.
         if current_price >= bought_price * 1.016:
             qty = api.get_position(symbol).qty
             api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
             print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
-            logging.info(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
+            logging.info(
+                f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
             stocks_to_remove.append(symbol)  # Append symbols to remove
 
             time.sleep(2)  # keep this under the s in stocks
@@ -306,9 +321,9 @@ def sell_stocks(bought_stocks, buy_sell_lock):
                                          date=today_date)
             session.add(trade_history)
             session.query(Position).filter_by(symbol=symbol).delete()
-        session.commit()   # keep this under the f in for
+        session.commit()  # keep this under the f in for
 
-        refresh_after_sell()   # keep this under the s in session
+        refresh_after_sell()  # keep this under the s in session
 
 
 def refresh_after_sell():
@@ -381,7 +396,8 @@ def main():
                 for symbol in stocks_to_buy:
                     current_price = get_current_price(symbol)
                     atr_low_price = get_atr_low_price(symbol)
-                    print(f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
+                    print(
+                        f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
 
                 print("\n")
                 print("------------------------------------------------------------------------------------")
@@ -391,18 +407,19 @@ def main():
                 for symbol, _ in bought_stocks.items():
                     current_price = get_current_price(symbol)
                     atr_high_price = get_atr_high_price(symbol)
-                    print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
+                    print(
+                        f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
 
                 print("\n")
 
             # keep the below time.sleep(60) to 60 seconds because yfinance api 
             # will stop the stock data feed for the reason of exceeding the rate limit or from this program being too fast. 
             print("Waiting 60 seconds before checking price data again........")
-            time.sleep(60)   # keep this under the i in if
+            time.sleep(60)  # keep this under the i in if
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
-            time.sleep(120)   # keep this under the l in logging
+            time.sleep(120)  # keep this under the l in logging
 
 
 def load_positions_from_database():
