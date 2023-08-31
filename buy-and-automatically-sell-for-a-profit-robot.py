@@ -371,8 +371,8 @@ def main():
             print("electricity-or-utility-stocks-to-buy-list.txt, 2.) Stop this program, ")
             print("3.) Delete the trading_bot.db file, and 4.) restart this Robot. ")
             print("\n")
-            print("Make sure you see your owned stock Positions listed below  "
-                  "in the section named 'Positions in the Database To Sell 1 or More Days After the Date Shown' ")
+            print("Make sure you see your owned stock Positions listed below ")
+            print("in the section named: 'Positions in the Database To Sell 1 or More Days After the Date Shown' ")
             print("for the Robot To Sell the stock positions 1 day after the purchased date shown. ")
             print("\n")
             print("------------------------------------------------------------------------------------")
