@@ -147,13 +147,21 @@ def get_stocks_to_trade():
             stock_symbols = [line.strip() for line in file.readlines()]
 
         if not stock_symbols:  # keep this under the w in with
+            print("\n")
+            print("************************************************************************************")
             print("Error: The file electricity-or-utility-stocks-to-buy-list.txt doesn't contain any stock symbols.")
             print("This Robot does not work until you place stock symbols in the file named: ")
             print("electricity-or-utility-stocks-to-buy-list.txt ")
+            print("************************************************************************************")
+            print("\n")
 
         return stock_symbols  # keep this under the i in if
     except FileNotFoundError:  # keep this under the t in try
-        print("Error: File not found.")
+        print("\n")
+        print("*********************************************************************")
+        print("Error: File not found: electricity-or-utility-stocks-to-buy-list.txt ")
+        print("*********************************************************************")
+        print("\n")
         return []
 
 
