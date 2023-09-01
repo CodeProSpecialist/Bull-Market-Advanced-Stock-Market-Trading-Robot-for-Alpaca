@@ -297,8 +297,11 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
         status_printer_sell_stocks()
 
+        # Convert today_date to datetime
+        today_datetime = datetime.combine(today_date, datetime.min.time())
+        
         # Check if the stock was purchased at least one day before today
-        if bought_date >= datetime.combine(today_date, datetime.min.time()):  # Convert today_date to datetime
+        if bought_date < today_datetime: 
             continue  # Skip this stock if it was purchased today or in the future
         current_price = get_current_price(symbol)
         position = api.get_position(symbol)  # Get the position details from Alpaca API
