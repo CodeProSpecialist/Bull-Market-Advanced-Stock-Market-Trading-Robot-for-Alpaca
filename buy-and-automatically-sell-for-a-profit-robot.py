@@ -131,8 +131,8 @@ def print_database_tables():
 
         print("----------------------------------------------------------------")
         # Print Position table
-
-        print("\nPositions in the Database To Sell 1 or More Days After the Date Shown:")
+        print("\n")
+        print("Positions in the Database To Sell 1 or More Days After the Date Shown:")
         print("\n")
         print("Stock | Quantity | Avg. Price | Purchase Date or The 1st Day This Robot Began Working ")
         print("\n")
@@ -148,19 +148,19 @@ def get_stocks_to_trade():
 
         if not stock_symbols:  # keep this under the w in with
             print("\n")
-            print("************************************************************************************")
-            print("Error: The file electricity-or-utility-stocks-to-buy-list.txt doesn't contain any stock symbols.")
-            print("This Robot does not work until you place stock symbols in the file named: ")
-            print("electricity-or-utility-stocks-to-buy-list.txt ")
-            print("************************************************************************************")
+            print("********************************************************************************************************")
+            print("*   Error: The file electricity-or-utility-stocks-to-buy-list.txt doesn't contain any stock symbols.   *")
+            print("*   This Robot does not work until you place stock symbols in the file named:                          *")
+            print("*       electricity-or-utility-stocks-to-buy-list.txt                                                  *")
+            print("********************************************************************************************************")
             print("\n")
 
         return stock_symbols  # keep this under the i in if
     except FileNotFoundError:  # keep this under the t in try
         print("\n")
-        print("*********************************************************************")
-        print("Error: File not found: electricity-or-utility-stocks-to-buy-list.txt ")
-        print("*********************************************************************")
+        print("****************************************************************************")
+        print("*   Error: File not found: electricity-or-utility-stocks-to-buy-list.txt   *")
+        print("****************************************************************************")
         print("\n")
         return []
 
