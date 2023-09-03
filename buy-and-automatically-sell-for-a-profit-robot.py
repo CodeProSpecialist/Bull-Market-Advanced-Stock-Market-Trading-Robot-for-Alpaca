@@ -213,13 +213,13 @@ def get_average_true_range(symbol):
 def status_printer_buy_stocks():
     print(f"\rBuy stocks function is working correctly right now. Checking stocks to buy.....", end='', flush=True)
     # After the loop, print a newline character to move to the next line with the print command below.
-    print()  # keep this under the f in for
+    print()    # keep this under the s in status_printer_buy_stocks()
 
 
 def status_printer_sell_stocks():
     print(f"\rSell stocks function is working correctly right now. Checking stocks to sell.....", end='', flush=True)
     # After the loop, print a newline character to move to the next line with the print command below.
-    print()  # keep this under the f in for
+    print()    # keep this under the s in status_printer_sell_stocks()
 
 
 def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
