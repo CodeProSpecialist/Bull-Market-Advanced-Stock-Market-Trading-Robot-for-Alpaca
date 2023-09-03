@@ -156,6 +156,7 @@ def get_stocks_to_trade():
             print("\n")
 
         return stock_symbols  # keep this under the i in if
+    
     except FileNotFoundError:  # keep this under the t in try
         print("\n")
         print("****************************************************************************")
