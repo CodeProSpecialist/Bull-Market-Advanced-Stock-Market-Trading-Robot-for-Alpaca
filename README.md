@@ -1,4 +1,6 @@
 ********* Download the newest version of this Python program. 
+The recent software updates within the past 7 days have fixed a software bug 
+that was previously unknown. 
 Important software update on September 3, 2023 *********
   
   Welcome to the Future of Trading with the Advanced Stock Market Trading Robot!
