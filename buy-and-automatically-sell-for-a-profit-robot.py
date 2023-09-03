@@ -231,9 +231,9 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         # Calculate the total cost if we buy 'qty_of_one_stock' shares
         total_cost_for_qty = current_price * qty_of_one_stock
 
-        # - 0.8% is often the top 17% of electricity stocks 
-        # profit buy price setting: 0.8% subtracted from the opening price
-        profit_buy_price_setting = opening_price * 0.992 
+        # - 0.9% is often the top 15% - 17% of electricity stocks 
+        # profit buy price setting: 0.9% subtracted from the opening price
+        profit_buy_price_setting = opening_price * 0.009
 
         # Never calculate ATR for a buy price or sell price because it is too slow. 1 second per stock. 
         # Checking that we have enough money for the total_cost_for_qty.
