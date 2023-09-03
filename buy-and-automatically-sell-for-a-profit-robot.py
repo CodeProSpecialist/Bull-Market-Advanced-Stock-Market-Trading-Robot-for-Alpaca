@@ -324,8 +324,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
             qty = api.get_position(symbol).qty
             api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
             print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
-            logging.info(
-                f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
+            logging.info(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
             stocks_to_remove.append(symbol)  # Append symbols to remove
 
             time.sleep(2)  # keep this under the s in stocks
@@ -440,8 +439,7 @@ def main():
                 for symbol in stocks_to_buy:
                     current_price = get_current_price(symbol)
                     atr_low_price = get_atr_low_price(symbol)
-                    print(
-                        f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
+                    print(f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
 
                 print("\n")
                 print("------------------------------------------------------------------------------------")
@@ -451,8 +449,7 @@ def main():
                 for symbol, _ in bought_stocks.items():
                     current_price = get_current_price(symbol)
                     atr_high_price = get_atr_high_price(symbol)
-                    print(
-                        f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
+                    print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
 
                 print("\n")
 
