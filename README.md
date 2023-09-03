@@ -18,22 +18,22 @@ Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, special
 
 But Wait, There's More!
 
-DEBUG Mode
+DEBUG Mode: 
 Tired of guessing what's happening inside your trading robot? Activate DEBUG mode, and you'll get a detailed look into the stocks you're planning to purchase and sell, along with their ATR-derived buy and sell prices. It's like having X-ray vision for your trades!
 
-PRINT_DATABASE Option
+PRINT_DATABASE Option: 
 Curious about your trading history or current positions? Turn on PRINT_DATABASE, and you'll see the entire Trade History and Positions tables printed right in your console! It's your trading journey at a glance!
 
-Market Hours Monitoring
+Market Hours Monitoring: 
 Never worry about trading out of hours. The bot knows when the market is open and ensures that it only trades during those times.
 
-Easy Customization
+Easy Customization: 
 Manage your stock selection by simply updating the 'electricity-or-utility-stocks-to-buy-list.txt' file. It's that simple!
 
-Logging
+Logging: 
 Keep track of buy and sell signals with detailed logging. Every move is recorded, so you're never in the dark.
 
-Educational
+Educational: 
 Learn from the code! The well-documented functions and clear structure make this a fantastic learning opportunity for aspiring traders and Python enthusiasts alike.
 
 Join the trading revolution today with the Advanced Stock Market Trading Robot! 
