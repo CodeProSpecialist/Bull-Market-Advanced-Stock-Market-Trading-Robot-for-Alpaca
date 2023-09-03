@@ -1,5 +1,5 @@
 ********* Download the newest version of this Python program. 
-The recent software updates within the past 7 days have fixed a software bug 
+The recent software updates within the past 7 days before 9-3-2023 have fixed a software bug 
 that was previously unknown. 
 Important software update on September 3, 2023 *********
   
