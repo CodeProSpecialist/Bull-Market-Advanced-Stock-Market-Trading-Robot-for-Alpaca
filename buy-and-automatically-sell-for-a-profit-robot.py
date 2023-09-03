@@ -115,7 +115,7 @@ def stop_if_stock_market_is_closed():
         print("This software is not affiliated or endorsed by Alpaca Securities, LLC ")
         print("This software does, however, try to be a useful, profitable, and valuable ")
         print("stock market trading application. ")
-        time.sleep(60)  # Sleep for 1 minute and check again
+        time.sleep(60)  # Sleep for 1 minute and check again. Keep this under the p in print. 
 
 
 def print_database_tables():
@@ -138,7 +138,7 @@ def print_database_tables():
         print("\n")
         for record in session.query(Position).all():
             print(record.symbol, record.quantity, record.avg_price, record.purchase_date)
-        print("\n")
+        print("\n")   # keep this under the f in for 
 
 
 def get_stocks_to_trade():
@@ -163,7 +163,7 @@ def get_stocks_to_trade():
         print("*   Error: File not found: electricity-or-utility-stocks-to-buy-list.txt   *")
         print("****************************************************************************")
         print("\n")
-        return []
+        return []   # keep this under the p in print 
 
 
 def remove_symbol_from_trade_list(symbol):
@@ -172,7 +172,7 @@ def remove_symbol_from_trade_list(symbol):
     with open('electricity-or-utility-stocks-to-buy-list.txt', 'w') as file:
         for line in lines:
             if line.strip() != symbol:
-                file.write(line)
+                file.write(line)   # keep this under the i in line 
 
 
 def get_opening_price(symbol):
@@ -477,9 +477,10 @@ def load_positions_from_database():
     return bought_stocks
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':   # keep this to the far left side.  
     try:
-        main()
-    except Exception as e:
-        logging.error(f"Error encountered: {e}")
-        session.close()
+        main()   # keep this under the e in name 
+        
+    except Exception as e:   # keep this under the t in try 
+        logging.error(f"Error encountered: {e}")   # keep this under the p in except 
+        session.close()   # keep this under the l in logging 
