@@ -91,7 +91,7 @@ while True:
         time_until_next_run = (next_run - now).total_seconds()
 
         # Display the time until the next run
-        print(f"Next run in {time_until_next_run / 3600} hours.")
+        print(f"Next run in {time_until_next_run / 3600:.2f} hours.")
         time.sleep(time_until_next_run)
 
     except Exception as e:
