@@ -42,9 +42,16 @@ while True:
         eastern = pytz.timezone('US/Eastern')
         now = datetime.now(eastern)
 
+        print("")
+        print(" Performance Stock List Writer ")
+
+        print("")
+
         # Display current date and time
         current_time = now.strftime('%A, %B %d, %Y, %I:%M:%S %p')
         print(f"Current date & time (Eastern Time): {current_time}")
+
+        print("")
 
         if is_first_run() or (not is_first_run() and (now.weekday() in [0, 1, 2, 3, 4] and start_time <= now.time() <= end_time)):
             # Add the code to run during the specified time range here
@@ -61,8 +68,10 @@ while True:
             # Fetch data for each stock symbol and calculate percentage change
             for symbol in stock_symbols:
                 stock = yf.Ticker(symbol)
+                print("")
                 print("Please wait. The stock data is being calculated right now.....")
-                time.sleep(1.75)  # Delay to avoid overloading the API
+                print("")
+                time.sleep(2)  # Delay to avoid overloading the API
                 percentage_change = calculate_percentage_change(stock)
                 stock_data.append((symbol, percentage_change))
 
