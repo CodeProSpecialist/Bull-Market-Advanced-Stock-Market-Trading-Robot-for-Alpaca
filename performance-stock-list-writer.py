@@ -17,6 +17,26 @@ def is_within_time_range(start_time, end_time):
     now = datetime.now(eastern).time()
     return start_time <= now <= end_time
 
+# Function to check if this is the first run
+def is_first_run():
+    try:
+        with open("run_counter.txt", "r") as counter_file:
+            count = int(counter_file.read())
+            return count == 0
+    except FileNotFoundError:
+        return True
+
+# Function to update the run counter
+def update_run_counter():
+    try:
+        with open("run_counter.txt", "r") as counter_file:
+            count = int(counter_file.read())
+        with open("run_counter.txt", "w") as counter_file:
+            counter_file.write(str(count + 1))
+    except FileNotFoundError:
+        with open("run_counter.txt", "w") as counter_file:
+            counter_file.write("1")
+
 # Define the start and end times for when the program should run
 start_time = datetime.now().replace(hour=2, minute=30, second=0, microsecond=0).time()
 end_time = datetime.now().replace(hour=9, minute=25, second=0, microsecond=0).time()
@@ -26,11 +46,11 @@ interval_hours = 48
 
 while True:
     try:
-        # Get the current day of the week
-        current_day = datetime.now(pytz.timezone('US/Eastern')).weekday()
-
-        if current_day in [0, 2, 4] and is_within_time_range(start_time, end_time):
+        if is_first_run() or (not is_first_run() and (current_day in [0, 2, 4] and is_within_time_range(start_time, end_time))):
             # Add the code to run during the specified time range here
+            if is_first_run():
+                update_run_counter()
+
             # Read the list of stock symbols from the input file
             with open("list-of-stock-symbols-to-scan.txt", "r") as input_file:
                 stock_symbols = input_file.read().splitlines()
@@ -58,30 +78,6 @@ while True:
                     output_file.write(f"{stock[0]}\n")
 
             print("Stocks list updated successfully.")
-
-        elif current_day == 0:  # Monday
-            # Calculate the time until the next run on Wednesday
-            next_run = datetime.now(pytz.timezone('US/Eastern')) + timedelta(days=2)
-            next_run = next_run.replace(hour=2, minute=30, second=0, microsecond=0)
-            time_until_next_run = (next_run - datetime.now(pytz.timezone('US/Eastern'))).total_seconds()
-            print(f"Next run will be on Wednesday at 2:30 AM. Waiting for {time_until_next_run / 3600} hours.")
-            time.sleep(time_until_next_run)
-
-        elif current_day == 2:  # Wednesday
-            # Calculate the time until the next run on Friday
-            next_run = datetime.now(pytz.timezone('US/Eastern')) + timedelta(days=2)
-            next_run = next_run.replace(hour=2, minute=30, second=0, microsecond=0)
-            time_until_next_run = (next_run - datetime.now(pytz.timezone('US/Eastern'))).total_seconds()
-            print(f"Next run will be on Friday at 2:30 AM. Waiting for {time_until_next_run / 3600} hours.")
-            time.sleep(time_until_next_run)
-
-        elif current_day == 4:  # Friday
-            # Calculate the time until the next run on Monday
-            next_run = datetime.now(pytz.timezone('US/Eastern')) + timedelta(days=3)
-            next_run = next_run.replace(hour=2, minute=30, second=0, microsecond=0)
-            time_until_next_run = (next_run - datetime.now(pytz.timezone('US/Eastern'))).total_seconds()
-            print(f"Next run will be on Monday at 2:30 AM. Waiting for {time_until_next_run / 3600} hours.")
-            time.sleep(time_until_next_run)
 
         # Calculate the time until the next run
         now = datetime.now(pytz.timezone('US/Eastern'))
