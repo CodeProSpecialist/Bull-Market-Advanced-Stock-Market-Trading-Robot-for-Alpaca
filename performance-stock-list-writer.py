@@ -1,7 +1,7 @@
 import time
-from datetime import datetime, timedelta
 import pytz
 import yfinance as yf
+from datetime import datetime, timedelta
 
 # Function to calculate the percentage change in stock price over the past 14 days
 def calculate_percentage_change(stock):
@@ -10,12 +10,6 @@ def calculate_percentage_change(stock):
     end_price = history['Close'][-1]
     percentage_change = ((end_price - start_price) / start_price) * 100
     return percentage_change
-
-# Function to check if the current time is within the specified time range
-def is_within_time_range(start_time, end_time):
-    eastern = pytz.timezone('US/Eastern')
-    now = datetime.now(eastern).time()
-    return start_time <= now <= end_time
 
 # Function to check if this is the first run
 def is_first_run():
@@ -41,15 +35,20 @@ def update_run_counter():
 start_time = datetime.now().replace(hour=2, minute=30, second=0, microsecond=0).time()
 end_time = datetime.now().replace(hour=9, minute=25, second=0, microsecond=0).time()
 
-# Run the program every 48 hours (2 days)
-interval_hours = 48
+# Start the program when the current time is within the specified time range
+while True:
+    # Get the current time in Eastern Time
+    eastern = pytz.timezone('US/Eastern')
+    now = datetime.now(eastern).time()
 
+    # Check if the current time is within market hours
+    if now.weekday() <= 4 and start_time <= now <= end_time:
+        break
+
+# Main program loop
 while True:
     try:
-        # Get the current day of the week
-        current_day = datetime.now(pytz.timezone('US/Eastern')).weekday()
-
-        if is_first_run() or (not is_first_run() and (current_day in [0, 2, 4] and is_within_time_range(start_time, end_time))):
+        if is_first_run() or (not is_first_run() and (now.weekday() in [0, 1, 2, 3, 4] and start_time <= now <= end_time)):
             # Add the code to run during the specified time range here
             if is_first_run():
                 update_run_counter()
@@ -65,7 +64,7 @@ while True:
             for symbol in stock_symbols:
                 stock = yf.Ticker(symbol)
                 print("Please wait. The stock data is being calculated right now.....")
-                time.sleep(2)  # Delay to avoid overloading the API
+                time.sleep(1.75)  # Delay to avoid overloading the API
                 percentage_change = calculate_percentage_change(stock)
                 stock_data.append((symbol, percentage_change))
 
@@ -84,7 +83,8 @@ while True:
 
         # Calculate the time until the next run
         now = datetime.now(pytz.timezone('US/Eastern'))
-        next_run = now + timedelta(hours=interval_hours)
+        next_run = now + timedelta(hours=24)
+        next_run = next_run.replace(hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
         time_until_next_run = (next_run - now).total_seconds()
 
         # Sleep until the next run
