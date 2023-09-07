@@ -73,7 +73,7 @@ the program section "def buy_stocks()", locate qty_of_one_stock = 1 and change t
 qty_of_one_stock = 20
 
 
-This stock market robot works best if you purchase 25 to 30 different stocks at only 1 to 4 shares per stock because the stocks are sold really soon when the price is at a profitable position to sell the stock. This Stock Trading Robot has a strategy to buy stocks today for selling tomorrow because this allows for much more stock trading activity to take place within the stock trading rules of day trading 3 maximum times in 5 business days. 
+This stock market robot works best if you purchase approximately 10 to 15 different stocks at only 1 to 4 shares per stock because the stocks are sold really soon when the price is at a profitable position to sell the stock. This Stock Trading Robot has a strategy to buy stocks today for selling tomorrow because this allows for much more stock trading activity to take place within the stock trading rules of day trading 3 maximum times in 5 business days. 
 
 Any stocks purchased today will not begin to sell until tomorrow or until a future day when the stock price increases during stock market 
 trading hours, Monday through Friday. 
