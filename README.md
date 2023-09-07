@@ -1,7 +1,10 @@
 ********* Download the newest version of this Python program. 
-The recent software updates within the past 7 days before 9-3-2023 have fixed a software bug 
+The recent software updates within the past 7 days before 9-7-2023 have fixed a software bug 
 that was previously unknown. 
-Important software update on September 3, 2023 *********
+The software bug prevented stocks from being purchased in the buy stocks function due to a 
+math calculation error. 
+The error was fixed on 9-7-2023. 
+Important software update on September 7, 2023 *********
   
   Welcome to the Future of Trading with the Advanced Stock Market Trading Robot!
 
