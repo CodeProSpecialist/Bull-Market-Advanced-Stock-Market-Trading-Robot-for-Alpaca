@@ -35,20 +35,18 @@ def update_run_counter():
 start_time = datetime.now().replace(hour=2, minute=30, second=0, microsecond=0).time()
 end_time = datetime.now().replace(hour=9, minute=25, second=0, microsecond=0).time()
 
-# Start the program when the current time is within the specified time range
-while True:
-    # Get the current time in Eastern Time
-    eastern = pytz.timezone('US/Eastern')
-    now = datetime.now(eastern)
-
-    # Check if the current time is within market hours (Monday to Friday)
-    if now.weekday() <= 4 and start_time <= now.time() <= end_time:
-        break
-
 # Main program loop
 while True:
     try:
-        if is_first_run() or (not is_first_run() and (now.weekday() in [0, 1, 2, 3, 4] and start_time <= now <= end_time)):
+        # Get the current time in Eastern Time
+        eastern = pytz.timezone('US/Eastern')
+        now = datetime.now(eastern)
+
+        # Display current date and time
+        current_time = now.strftime('%A, %B %d, %Y, %I:%M:%S %p')
+        print(f"Current date & time (Eastern Time): {current_time}")
+
+        if is_first_run() or (not is_first_run() and (now.weekday() in [0, 1, 2, 3, 4] and start_time <= now.time() <= end_time)):
             # Add the code to run during the specified time range here
             if is_first_run():
                 update_run_counter()
@@ -64,7 +62,7 @@ while True:
             for symbol in stock_symbols:
                 stock = yf.Ticker(symbol)
                 print("Please wait. The stock data is being calculated right now.....")
-                time.sleep(2)  # Delay to avoid overloading the API
+                time.sleep(1.75)  # Delay to avoid overloading the API
                 percentage_change = calculate_percentage_change(stock)
                 stock_data.append((symbol, percentage_change))
 
@@ -79,15 +77,20 @@ while True:
                 for stock in top_stocks:
                     output_file.write(f"{stock[0]}\n")
 
+            # Calculate the time of the next run
+            next_run = now + timedelta(hours=24)
+            next_run = next_run.replace(hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
+            next_run_time = next_run.strftime('%I:%M:%S %p')
+            print(f"Next run will be at {next_run_time} (Eastern Time).")
+
             print("Stocks list updated successfully.")
 
         # Calculate the time until the next run
-        now = datetime.now(pytz.timezone('US/Eastern'))
         next_run = now + timedelta(hours=24)
         next_run = next_run.replace(hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
         time_until_next_run = (next_run - now).total_seconds()
 
-        # Sleep until the next run
+        # Display the time until the next run
         print(f"Next run in {time_until_next_run / 3600} hours.")
         time.sleep(time_until_next_run)
 
