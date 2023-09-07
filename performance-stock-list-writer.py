@@ -39,10 +39,10 @@ end_time = datetime.now().replace(hour=9, minute=25, second=0, microsecond=0).ti
 while True:
     # Get the current time in Eastern Time
     eastern = pytz.timezone('US/Eastern')
-    now = datetime.now(tz=eastern).time()
+    now = datetime.now(eastern)
 
     # Check if the current time is within market hours (Monday to Friday)
-    if now.weekday() <= 4 and start_time <= now <= end_time:
+    if now.weekday() <= 4 and start_time <= now.time() <= end_time:
         break
 
 # Main program loop
