@@ -65,7 +65,7 @@ while True:
             for symbol in stock_symbols:
                 stock = yf.Ticker(symbol)
                 print("Please wait. The stock data is being calculated right now.....")
-                time.sleep(1.75)  # Delay to avoid overloading the API
+                time.sleep(2)  # Delay to avoid overloading the API
                 percentage_change = calculate_percentage_change(stock)
                 stock_data.append((symbol, percentage_change))
 
