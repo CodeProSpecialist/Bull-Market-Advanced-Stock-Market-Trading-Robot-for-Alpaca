@@ -46,6 +46,9 @@ interval_hours = 48
 
 while True:
     try:
+        # Get the current day of the week
+        current_day = datetime.now(pytz.timezone('US/Eastern')).weekday()
+
         if is_first_run() or (not is_first_run() and (current_day in [0, 2, 4] and is_within_time_range(start_time, end_time))):
             # Add the code to run during the specified time range here
             if is_first_run():
