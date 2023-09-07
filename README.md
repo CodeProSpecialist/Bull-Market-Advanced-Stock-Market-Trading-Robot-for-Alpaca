@@ -1,7 +1,7 @@
 ********* Download the newest version of this Python program. 
 The recent software updates within the past 7 days before 9-7-2023 have fixed a software bug 
 that was previously unknown. 
-The software bug prevented stocks from being purchased in the buy stocks function due to a 
+The software bug prevented stocks from being purchased in the buy_stocks function due to a 
 math calculation error. 
 The error was fixed on 9-7-2023. 
 Important software update on September 7, 2023 *********
