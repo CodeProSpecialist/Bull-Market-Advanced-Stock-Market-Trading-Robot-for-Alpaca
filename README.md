@@ -94,7 +94,7 @@ After placing your alpaca keys at the bottom of /home/nameofyourhomefolderhere/.
 
 You will need 2 command line terminals open to fully operate the Advanced Stock Market Trading Robot
 because one terminal window is the robot and the other terminal window is for 
-updating the list of stocks to buy with the most successful stocks. 
+updating the list of stocks to buy with the most successful energy or electric utility company stocks. 
 
 python3 buy-and-automatically-sell-for-a-profit-robot.py 
 
