@@ -90,9 +90,12 @@ while True:
             next_run = now + timedelta(hours=24)
             next_run = next_run.replace(hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
             next_run_time = next_run.strftime('%I:%M:%S %p')
+            print("")
             print(f"Next run will be at {next_run_time} (Eastern Time).")
-
+            print("")
             print("Stocks list updated successfully.")
+            print("")
+
 
         # Calculate the time until the next run
         next_run = now + timedelta(hours=24)
@@ -100,10 +103,14 @@ while True:
         time_until_next_run = (next_run - now).total_seconds()
 
         # Display the time until the next run
+        print("")
         print(f"Next run in {time_until_next_run / 3600:.2f} hours.")
+        print("")
         time.sleep(time_until_next_run)
 
     except Exception as e:
+        print("")
         print(f"An error occurred: {str(e)}")
         print("Restarting the program in 5 minutes...")
+        print("")
         time.sleep(300)  # Sleep for 5 minutes before restarting
