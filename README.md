@@ -2,7 +2,8 @@
 The recent software updates within the past 7 days before 9-8-2023 have fixed a software bug 
 that was previously unknown. 
 
-The error was fixed on 9-8-2023.  
+The error was fixed on 9-8-2023. That should be the last error to fix. 
+I apologize for any previous software errors. I am doing the best I can do. 
 
 Important software update on September 8, 2023 *********
   
