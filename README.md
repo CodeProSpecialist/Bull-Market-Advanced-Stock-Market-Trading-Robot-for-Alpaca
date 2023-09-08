@@ -9,12 +9,15 @@ I apologize for any previous software errors. I am doing the best I can do.
 This is an extremely complicated Python program. 
 
 Important software update on September 8, 2023 *********
-  
-  Welcome to the Future of Trading with the Advanced Stock Market Trading Robot!
 
-Why Trade Manually When You Can Automate It? 
+-----------------------------------------------------------------------------------------------
+        Welcome to the Future of Trading with the Advanced Stock Market Trading Robot!
 
-Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, Version 2
+                    Why Trade Manually When You Can Automate It? 
+
+        Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, Version 2
+-----------------------------------------------------------------------------------------------
+   
 
 Are you ready to take your stock trading game to the next level? The Advanced Stock Market Trading Robot is here to help you navigate the complexities of the stock market and make informed trading decisions. This cutting-edge trading software is designed to excel in recession market conditions, focusing exclusively on electricity stocks.
 
