@@ -19,7 +19,7 @@ Important software update on September 8, 2023 *********
 -----------------------------------------------------------------------------------------------
    
 
-Are you ready to take your stock trading game to the next level? The Advanced Stock Market Trading Robot is here to help you navigate the complexities of the stock market and make informed trading decisions. This cutting-edge trading software is designed to excel in recession market conditions, focusing exclusively on electricity stocks.
+Are you ready to take your stock trading game to the next level? The Advanced Stock Market Trading Robot is here to help you navigate the complexities of the stock market and make informed trading decisions. This cutting-edge trading software is designed to excel in recession market conditions, focusing exclusively on electricity utility and energy stocks. 
 
 Stock Robot
 
