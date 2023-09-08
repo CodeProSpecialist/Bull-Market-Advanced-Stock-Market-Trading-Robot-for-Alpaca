@@ -14,6 +14,38 @@ Important software update on September 8, 2023 *********
 
 Why Trade Manually When You Can Automate It? 
 
+Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, Version 2
+
+Are you ready to take your stock trading game to the next level? The Advanced Stock Market Trading Robot is here to help you navigate the complexities of the stock market and make informed trading decisions. This cutting-edge trading software is designed to excel in recession market conditions, focusing exclusively on electricity stocks.
+
+Stock Robot
+
+Key Features:
+
+  Real-Time Trading: Our robot operates during stock market hours, ensuring you never miss an opportunity. It's designed to work efficiently and effectively, making the most of your trading time.
+
+  Data-Driven Insights: We leverage powerful data analysis tools like Python 3 SQLAlchemy, Talib, and yfinance to provide you with accurate and timely information for your trading decisions.
+
+  Lock and Load: With built-in thread locking mechanisms, you can buy and sell stocks in parallel without worrying about conflicts or errors. Your trades will execute smoothly.
+
+  Detailed Logging: Every trade and decision is meticulously logged, so you can review your trading history and learn from your past experiences.
+
+How It Works:
+
+    Prepare Your List: Add your preferred electricity stocks to the "electricity-or-utility-stocks-to-buy-list.txt" file. This is your watchlist.
+
+    Set Up: Ensure you have your Alpaca API credentials (API Key ID and API Secret Key) ready. These will be used to interact with the market.
+
+    Run the Robot: Start the robot using the "buy-and-automatically-sell-for-a-profit-robot.py" script. It will automatically buy and sell stocks based on your criteria.
+
+    Monitoring: The robot will continuously monitor the market, buying stocks meeting your criteria and selling when the conditions are right.
+
+    Review: Keep an eye on your trades and positions. The robot logs all actions, providing you with a clear picture of your trading history.
+
+Stay In Control:
+
+The Advanced Stock Market Trading Robot is designed to work with stocks you already own. It won't initiate new positions unless you specify them in your watchlist. This ensures you maintain control over your portfolio.
+
 Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, specially designed to help you take your trading game to the next level! This state-of-the-art trading algorithm is powered by Python, and it's packed with amazing features that you'll love:
 
 1. Parallel Execution: The "buy_stocks" function runs in parallel with the main program, allowing it to continuously monitor and purchase stocks.
@@ -153,7 +185,17 @@ python3 performance-stock-list-writer.py
 The performance-stock-list-writer.py python program will make sure that only 
 successful stocks are purchased by the Advanced Stock Market Trading Robot. 
 
-Disclaimer: Remember that all trading involves risks. The ability to successfully implement these strategies depends on both market conditions and individual skills and knowledge. As such, trading should only be done with funds that you can afford to lose. Always do thorough research before making investment decisions, and consider consulting with a financial advisor. This is use at your own risk software. This software does not include any warranty or guarantees other than the useful tasks that may or may not work as intended for the software application end user. The software developer shall not be held liable for any financial losses or damages that occur as a result of using this software for any reason to the fullest extent of the law. Using this software is your agreement to these terms. This software is designed to be helpful and useful to the end user.
+Disclaimer:
+
+This software is not affiliated with or endorsed by Alpaca Securities, LLC. 
+It aims to be a valuable tool for stock market trading, but all trading involves risks. 
+Use it responsibly and consider seeking advice from financial professionals.
+
+Ready to elevate your trading game? Download the 2023 Edition of the Advanced Stock Market Trading Robot, Version 2, and get started today!
+
+Important: Don't forget to regularly update your list of stocks to buy and keep an eye on the market conditions. Happy trading!
+
+Remember that all trading involves risks. The ability to successfully implement these strategies depends on both market conditions and individual skills and knowledge. As such, trading should only be done with funds that you can afford to lose. Always do thorough research before making investment decisions, and consider consulting with a financial advisor. This is use at your own risk software. This software does not include any warranty or guarantees other than the useful tasks that may or may not work as intended for the software application end user. The software developer shall not be held liable for any financial losses or damages that occur as a result of using this software for any reason to the fullest extent of the law. Using this software is your agreement to these terms. This software is designed to be helpful and useful to the end user.
 
 Place your alpaca code keys in the location: /home/name-of-your-home-folder/.bashrc Be careful to not delete the entire .bashrc file. Just add the 4 lines to the bottom of the .bashrc text file in your home folder, then save the file. .bashrc is a hidden folder because it has the dot ( . ) in front of the name. Remember that the " # " pound character will make that line unavailable. To be helpful, I will comment out the real money account for someone to begin with an account that does not risk using real money. The URL with the word "paper" does not use real money. The other URL uses real money. Making changes here requires you to reboot your computer or logout and login to apply the changes.
 
