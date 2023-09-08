@@ -213,13 +213,13 @@ def get_average_true_range(symbol):
 def status_printer_buy_stocks():
     print(f"\rBuy stocks function is working correctly right now. Checking stocks to buy.....", end='', flush=True)
     # After the loop, print a newline character to move to the next line with the print command below.
-    print()    # keep this under the s in status_printer_buy_stocks()
+    print()  # keep this under the s in status_printer_buy_stocks()
 
 
 def status_printer_sell_stocks():
     print(f"\rSell stocks function is working correctly right now. Checking stocks to sell.....", end='', flush=True)
     # After the loop, print a newline character to move to the next line with the print command below.
-    print()    # keep this under the s in status_printer_sell_stocks()
+    print()  # keep this under the s in status_printer_sell_stocks()
 
 
 def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
@@ -232,14 +232,14 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
         cash_available = round(float(api.get_account().cash), 2)
 
-        qty_of_one_stock = 1    # change this number to buy more shares per stock symbol
+        qty_of_one_stock = 42  # change this number to buy more shares per stock symbol
 
         # Calculate the total cost if we buy 'qty_of_one_stock' shares
         total_cost_for_qty = current_price * qty_of_one_stock
 
         # Define the factor to subtract as a decimal
-        factor_to_subtract = 0.9915     # -0.85% decrease as a decimal is the number 0.9915
-        
+        factor_to_subtract = 0.9915  # -0.85% decrease as a decimal is the number 0.9915
+
         # - 0.85% is often the top 15% - 17% of electricity stocks
         # profit buy price setting: 0.85% subtracted from the opening price
         profit_buy_price_setting = opening_price * factor_to_subtract
@@ -261,7 +261,6 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             time.sleep(2)  # keep this under the s in stocks
 
         time.sleep(1.7)  # keep this under the i in if. this stops after checking each stock price
-
 
     # I might not need the extra sleep command below
     # keep the below time.sleep(1) below the f in for.
@@ -309,14 +308,18 @@ def update_bought_stocks_from_api():
     session.commit()  # keep this under the f in for
     return bought_stocks  # keep this under the s in session
 
+
 def sell_stocks(bought_stocks, buy_sell_lock):
     stocks_to_remove = []
 
     today_date = datetime.today().date()
 
     for symbol, (bought_price, bought_date) in bought_stocks.items():
-
         status_printer_sell_stocks()  # keep this under the "s" in "for symbol"
+
+        #print("today_date = ", symbol, today_date)  # uncomment to print variable date to debug as same date
+
+        #print("bought_date = ", symbol, bought_date)  # uncomment to print variable date to debug as same date
 
         # Compare the date objects directly
         if bought_date == today_date:
@@ -329,13 +332,13 @@ def sell_stocks(bought_stocks, buy_sell_lock):
             # keep the shown above "if" under the "s" in "for symbol"
             continue  # Skip this stock if the status is: purchased today. Keep this under the o in bought.
 
-        current_price = get_current_price(symbol)   # keep this under the "s" in "for symbol"
-        position = api.get_position(symbol)    # keep this under the "s" in "for symbol"
-        bought_price = float(position.avg_entry_price)    # keep this under the "s" in "for symbol"
+        current_price = get_current_price(symbol)  # keep this under the "s" in "for symbol"
+        position = api.get_position(symbol)  # keep this under the "s" in "for symbol"
+        bought_price = float(position.avg_entry_price)  # keep this under the "s" in "for symbol"
 
         # Never calculate ATR for a buy price or sell price because it is too slow. 1 second per stock.
         # Sell stocks if the current price is more than 1.6% higher than the purchase price.
-        if current_price >= bought_price * 1.016:    # keep this under the "s" in "for symbol"
+        if current_price >= bought_price * 1.016:  # keep this under the "s" in "for symbol"
             qty = api.get_position(symbol).qty
             api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
             print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
@@ -349,8 +352,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
     # I might not need the extra sleep command below
     # keep the below time.sleep(1) below the f in for.
-    time.sleep(1.75)    # wait 1 second to not move too fast for the yfinance rate limit.
-
+    time.sleep(1.75)  # wait 1 second to not move too fast for the yfinance rate limit.
 
     with buy_sell_lock:  # keep this under the "f" in "for symbol"
         for symbol in stocks_to_remove:
@@ -378,7 +380,7 @@ def main():
 
     while True:
         try:
-            stop_if_stock_market_is_closed()    # comment this line to debug the Python code
+            stop_if_stock_market_is_closed()  # comment this line to debug the Python code
             now = datetime.now(pytz.timezone('US/Eastern'))
             current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
 
