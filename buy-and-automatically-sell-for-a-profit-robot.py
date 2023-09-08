@@ -232,7 +232,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
         cash_available = round(float(api.get_account().cash), 2)
 
-        qty_of_one_stock = 42  # change this number to buy more shares per stock symbol
+        qty_of_one_stock = 1  # change this number to buy more shares per stock symbol
 
         # Calculate the total cost if we buy 'qty_of_one_stock' shares
         total_cost_for_qty = current_price * qty_of_one_stock
@@ -320,6 +320,10 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
         # Extract the date part of bought_date to compare with today_date
         bought_date = bought_date.date()
+
+        #print("today_date = ", symbol, today_date)  # uncomment to print variable date to debug as same date
+
+        #print("bought_date = ", symbol, bought_date)  # uncomment to print variable date to debug as same date
 
         # Compare the date objects directly
         if bought_date == today_date:
