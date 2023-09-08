@@ -16,42 +16,78 @@ Why Trade Manually When You Can Automate It?
 
 Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, specially designed to help you take your trading game to the next level! This state-of-the-art trading algorithm is powered by Python, and it's packed with amazing features that you'll love:
 
-    Alpaca API Integration: Trade with confidence and speed using the reliable Alpaca API.
-    Smart Buy/Sell Strategies. 
-    Thread-Safe Operations: Utilizing threading and locks to ensure smooth concurrent operations.
-    SQLAlchemy Database Support: Keep track of all your positions and trade history with a robust SQLite database.
-    Debugging and Database Printing: Want insights into what's happening behind the scenes? 
-    Toggle the DEBUG and PRINT_DATABASE options to see the stored database information print out. 
+1. Parallel Execution: The "buy_stocks" function runs in parallel with the main program, allowing it to continuously monitor and purchase stocks.
 
-But Wait, There's More!
+2. Stock Selection: It selects stocks to buy based on the list provided in the "electricity-or-utility-stocks-to-buy-list.txt" file.
 
-DEBUG Mode: 
-Tired of guessing what's happening inside your trading robot? Activate DEBUG mode, and you'll get a detailed look into the stocks you're planning to purchase and sell, along with their ATR-derived buy and sell prices. It's like having X-ray vision for your trades!
+3. Cash Availability: The function checks the available cash balance and ensures there's enough cash to purchase stocks.
 
-PRINT_DATABASE Option: 
-Curious about your trading history or current positions? Turn on PRINT_DATABASE, and you'll see the entire Trade History and Positions tables printed right in your console! It's your trading journey at a glance!
+4. Buy Criteria: It considers specific criteria before buying stocks, such as comparing the current price to a predefined buy price and ensuring the price is within an acceptable range.
 
-Market Hours Monitoring: 
-Never worry about trading out of hours. The bot knows when the market is open and ensures that it only trades during those times.
+5. Error Handling: The function handles errors gracefully and logs information about each purchase, including the symbol, quantity, and purchase price.
 
-Easy Customization: 
-Manage your stock selection by simply updating the 'electricity-or-utility-stocks-to-buy-list.txt' file. It's that simple!
+6. Database Update: After buying stocks, the function updates the database with trade history and position information, ensuring accurate tracking of stock purchases.
 
-Logging: 
-Keep track of buy and sell signals with detailed logging. Every move is recorded, so you're never in the dark.
+7. Refresh: It triggers a refresh of the list of stocks to buy and the list of bought stocks to stay up to date with market changes.
 
-Educational: 
-Learn from the code! The well-documented functions and clear structure make this a fantastic learning opportunity for aspiring traders and Python enthusiasts alike.
+sell_stocks Function:
 
-Join the trading revolution today with the Advanced Stock Market Trading Robot! 
-Clone the code, set your API keys, and let the robot do the trading for you. It's time to trade like it's 2023!
+1. Parallel Execution: Similar to the "buy_stocks" function, the "sell_stocks" function runs in parallel, continuously monitoring and selling stocks.
 
+2. Stock Selection: It selects stocks to sell from the list of stocks previously bought and stored in the "bought_stocks" dictionary.
 
-Disclaimer: This software is not affiliated or endorsed by Alpaca Securities, LLC. 
-Always do your own research before investing. Investing in the stock market involves risk, and past performance is not indicative of future results. 
-Please consult with a financial professional before investing. 
+3. Sell Criteria: The function considers specific criteria before selling stocks, such as comparing the current price to a predefined sell price for profit and ensuring that stocks have been held for at least one day.
 
-Happy Trading. 
+4. Error Handling: Like the "buy_stocks" function, this function handles errors gracefully and logs information about each sale, including the symbol, quantity, and sale price.
+
+5. Database Update: After selling stocks, the function updates the database with trade history and removes the sold stocks from the list of bought stocks.
+
+6. Refresh: It triggers a refresh of the list of bought stocks to stay up to date with any changes in the portfolio.
+
+7. Profitable Trading: The function aims to sell stocks at a profit, enhancing the overall profitability of the trading strategy.
+
+These functions work together to automate the process of buying and selling stocks, making data-driven decisions based on predefined criteria, and ensuring accurate record-keeping in the database. This automation allows for efficient and timely trading in the stock market.
+
+------------------------------------------------------------
+              Performance Stock List Writer
+------------------------------------------------------------
+
+Are you ready to make smarter investment decisions in the electricity stocks market? 
+Look no further! Our Python script, the "Performance Stock List Writer," is here to help you.
+
+------------------------------------------------------------
+
+Key Features:
+- Automated Stock Analysis: Our script automatically analyzes electricity stocks to provide you with a list of top-performing stocks.
+
+- Regular Updates: The stock list is updated every 24 hours to ensure you have the most current information.
+
+- Time-Specific Execution: The script runs during specific hours, allowing you to focus on other tasks without interruption.
+
+- Easy Configuration: Customize your list of stock symbols in the "list-of-stock-symbols-to-scan.txt" file.
+
+- Data-Driven Decisions: Make investment decisions based on percentage changes in stock prices over the past 14 days.
+
+- Error Handling: The script handles errors gracefully and restarts after 5 minutes, ensuring uninterrupted performance.
+
+------------------------------------------------------------
+
+Get Started Today:
+1. Download the script.
+2. Configure your list of stock symbols.
+3. Set the time range for execution.
+4. Let the script do the work, providing you with a list of top electricity stocks to consider.
+
+Invest with confidence in the electricity market. Get the "Performance Stock List Writer" now!
+
+------------------------------------------------------------
+
+Next run will be at [Next Run Time] (Eastern Time).
+
+Stocks list updated successfully.
+
+------------------------------------------------------------
+
 
 
 ***** This program will only work if you have 
