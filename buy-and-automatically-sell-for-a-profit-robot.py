@@ -315,19 +315,19 @@ def sell_stocks(bought_stocks, buy_sell_lock):
     today_date = datetime.today().date()
 
     for symbol, (bought_price, bought_date) in bought_stocks.items():
-        status_printer_sell_stocks()  # keep this under the "s" in "for symbol"
 
-        #print("today_date = ", symbol, today_date)  # uncomment to print variable date to debug as same date
+        status_printer_sell_stocks()    # keep this under the "s" in "for symbol"
 
-        #print("bought_date = ", symbol, bought_date)  # uncomment to print variable date to debug as same date
+        # Extract the date part of bought_date to compare with today_date
+        bought_date = bought_date.date()
 
         # Compare the date objects directly
         if bought_date == today_date:
-            was_purchased_today = 1
+            was_purchased_today = 1     # yes, 1 was purchased today
         else:
-            was_purchased_today = 0
+            was_purchased_today = 0     # no, 0 was not purchased today
 
-        # Check if the stock was not purchased today before selling the stock
+        # Check if the stock was not purchased today: it is equal to 0
         if was_purchased_today == 0:
             # keep the shown above "if" under the "s" in "for symbol"
             continue  # Skip this stock if the status is: purchased today. Keep this under the o in bought.
