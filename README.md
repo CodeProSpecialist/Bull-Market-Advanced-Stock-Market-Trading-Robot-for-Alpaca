@@ -1,4 +1,6 @@
-********* Download the newest version of this Python program. 
+*********  It is strongly recommended that you 
+Download the newest version of this Python program as of 9-8-2023. 
+
 The recent software updates within the past 7 days before 9-8-2023 have fixed a software bug 
 that was previously unknown. 
 
