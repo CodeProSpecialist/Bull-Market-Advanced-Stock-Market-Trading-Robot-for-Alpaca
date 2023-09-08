@@ -325,6 +325,10 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
         #print("bought_date = ", symbol, bought_date)  # uncomment to print variable date to debug as same date
 
+        global was_purchased_today
+
+        was_purchased_today = 1
+
         # Compare the date objects directly
         if bought_date == today_date:
             was_purchased_today = 1     # yes, 1 was purchased today
