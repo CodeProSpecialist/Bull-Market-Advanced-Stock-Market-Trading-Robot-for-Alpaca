@@ -326,24 +326,22 @@ def sell_stocks(bought_stocks, buy_sell_lock):
         #print("bought_date = ", symbol, bought_date)  # uncomment to print variable date to debug as same date
 
         if bought_date < today_date:     # keep under the "s" in "for symbol"
-            continue  # Skip this stock if the status is: purchased today. Keep this under the o in bought.
+            current_price = get_current_price(symbol)    # keep this under the "o" in "bought"
+            position = api.get_position(symbol)    # keep this under the "o" in "bought"
+            bought_price = float(position.avg_entry_price)    # keep this under the "o" in "bought"
 
-        current_price = get_current_price(symbol)  # keep this under the "s" in "for symbol"
-        position = api.get_position(symbol)  # keep this under the "s" in "for symbol"
-        bought_price = float(position.avg_entry_price)  # keep this under the "s" in "for symbol"
+            # Never calculate ATR for a buy price or sell price because it is too slow. 1 second per stock.
+            # Sell stocks if the current price is more than 1.6% higher than the purchase price.
+            if current_price >= bought_price * 1.016:   # keep this under the "o" in "bought"
+                qty = api.get_position(symbol).qty
+                api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
+                print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
+                logging.info(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
+                stocks_to_remove.append(symbol)  # Append symbols to remove
 
-        # Never calculate ATR for a buy price or sell price because it is too slow. 1 second per stock.
-        # Sell stocks if the current price is more than 1.6% higher than the purchase price.
-        if current_price >= bought_price * 1.016:  # keep this under the "s" in "for symbol"
-            qty = api.get_position(symbol).qty
-            api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
-            print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
-            logging.info(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
-            stocks_to_remove.append(symbol)  # Append symbols to remove
+                time.sleep(2)  # keep this under the s in stocks
 
-            time.sleep(2)  # keep this under the s in stocks
-
-        time.sleep(1.75)  # keep this under the i in if. this stops after checking each stock price
+            time.sleep(1.75)  # keep this under the i in if. this stops after checking each stock price
 
 
     # I might not need the extra sleep command below
