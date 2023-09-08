@@ -4,6 +4,7 @@ that was previously unknown.
 
 The error was fixed on 9-8-2023. That should be the last error to fix. 
 I apologize for any previous software errors. I am doing the best I can do. 
+This is an extremely complicated Python program. 
 
 Important software update on September 8, 2023 *********
   
