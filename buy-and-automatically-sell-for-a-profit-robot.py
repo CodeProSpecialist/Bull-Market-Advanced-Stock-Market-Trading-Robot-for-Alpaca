@@ -316,7 +316,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
     for symbol, (bought_price, bought_date) in bought_stocks.items():
 
-        status_printer_sell_stocks()  # keep this under the "s" in "for symbol"
+        status_printer_sell_stocks()    # keep this under the "s" in "for symbol"
 
         # Extract year, month, and day components from today_date
         today_year, today_month, today_day = today_date.year, today_date.month, today_date.day
