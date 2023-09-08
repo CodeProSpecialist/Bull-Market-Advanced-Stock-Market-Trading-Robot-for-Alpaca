@@ -318,15 +318,15 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
         status_printer_sell_stocks()  # keep this under the "s" in "for symbol"
 
-        # Convert today_date to datetime
-        today_datetime = datetime.combine(today_date, datetime.min.time())
+        # Extract year, month, and day components from today_date
+        today_year, today_month, today_day = today_date.year, today_date.month, today_date.day
 
-        # Convert bought_date to datetime
-        bought_datetime = datetime.combine(bought_date, datetime.min.time())
+        # Extract year, month, and day components from bought_date
+        bought_year, bought_month, bought_day = bought_date.year, bought_date.month, bought_date.day
 
         # Check if the stock was purchased at least one day before today
-        if bought_datetime < today_datetime:        # keep this under the "s" in "for symbol"
-
+        if (bought_year, bought_month, bought_day) < (today_year, today_month, today_day):
+            # keep the shown above "if" under the "s" in "for symbol"
             continue  # Skip this stock if the status is: purchased today. Keep this under the o in bought.
 
         current_price = get_current_price(symbol)   # keep this under the "s" in "for symbol"
