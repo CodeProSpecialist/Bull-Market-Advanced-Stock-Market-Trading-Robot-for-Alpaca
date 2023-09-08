@@ -309,7 +309,6 @@ def update_bought_stocks_from_api():
     session.commit()  # keep this under the f in for
     return bought_stocks  # keep this under the s in session
 
-
 def sell_stocks(bought_stocks, buy_sell_lock):
     stocks_to_remove = []
 
@@ -317,13 +316,17 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
     for symbol, (bought_price, bought_date) in bought_stocks.items():
 
-        status_printer_sell_stocks()    # keep this under the "s" in "for symbol"
+        status_printer_sell_stocks()  # keep this under the "s" in "for symbol"
 
         # Convert today_date to datetime
         today_datetime = datetime.combine(today_date, datetime.min.time())
 
+        # Convert bought_date to datetime
+        bought_datetime = datetime.combine(bought_date, datetime.min.time())
+
         # Check if the stock was purchased at least one day before today
-        if bought_date < today_datetime:    # keep this under the "s" in "for symbol"
+        if bought_datetime < today_datetime:        # keep this under the "s" in "for symbol"
+
             continue  # Skip this stock if the status is: purchased today. Keep this under the o in bought.
 
         current_price = get_current_price(symbol)   # keep this under the "s" in "for symbol"
