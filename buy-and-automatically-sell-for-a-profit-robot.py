@@ -325,19 +325,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
         #print("bought_date = ", symbol, bought_date)  # uncomment to print variable date to debug as same date
 
-        global was_purchased_today
-
-        was_purchased_today = 1
-
-        # Compare the date objects directly
-        if bought_date == today_date:
-            was_purchased_today = 1     # yes, 1 was purchased today
-        else:
-            was_purchased_today = 0     # no, 0 was not purchased today
-
-        # Check if the stock was not purchased today: it is equal to 0
-        if was_purchased_today == 0:
-            # keep the shown above "if" under the "s" in "for symbol"
+        if bought_date < today_date:     # keep under the "s" in "for symbol"
             continue  # Skip this stock if the status is: purchased today. Keep this under the o in bought.
 
         current_price = get_current_price(symbol)  # keep this under the "s" in "for symbol"
