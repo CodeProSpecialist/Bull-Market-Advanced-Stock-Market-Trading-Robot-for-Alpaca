@@ -325,6 +325,9 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
         #print("bought_date = ", symbol, bought_date)  # uncomment to print variable date to debug as same date
 
+        # Check if the stock was purchased at least one day before today
+        #if bought_date < today_date:
+
         if bought_date < today_date:     # keep under the "s" in "for symbol"
             current_price = get_current_price(symbol)    # keep this under the "o" in "bought"
             position = api.get_position(symbol)    # keep this under the "o" in "bought"
@@ -341,12 +344,12 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
                 time.sleep(2)  # keep this under the s in stocks
 
-            time.sleep(1.75)  # keep this under the i in if. this stops after checking each stock price
+            time.sleep(2)  # keep this under the i in if. this stops after checking each stock price
 
 
     # I might not need the extra sleep command below
     # keep the below time.sleep(1) below the f in for.
-    time.sleep(1.75)  # wait 1 second to not move too fast for the yfinance rate limit.
+    time.sleep(2)  # wait 1 second to not move too fast for the yfinance rate limit.
 
     with buy_sell_lock:  # keep this under the "f" in "for symbol"
         for symbol in stocks_to_remove:
