@@ -27,7 +27,7 @@ Key Features:
 
   Real-Time Trading: Our robot operates during stock market hours, ensuring you never miss an opportunity. It's designed to work efficiently and effectively, making the most of your trading time.
 
-  Data-Driven Insights: We leverage powerful data analysis tools like Python 3 SQLAlchemy, Talib, and yfinance to provide you with accurate and timely information for your trading decisions.
+  Data-Driven Insights: We leverage powerful data analysis tools like Python 3 SQLAlchemy, and Talib to provide you with accurate and timely information for your trading decisions. 
 
   Lock and Load: With built-in thread locking mechanisms, you can buy and sell stocks in parallel without worrying about conflicts or errors. Your trades will execute smoothly.
 
@@ -110,8 +110,7 @@ Key Features:
 Get Started Today:
 1. Download the script.
 2. Configure your list of stock symbols.
-3. Set the time range for execution.
-4. Let the script do the work, providing you with a list of top electricity stocks to consider.
+3. Let the script do the work, providing you with a list of top electricity stocks to consider.
 
 Invest with confidence in the electricity market. Get the "Performance Stock List Writer" now!
 
