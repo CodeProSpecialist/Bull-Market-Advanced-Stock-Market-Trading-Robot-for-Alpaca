@@ -88,7 +88,7 @@ Look no further! Our Python script, the "Performance Stock List Writer," is here
 Key Features:
 - Automated Stock Analysis: Our script automatically analyzes electricity stocks to provide you with a list of top-performing stocks.
 
-- Regular Updates: The stock list is updated every 24 hours to ensure you have the most current information.
+- Regular Updates: The stock list is updated Monday thru Friday, every 24 hours, to ensure you have the most current information.
 
 - Time-Specific Execution: The script runs during specific hours, allowing you to focus on other tasks without interruption.
 
