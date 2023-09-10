@@ -1,7 +1,6 @@
 NRG
 VST
 CEG
-OTTR
 NEE
 ETR
 LNT
