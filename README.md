@@ -1,83 +1,83 @@
-********* ✅ It is strongly recommended that you 
-Download the newest version of this Python program as of 9-8-2023. 
+********* It is strongly recommended that you 
+Download the newest version of this Python program as of September 9, 2023. 
 
-The software bug 🐜 was fixed on 9-8-2023. That should be the last error to fix.  *********
+The software bug 🐜 was fixed a day before September 9, 2023. That should be the last error to fix.  *********
 
 -----------------------------------------------------------------------------------------------
-      📊  Welcome to the Future of Trading with the Advanced Stock Market Trading Robot! 📈
+        Welcome to the Future of Trading with the Advanced Stock Market Trading Robot! 
 
                     Why Trade Manually When You Can Automate It? 
 
-      💎  Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, Version 2  💎
+        Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, Version 2  
 -----------------------------------------------------------------------------------------------
    
 
-💻 Are you ready to take your stock trading game to the next level? The Advanced Stock Market Trading Robot is here to help you navigate the complexities of the stock market and make informed trading decisions. This cutting-edge trading software is designed to excel in recession market conditions, focusing exclusively on electric utility and energy stocks. 
+ Are you ready to take your stock trading game to the next level? The Advanced Stock Market Trading Robot is here to help you navigate the complexities of the stock market and make informed trading decisions. This cutting-edge trading software is designed to excel in recession market conditions, focusing exclusively on electric utility and energy stocks. 
 
 Stock Robot
 
 Key Features:
 
-⏱️  Real-Time Trading: Our robot operates during stock market hours, ensuring you never miss an opportunity. It's designed to work efficiently and effectively, making the most of your trading time.
+  Real-Time Trading: Our robot operates during stock market hours, ensuring you never miss an opportunity. It's designed to work efficiently and effectively, making the most of your trading time.
 
- 🗄️ Data-Driven Insights: We leverage powerful data analysis tools like Python 3 SQLAlchemy, and Talib to provide you with accurate and timely information for your trading decisions. 
+  Data-Driven Insights: We leverage powerful data analysis tools like Python 3 SQLAlchemy, and Talib to provide you with accurate and timely information for your trading decisions. 
 
-🔒  Lock and Load: With built-in thread locking mechanisms, you can buy and sell stocks in parallel without worrying about conflicts or errors. Your trades will execute smoothly.
+  Lock and Load: With built-in thread locking mechanisms, you can buy and sell stocks in parallel without worrying about conflicts or errors. Your trades will execute smoothly.
 
-📋  Detailed Logging: Every trade and decision is meticulously logged, so you can review your trading history and learn from your past experiences.
+  Detailed Logging: Every trade and decision is meticulously logged, so you can review your trading history and learn from your past experiences.
 
 How It Works:
 
- 📋   Prepare Your List: Add your preferred electricity stocks to the "electricity-or-utility-stocks-to-buy-list.txt" file. This is your watchlist.
+   Prepare Your List: Add your preferred electricity stocks to the "electricity-or-utility-stocks-to-buy-list.txt" file. This is your watchlist.
 
-  ✅  Set Up: Ensure you have your Alpaca API credentials (API Key ID and API Secret Key) ready. These will be used to interact with the market.
+    Set Up: Ensure you have your Alpaca API credentials (API Key ID and API Secret Key) ready. These will be used to interact with the market.
 
- 💻   Run the Robot: Start the robot using the "buy-and-automatically-sell-for-a-profit-robot.py" script. It will automatically buy and sell stocks based on your criteria.
+   Run the Robot: Start the robot using the "buy-and-automatically-sell-for-a-profit-robot.py" script. It will automatically buy and sell stocks based on your criteria.
 
- 🖥️   Monitoring: The robot will continuously monitor the market, buying stocks meeting your criteria and selling when the conditions are right.
+   Monitoring: The robot will continuously monitor the market, buying stocks meeting your criteria and selling when the conditions are right.
 
-  📋  Review: Keep an eye on your trades and positions. The robot logs all actions, providing you with a clear picture of your trading history. 
+    Review: Keep an eye on your trades and positions. The robot logs all actions, providing you with a clear picture of your trading history. 
 
 Stay In Control:
 
 The Advanced Stock Market Trading Robot is designed to work with stocks you already own. It won't initiate new positions unless you specify them in your watchlist. This ensures you maintain control over your portfolio.
 
- 💻 The 2023 Edition of the Advanced Stock Market Trading Robot, specially designed to help you take your trading game to the next level! This state-of-the-art trading algorithm is powered by Python, and it's packed with amazing features that you'll love:
+  The 2023 Edition of the Advanced Stock Market Trading Robot, specially designed to help you take your trading game to the next level! This state-of-the-art trading algorithm is powered by Python, and it's packed with amazing features that you'll love:
 
-1. 🔀 Parallel Execution: The "buy_stocks" function runs in parallel with the main program, allowing it to continuously monitor and purchase stocks.
+1. Parallel Execution: The "buy_stocks" function runs in parallel with the main program, allowing it to continuously monitor and purchase stocks.
 
-2. 📊 Stock Selection: It selects stocks to buy based on the list provided in the "electricity-or-utility-stocks-to-buy-list.txt" file.
+2. Stock Selection: It selects stocks to buy based on the list provided in the "electricity-or-utility-stocks-to-buy-list.txt" file.
 
-3. 💵 Cash Availability: The function checks the available cash balance and ensures there's enough cash to purchase stocks.
+3. Cash Availability: The function checks the available cash balance and ensures there's enough cash to purchase stocks.
 
-4. ⚖️ Buy Criteria: It considers specific criteria before buying stocks, such as comparing the current price to a predefined buy price and ensuring the price is within an acceptable range.
+4. Buy Criteria: It considers specific criteria before buying stocks, such as comparing the current price to a predefined buy price and ensuring the price is within an acceptable range.
 
-5. ⚠️ Error Handling: The function handles errors gracefully and logs information about each purchase, including the symbol, quantity, and purchase price.
+5. Error Handling: The function handles errors gracefully and logs information about each purchase, including the symbol, quantity, and purchase price.
 
-6. 📊 Database Update: After buying stocks, the function updates the database with trade history and position information, ensuring accurate tracking of stock purchases.
+6. Database Update: After buying stocks, the function updates the database with trade history and position information, ensuring accurate tracking of stock purchases.
 
-7. ✅ Refresh: It triggers a refresh of the list of stocks to buy and the list of bought stocks to stay up to date with market changes.
+7. Refresh: It triggers a refresh of the list of stocks to buy and the list of bought stocks to stay up to date with market changes.
 
 sell_stocks Function:
 
-1. 🔀 Parallel Execution: Similar to the "buy_stocks" function, the "sell_stocks" function runs in parallel, continuously monitoring and selling stocks.
+1. Parallel Execution: Similar to the "buy_stocks" function, the "sell_stocks" function runs in parallel, continuously monitoring and selling stocks.
 
-2. 📋 Stock Selection: It selects stocks to sell from the list of stocks previously bought and stored in the "bought_stocks" dictionary.
+2. Stock Selection: It selects stocks to sell from the list of stocks previously bought and stored in the "bought_stocks" dictionary.
 
-3. ⚖️ Sell Criteria: The function considers specific criteria before selling stocks, such as comparing the current price to a predefined sell price for profit and ensuring that stocks have been held for at least one day.
+3. Sell Criteria: The function considers specific criteria before selling stocks, such as comparing the current price to a predefined sell price for profit and ensuring that stocks have been held for at least one day.
 
-4. ⚠️ Error Handling: Like the "buy_stocks" function, this function handles errors gracefully and logs information about each sale, including the symbol, quantity, and sale price.
+4. Error Handling: Like the "buy_stocks" function, this function handles errors gracefully and logs information about each sale, including the symbol, quantity, and sale price.
 
-5. 📊 Database Update: After selling stocks, the function updates the database with trade history and removes the sold stocks from the list of bought stocks.
+5. Database Update: After selling stocks, the function updates the database with trade history and removes the sold stocks from the list of bought stocks.
 
-6. ✅ Refresh: It triggers a refresh of the list of bought stocks to stay up to date with any changes in the portfolio.
+6. Refresh: It triggers a refresh of the list of bought stocks to stay up to date with any changes in the portfolio.
 
-7. 🏦 Profitable Trading: The function aims to sell stocks at a profit, enhancing the overall profitability of the trading strategy.
+7. Profitable Trading: The function aims to sell stocks at a profit, enhancing the overall profitability of the trading strategy.
 
-🙂 These functions work together to automate the process of buying and selling stocks, making data-driven decisions based on predefined criteria, and ensuring accurate record-keeping in the database. This automation allows for efficient and timely trading in the stock market.
+   These functions work together to automate the process of buying and selling stocks, making data-driven decisions based on predefined criteria, and ensuring accurate record-keeping in the database. This automation allows for efficient and timely trading in the stock market.
 
 ------------------------------------------------------------
-            📋  Performance Stock List Writer 📋
+            Performance Stock List Writer 
 ------------------------------------------------------------
 
 Are you ready to make smarter investment decisions in the electricity stocks market? 
@@ -109,9 +109,9 @@ Invest with confidence in the electricity market. Get the "Performance Stock Lis
 
 ------------------------------------------------------------
 
-⏱️ Next run will be at [Next Run Time] (Eastern Time).
+ Next run will be at [Next Run Time] (Eastern Time).
 
-✅  Stocks list updated successfully.
+ Stocks list updated successfully.
 
 ------------------------------------------------------------
 
