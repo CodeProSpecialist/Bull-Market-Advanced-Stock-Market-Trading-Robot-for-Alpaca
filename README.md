@@ -5,7 +5,7 @@
 
         Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, Version 2  
 -----------------------------------------------------------------------------------------------
-   
+   ![Screenshot-1](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/d7e7631e-7520-4dcb-bd14-56fd0168ecc7)
 
  Are you ready to take your stock trading game to the next level? The Advanced Stock Market Trading Robot is here to help you navigate the complexities of the stock market and make informed trading decisions. This cutting-edge trading software is designed to excel in recession market conditions, focusing exclusively on electric utility and energy stocks. 
 
@@ -175,7 +175,6 @@ python3 performance-stock-list-writer.py
 The performance-stock-list-writer.py python program will make sure that only 
 successful stocks are purchased by the Advanced Stock Market Trading Robot. 
 
-![Screenshot-1](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/d7e7631e-7520-4dcb-bd14-56fd0168ecc7)
 
 
 Disclaimer:
