@@ -175,6 +175,9 @@ python3 performance-stock-list-writer.py
 The performance-stock-list-writer.py python program will make sure that only 
 successful stocks are purchased by the Advanced Stock Market Trading Robot. 
 
+![Screenshot-1](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/d7e7631e-7520-4dcb-bd14-56fd0168ecc7)
+
+
 Disclaimer:
 
 This software is not affiliated with or endorsed by Alpaca Securities, LLC. 
