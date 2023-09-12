@@ -118,12 +118,27 @@ Invest with confidence in the electricity market. Get the "Performance Stock Lis
 ------------------------------------------------------------
 
 
+***************************************************************************************************************
 
 ***** This program will only work if you have 
 at least 1 stock symbol in the electricity-or-utility-stocks-to-buy-list.txt 
 because of the functionality of the python code to analyze stocks to buy 
 at a future time. Otherwise, you will most likely see errors in the log-file-of-buy-and-sell-signals.txt. A new database file will need to be created if you started this robot without owning any stocks. Delete the database file named trading_bot.db before restarting the stockbot if the stockbot was running without any owned stock positions. 
-Stop and Start the Stock Trading Robot after you have purchased at least 1 share of stock to create a new database file. I recommend linking your Alpaca Stock Trading Account with TradingView to purchase at least 1 stock position. Deciding to manually sell stocks more quickly before tomorrow can also easily be done on TradingView or on the Alpaca website for those occassional situations where your stock selling  needs to be done today instead of tomorrow.   *****
+Stop and Start the Stock Trading Robot after you have purchased at least 1 share of stock to create a new database file. I recommend linking your Alpaca Stock Trading Account with TradingView to purchase at least 1 stock position. Deciding to manually sell stocks more quickly before tomorrow can also easily be done on TradingView or on the Alpaca website for those occassional situations where your stock selling  needs to be done today instead of tomorrow. 
+
+***** If you purchased or sold stocks through Alpaca's website or through other services, then the following 
+steps must be repeated before this Stock Trading Robot can import the changes in your stock market portfolio 
+and create a new database. The following steps should also fix the errors that are caused by 
+stock trading without this stock market robot making the stock trades. 
+Making stock trades without using this stock market robot will also cause an error of not selling 
+your stocks tomorrow unless you perform the following steps: 
+
+        1.) Place 8 to 28 stock symbols to buy in the file named:     electricity-or-utility-stocks-to-buy-list.txt
+        2.) Stop the python3 program named:      buy-and-automatically-sell-for-a-profit-robot.py
+        3.) Delete the trading_bot.db file
+        4.) restart this Robot with the command:      python3 buy-and-automatically-sell-for-a-profit-robot.py
+        
+************************************************************************************************************
 
 You can modify the python script to make DEBUG = True   and this will print out your stocks with the price information. 
 Printing out the stock information slows down this python program, and it is recommended to change debug back to:  
