@@ -132,6 +132,9 @@ steps must be repeated before this Stock Trading Robot can import the changes in
 and create a new database. The following steps should also fix the errors related to 
 not being able to store a year-month-day for the stock position in the database; that are caused by 
 stock trading without this stock market robot making the stock trades. 
+***** I have found that this stock market robot is not 100% fully initialized to 
+sell stocks tomorrow until it has bought or sold at least 1 share of stock 
+and the share of stock has been listed under "Trade History In This Robot's Database." 
 Making stock trades without using this stock market robot will also cause an error of not selling 
 your stocks tomorrow unless you perform the following steps: 
 
