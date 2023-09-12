@@ -128,7 +128,8 @@ Stop and Start the Stock Trading Robot after you have purchased at least 1 share
 
 ***** If you purchased or sold stocks through Alpaca's website or through other services, then the following 
 steps must be repeated before this Stock Trading Robot can import the changes in your stock market portfolio 
-and create a new database. The following steps should also fix the errors that are caused by 
+and create a new database. The following steps should also fix the errors related to 
+not being able to store a year-month-day for the stock position in the database; that are caused by 
 stock trading without this stock market robot making the stock trades. 
 Making stock trades without using this stock market robot will also cause an error of not selling 
 your stocks tomorrow unless you perform the following steps: 
