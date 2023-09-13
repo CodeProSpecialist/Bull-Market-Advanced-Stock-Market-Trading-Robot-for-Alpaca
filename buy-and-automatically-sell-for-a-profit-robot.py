@@ -27,7 +27,7 @@ PRINT_DATABASE = True   # keep this as True to view the stocks to sell.
 DEBUG = False   # this robot works faster when this is False.
 
 # Default value for PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN
-PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False
+PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = True
 
 # set the timezone to Eastern
 eastern = pytz.timezone('US/Eastern')
@@ -433,7 +433,7 @@ def refresh_after_sell():
 
 
 def main():
-    global stocks_to_buy, START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY
+    global stocks_to_buy
     stocks_to_buy = get_stocks_to_trade()
     bought_stocks = load_positions_from_database()
     buy_sell_lock = threading.Lock()
@@ -521,7 +521,7 @@ def main():
             stocks_to_buy = get_stocks_to_trade()
 
             if not bought_stocks:
-                bought_stocks = update_bought_stocks_from_api()
+                bought_stocks = update_bought_stocks_from_api(START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY)
 
             # the below threads will run the buy_stocks and the sell_stocks functions at the same time
             # in parallel to buy and sell more without taking more time than necessary.
