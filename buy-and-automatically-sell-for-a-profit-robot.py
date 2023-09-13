@@ -22,9 +22,6 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-# Define the API datetime format
-api_time_format = '%Y-%m-%dT%H:%M:%S.%f-04:00'
-
 PRINT_DATABASE = True   # keep this as True to view the stocks to sell.
 
 DEBUG = False   # this robot works faster when this is False.
@@ -32,12 +29,16 @@ DEBUG = False   # this robot works faster when this is False.
 # Default value for PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN
 PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False
 
+# set the timezone to Eastern
 eastern = pytz.timezone('US/Eastern')
 
 # Dictionary to maintain previous prices and price increase and price decrease counts
 stock_data = {}
 
 global stocks_to_buy, today_date, today_datetime
+
+# Define the API datetime format
+api_time_format = '%Y-%m-%dT%H:%M:%S.%f-04:00'
 
 # the below variable was recommended by Artificial Intelligence
 buy_sell_lock = threading.Lock()
