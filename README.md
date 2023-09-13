@@ -144,7 +144,7 @@ your stocks tomorrow unless you perform the following steps:
         4.) restart this Robot with the command:      python3 buy-and-automatically-sell-for-a-profit-robot.py
 
 Caution: If you buy or sell stocks without using this stock market trading robot, 
-then this stock market robot will need steps 1 thru 4 repeated above and you will need to wait 
+then this stock market robot will need the steps 1 thru 4, that are shown above, repeated and you will need to wait 
 an additional 24 or more hours before the stock market robot begins to be fully initialized to sell your stocks. 
 It is usually going to be an additional 24 hour waiting time unless the stocks are not in 
 a profitable price range to be sold. 
