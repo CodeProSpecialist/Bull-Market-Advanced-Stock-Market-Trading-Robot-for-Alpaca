@@ -151,10 +151,14 @@ your stocks tomorrow unless you perform the following steps:
 
         There is a feature to allow yesterday's stocks to be sold today 
                      by setting a variable to True instead of False. The variable is: 
+                     
               PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False  
+              
               After changing the above variable to = True, 
-              you delete the file named 
-              "trading_bot_run_counter.txt"  
+              you delete the files named:
+              
+              trading_bot_run_counter.txt and trading_bot.db
+              
               Then you can sell the stocks today that 
               were purchased yesterday after deleting and creating a new trading_bot.db file.  
               Then, after running this stock robot the first time,  
