@@ -9,7 +9,6 @@ import pytz
 import talib
 import yfinance as yf
 import sqlalchemy
-from alpaca_trade_api.entity import PortfolioHistory
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -35,6 +34,8 @@ eastern = pytz.timezone('US/Eastern')
 # Dictionary to maintain previous prices and price increase and price decrease counts
 stock_data = {}
 
+POSITION_DATES_AS_YESTERDAY_OPTION = bool
+
 global stocks_to_buy, today_date, today_datetime
 
 # Define the API datetime format
@@ -49,7 +50,6 @@ logging.basicConfig(filename='log-file-of-buy-and-sell-signals.txt', level=loggi
 # Newer Data Base Model code below
 Base = sqlalchemy.orm.declarative_base()
 
-global START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY
 
 class TradeHistory(Base):
     __tablename__ = 'trade_history'
@@ -108,7 +108,7 @@ def stop_if_stock_market_is_closed():
                        Featuring an An Accelerated Database Engine with Python 3 SQLAlchemy  
 
          ''')
-        print(f'Current date & time (Eastern Time): {now.strftime("%A, %B %d, %Y, %I:%M:%S %p")}\n')
+        print(f'Current date & time (Eastern Time): {now.strftime("%A, %B %d, %Y, %I:%M:%S %p")}')
         print("Stockbot only works Monday through Friday: 9:30 am - 4:00 pm Eastern Time.")
         print("Waiting until Stock Market Hours to begin the Stockbot Trading Program.")
         print("                                                                       ")
@@ -153,7 +153,7 @@ def stop_if_stock_market_is_closed():
         print("This software is not affiliated or endorsed by Alpaca Securities, LLC ")
         print("This software does, however, try to be a useful, profitable, and valuable ")
         print("stock market trading application. ")
-        print("")
+        print("\n")
         time.sleep(60)  # Sleep for 1 minute and check again. Keep this under the p in print.
 
 
@@ -342,12 +342,12 @@ def refresh_after_buy():
 
 
 # Modify the update_bought_stocks_from_api function to use the correct purchase date
-def update_bought_stocks_from_api(START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY):
+def update_bought_stocks_from_api():
     positions = api.list_positions()
     bought_stocks = {}
 
     # Check if the program should start with all owned position dates as yesterday
-    if START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY:
+    if POSITION_DATES_AS_YESTERDAY_OPTION:
         yesterday = datetime.today() - timedelta(days=1)
     else:
         yesterday = datetime.today()
@@ -434,6 +434,7 @@ def refresh_after_sell():
 
 def main():
     global stocks_to_buy
+
     stocks_to_buy = get_stocks_to_trade()
     bought_stocks = load_positions_from_database()
     buy_sell_lock = threading.Lock()
@@ -455,16 +456,16 @@ def main():
             # Check if the program should start with all owned position dates as yesterday
 
             if run_counter == 0:     # keep this under "with open"
-                START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = True
+                POSITION_DATES_AS_YESTERDAY_OPTION = True
             else:
-                START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = False  # Set to False if run counter is not 1
+                POSITION_DATES_AS_YESTERDAY_OPTION = False  # Set to False if run counter is not 1
 
             # Update the run counter in the file
             with open(run_counter_file, "w") as f:    # keep this under else in "if run_counter"
                 f.write(str(run_counter))
 
     else:      # keep this under "if PERMISSION"
-        START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = False   # keep this under "if not os.path.exists"
+        POSITION_DATES_AS_YESTERDAY_OPTION = False   # keep this under "if not os.path.exists"
 
     while True:
         try:
@@ -521,7 +522,7 @@ def main():
             stocks_to_buy = get_stocks_to_trade()
 
             if not bought_stocks:
-                bought_stocks = update_bought_stocks_from_api(START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY)
+                bought_stocks = update_bought_stocks_from_api()
 
             # the below threads will run the buy_stocks and the sell_stocks functions at the same time
             # in parallel to buy and sell more without taking more time than necessary.
@@ -606,8 +607,6 @@ def load_positions_from_database():
 
 if __name__ == '__main__':  # keep this to the far left side.
     try:
-        global START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY
-        START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = False
         main()  # keep this under the e in name
 
     except Exception as e:  # keep this under the t in try
