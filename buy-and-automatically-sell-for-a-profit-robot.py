@@ -285,7 +285,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
         cash_available = round(float(api.get_account().cash), 2)
 
-        qty_of_one_stock = 1     # change this number to buy more shares per stock symbol
+        qty_of_one_stock = 1    # change this number to buy more shares per stock symbol
 
         # Calculate the total cost if we buy 'qty_of_one_stock' shares
         total_cost_for_qty = current_price * qty_of_one_stock
@@ -607,6 +607,7 @@ def load_positions_from_database():
 if __name__ == '__main__':  # keep this to the far left side.
     try:
         global START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY
+        START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = False
         main()  # keep this under the e in name
 
     except Exception as e:  # keep this under the t in try
