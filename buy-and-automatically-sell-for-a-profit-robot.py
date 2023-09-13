@@ -49,6 +49,7 @@ logging.basicConfig(filename='log-file-of-buy-and-sell-signals.txt', level=loggi
 # Newer Data Base Model code below
 Base = sqlalchemy.orm.declarative_base()
 
+global START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY
 
 class TradeHistory(Base):
     __tablename__ = 'trade_history'
@@ -432,7 +433,7 @@ def refresh_after_sell():
 
 
 def main():
-    global stocks_to_buy
+    global stocks_to_buy, START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY
     stocks_to_buy = get_stocks_to_trade()
     bought_stocks = load_positions_from_database()
     buy_sell_lock = threading.Lock()
@@ -451,20 +452,18 @@ def main():
                 run_counter = int(f.read())
             run_counter += 1
 
-            global START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY
-            START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = False
-
             # Check if the program should start with all owned position dates as yesterday
-            if run_counter == 1:
+
+            if run_counter == 1:     # keep this under "with open"
                 START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = True
             else:
                 START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = False  # Set to False if run counter is not 1
 
             # Update the run counter in the file
-            with open(run_counter_file, "w") as f:
+            with open(run_counter_file, "w") as f:    # keep this under else in "if run_counter"
                 f.write(str(run_counter))
-    else:
-        START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = False
+    else:      # keep this under "if PERMISSION"
+        START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = False   # keep this under "if not os.path.exists"
 
     while True:
         try:
