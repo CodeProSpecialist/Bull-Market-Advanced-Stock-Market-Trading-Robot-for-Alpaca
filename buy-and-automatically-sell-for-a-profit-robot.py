@@ -27,7 +27,7 @@ PRINT_DATABASE = True   # keep this as True to view the stocks to sell.
 DEBUG = False   # this robot works faster when this is False.
 
 # Default value for PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN
-PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = True
+PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False
 
 # set the timezone to Eastern
 eastern = pytz.timezone('US/Eastern')
