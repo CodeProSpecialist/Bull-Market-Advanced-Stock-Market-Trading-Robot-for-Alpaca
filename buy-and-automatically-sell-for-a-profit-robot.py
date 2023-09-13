@@ -27,9 +27,6 @@ DEBUG = False  # this robot works faster when this is False.
 
 eastern = pytz.timezone('US/Eastern')
 
-# API datetimes will match this format. (-04:00 represents the market's TZ.)
-api_time_format = '%Y-%m-%dT%H:%M:%S.%f-04:00'
-
 # Dictionary to maintain previous prices and price increase and price decrease counts
 stock_data = {}
 
@@ -131,9 +128,9 @@ def stop_if_stock_market_is_closed():
         print("3.) Delete the trading_bot.db file, and 4.) restart this Robot. ")
         print("\n")
 
-        print(" Caution: If you buy or sell stocks without using this stock market trading robot, ")
-        print(" then this stock market robot will need steps 1 thru 4 repeated above ")
-        print(" and you will need to wait an additional 24 or more hours")
+        print("Caution: If you buy or sell stocks without using this stock market trading robot, ")
+        print("then this stock market robot will need steps 1 thru 4 repeated above ")
+        print("and you will need to wait an additional 24 or more hours")
         print(" before the stock market robot begins to be fully initialized to sell your stocks. ")
         print(" It is usually going to be an additional 24 hour waiting time")
         print(" unless the stocks are not in a profitable price range to be sold. ")
@@ -259,7 +256,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
         cash_available = round(float(api.get_account().cash), 2)
 
-        qty_of_one_stock = 1    # change this number to buy more shares per stock symbol
+        qty_of_one_stock = 19     # change this number to buy more shares per stock symbol
 
         # Calculate the total cost if we buy 'qty_of_one_stock' shares
         total_cost_for_qty = current_price * qty_of_one_stock
@@ -319,18 +316,9 @@ def update_bought_stocks_from_api():
     positions = api.list_positions()
     bought_stocks = {}
     for position in positions:
-        symbol = position.symbol     # keep under the p in position 
+        symbol = position.symbol
         avg_entry_price = float(position.avg_entry_price)
-
-        # API datetimes will match this format. (-04:00 represents the market's TZ.)
-        api_time_format = '%Y-%m-%dT%H:%M:%S.%f-04:00'
-        
-        # Convert position.created_at to a date
-        created_at_timestamp = position.created_at
-        created_at_datetime = datetime.fromisoformat(created_at_timestamp)
-        #purchase_date = created_at_datetime.date()
         purchase_date = datetime.today()  # Set the date to today
-
         bought_stocks[symbol] = (avg_entry_price, purchase_date)
         db_position = session.query(Position).filter_by(symbol=symbol).first()
         if db_position:
@@ -341,7 +329,7 @@ def update_bought_stocks_from_api():
             db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price,
                                    purchase_date=purchase_date)
             session.add(db_position)
-    session.commit()     # keep this under the f in "for position"
+    session.commit()  # keep this under the f in for
     return bought_stocks  # keep this under the s in session
 
 
@@ -444,9 +432,9 @@ def main():
             print("and the share of stock has been listed under: Trade History In This Robot's Database. ")
             print("\n")
             print("")
-            print(" Caution: If you buy or sell stocks without using this stock market trading robot, ")
-            print(" then this stock market robot will need steps 1 thru 4 repeated above ")
-            print(" and you will need to wait an additional 24 or more hours")
+            print("Caution: If you buy or sell stocks without using this stock market trading robot, ")
+            print("then this stock market robot will need steps 1 thru 4 repeated above ")
+            print("and you will need to wait an additional 24 or more hours")
             print(" before the stock market robot begins to be fully initialized to sell your stocks. ")
             print(" It is usually going to be an additional 24 hour waiting time")
             print(" unless the stocks are not in a profitable price range to be sold. ")
