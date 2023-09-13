@@ -256,7 +256,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
         cash_available = round(float(api.get_account().cash), 2)
 
-        qty_of_one_stock = 19     # change this number to buy more shares per stock symbol
+        qty_of_one_stock = 1     # change this number to buy more shares per stock symbol
 
         # Calculate the total cost if we buy 'qty_of_one_stock' shares
         total_cost_for_qty = current_price * qty_of_one_stock
