@@ -116,6 +116,18 @@ def stop_if_stock_market_is_closed():
         print("to sell stocks tomorrow until it has bought or sold at least 1 share of stock ")
         print("and the share of stock has been listed under: Trade History In This Robot's Database. ")
         print("")
+
+        print("\n")
+        print("This Advanced Stock Market Trading Robot is designed to start running ")
+        print("after you already own 8 to 28 stock positions. ")
+        print("This Robot is programmed to only Sell the stocks that are currently in ")
+        print("This Robot's Database. ")
+        print("If no Positions are listed below, and you own stock ")
+        print("Positions then: 1.) Place 8 to 28 stock symbols to buy in the file named: ")
+        print("electricity-or-utility-stocks-to-buy-list.txt, 2.) Stop this program, ")
+        print("3.) Delete the trading_bot.db file, and 4.) restart this Robot. ")
+        print("\n")
+
         print("Caution: If you buy or sell stocks without using this stock market trading robot, ")
         print("then this stock market robot will need steps 1 thru 4 repeated above ")
         print("and you will need to wait an additional 24 or more hours")
