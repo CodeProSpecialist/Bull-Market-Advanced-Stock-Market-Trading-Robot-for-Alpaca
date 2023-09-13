@@ -322,8 +322,9 @@ def update_bought_stocks_from_api():
         # Convert position.created_at to a date
         created_at_timestamp = position.created_at
         created_at_datetime = datetime.fromisoformat(created_at_timestamp)
-        purchase_date = created_at_datetime.date()
-        
+        #purchase_date = created_at_datetime.date()
+        purchase_date = datetime.today()  # Set the date to today
+
         bought_stocks[symbol] = (avg_entry_price, purchase_date)
         db_position = session.query(Position).filter_by(symbol=symbol).first()
         if db_position:
@@ -334,7 +335,7 @@ def update_bought_stocks_from_api():
             db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price,
                                    purchase_date=purchase_date)
             session.add(db_position)
-    session.commit()
+    session.commit()     # keep this under the f in "for position"
     return bought_stocks  # keep this under the s in session
 
 
