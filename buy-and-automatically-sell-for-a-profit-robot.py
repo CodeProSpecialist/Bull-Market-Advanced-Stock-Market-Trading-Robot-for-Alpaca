@@ -27,6 +27,9 @@ DEBUG = False  # this robot works faster when this is False.
 
 eastern = pytz.timezone('US/Eastern')
 
+# API datetimes will match this format. (-04:00 represents the market's TZ.)
+api_time_format = '%Y-%m-%dT%H:%M:%S.%f-04:00'
+
 # Dictionary to maintain previous prices and price increase and price decrease counts
 stock_data = {}
 
@@ -318,6 +321,9 @@ def update_bought_stocks_from_api():
     for position in positions:
         symbol = position.symbol     # keep under the p in position 
         avg_entry_price = float(position.avg_entry_price)
+
+        # API datetimes will match this format. (-04:00 represents the market's TZ.)
+        api_time_format = '%Y-%m-%dT%H:%M:%S.%f-04:00'
         
         # Convert position.created_at to a date
         created_at_timestamp = position.created_at
