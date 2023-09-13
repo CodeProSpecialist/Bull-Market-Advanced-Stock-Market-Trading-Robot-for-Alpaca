@@ -342,7 +342,7 @@ def refresh_after_buy():
 
 
 # Modify the update_bought_stocks_from_api function to use the correct purchase date
-def update_bought_stocks_from_api():
+def update_bought_stocks_from_api(START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY):
     positions = api.list_positions()
     bought_stocks = {}
 
@@ -454,7 +454,7 @@ def main():
 
             # Check if the program should start with all owned position dates as yesterday
 
-            if run_counter == 1:     # keep this under "with open"
+            if run_counter == 0:     # keep this under "with open"
                 START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = True
             else:
                 START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = False  # Set to False if run counter is not 1
@@ -462,6 +462,7 @@ def main():
             # Update the run counter in the file
             with open(run_counter_file, "w") as f:    # keep this under else in "if run_counter"
                 f.write(str(run_counter))
+
     else:      # keep this under "if PERMISSION"
         START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = False   # keep this under "if not os.path.exists"
 
@@ -605,6 +606,7 @@ def load_positions_from_database():
 
 if __name__ == '__main__':  # keep this to the far left side.
     try:
+        global START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY
         main()  # keep this under the e in name
 
     except Exception as e:  # keep this under the t in try
