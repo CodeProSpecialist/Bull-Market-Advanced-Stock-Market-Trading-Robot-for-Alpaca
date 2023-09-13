@@ -116,12 +116,12 @@ def stop_if_stock_market_is_closed():
         print("to sell stocks tomorrow until it has bought or sold at least 1 share of stock ")
         print("and the share of stock has been listed under: Trade History In This Robot's Database. ")
         print("")
-        print(f"Caution: If you buy or sell stocks without using this stock market trading robot, 
-        \nthen this stock market robot will need steps 1 thru 4 repeated above 
-        \nand you will need to wait an additional 24 or more hours 
-        \nbefore the stock market robot begins to be fully initialized to sell your stocks. 
-        \nIt is usually going to be an additional 24 hour waiting time 
-        \nunless the stocks are not in a profitable price range to be sold. ")
+        print("Caution: If you buy or sell stocks without using this stock market trading robot, ")
+        print("then this stock market robot will need steps 1 thru 4 repeated above ")
+        print("and you will need to wait an additional 24 or more hours")
+        print(" before the stock market robot begins to be fully initialized to sell your stocks. ")
+        print(" It is usually going to be an additional 24 hour waiting time")
+        print(" unless the stocks are not in a profitable price range to be sold. ")
         print("")
         print("This software is not affiliated or endorsed by Alpaca Securities, LLC ")
         print("This software does, however, try to be a useful, profitable, and valuable ")
@@ -419,12 +419,13 @@ def main():
             print("to sell stocks tomorrow until it has bought or sold at least 1 share of stock ")
             print("and the share of stock has been listed under: Trade History In This Robot's Database. ")
             print("\n")
-            print(f"***** Caution: If you buy or sell stocks without using this stock market trading robot, 
-            \nthen this stock market robot will need steps 1 thru 4 repeated above 
-            \nand you will need to wait an additional 24 or more hours 
-            \nbefore the stock market robot begins to be fully initialized to sell your stocks. 
-            \nIt is usually going to be an additional 24 hour waiting time 
-            \nunless the stocks are not in a profitable price range to be sold. ")
+            print("")
+            print("Caution: If you buy or sell stocks without using this stock market trading robot, ")
+            print("then this stock market robot will need steps 1 thru 4 repeated above ")
+            print("and you will need to wait an additional 24 or more hours")
+            print(" before the stock market robot begins to be fully initialized to sell your stocks. ")
+            print(" It is usually going to be an additional 24 hour waiting time")
+            print(" unless the stocks are not in a profitable price range to be sold. ")
             print("")
             print("------------------------------------------------------------------------------------")
             print("\n")
