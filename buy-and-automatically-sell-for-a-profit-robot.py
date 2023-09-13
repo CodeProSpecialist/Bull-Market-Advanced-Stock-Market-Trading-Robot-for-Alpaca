@@ -84,7 +84,7 @@ def stop_if_stock_market_is_closed():
         # Check if the current time is within market hours
         if now.weekday() <= 4 and market_open_time <= current_time <= market_close_time:
             break
-
+        print("")
         print('''
 
             2023 Edition of the Advanced Stock Market Trading Robot, Version 2 
@@ -108,16 +108,25 @@ def stop_if_stock_market_is_closed():
         print("                                                                       ")
         print("The Stock Market Robot requires that you own at least 1 share or a fractional share of stock ")
         print("before you run the Stock Market Robot to allow the database to not be empty ")
+        print("Thanks for understanding. Stocks can be purchased at the Alpaca website. ")
         print("because the database can not be created when it is completely empty. ")
         print("A database needs to be created when this Stock Market Robot begins working ")
         print("to keep track of all of the stock position buying and selling. ")
         print("This stock market robot is not 100% fully initialized ")
         print("to sell stocks tomorrow until it has bought or sold at least 1 share of stock ")
         print("and the share of stock has been listed under: Trade History In This Robot's Database. ")
-        print("Thanks for understanding. Stocks can be purchased at the Alpaca website. ")
+        print("")
+        print("Caution: If you buy or sell stocks without using this stock market trading robot, 
+        \nthen this stock market robot will need steps 1 thru 4 repeated above 
+        \nand you will need to wait an additional 24 or more hours 
+        \nbefore the stock market robot begins to be fully initialized to sell your stocks. 
+        \nIt is usually going to be an additional 24 hour waiting time 
+        \nunless the stocks are not in a profitable price range to be sold. ")
+        print("")
         print("This software is not affiliated or endorsed by Alpaca Securities, LLC ")
         print("This software does, however, try to be a useful, profitable, and valuable ")
         print("stock market trading application. ")
+        print("")
         time.sleep(60)  # Sleep for 1 minute and check again. Keep this under the p in print.
 
 
@@ -410,6 +419,13 @@ def main():
             print("to sell stocks tomorrow until it has bought or sold at least 1 share of stock ")
             print("and the share of stock has been listed under: Trade History In This Robot's Database. ")
             print("\n")
+            print("***** Caution: If you buy or sell stocks without using this stock market trading robot, 
+            \nthen this stock market robot will need steps 1 thru 4 repeated above 
+            \nand you will need to wait an additional 24 or more hours 
+            \nbefore the stock market robot begins to be fully initialized to sell your stocks. 
+            \nIt is usually going to be an additional 24 hour waiting time 
+            \nunless the stocks are not in a profitable price range to be sold. ")
+            print("")
             print("------------------------------------------------------------------------------------")
             print("\n")
 
