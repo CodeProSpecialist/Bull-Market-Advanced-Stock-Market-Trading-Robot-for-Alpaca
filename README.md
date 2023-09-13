@@ -150,7 +150,8 @@ your stocks tomorrow unless you perform the following steps:
         a profitable price range to be sold. 
 
         There is a feature to allow yesterday's stocks to be sold today 
-                     by setting a variable to True instead of False. The variable is: 
+        after the trading_bot.db database file has been deleted and is brand new. 
+        You set the following variable to True instead of False. The variable is: 
                      
               PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False  
               
