@@ -115,8 +115,7 @@ def stop_if_stock_market_is_closed():
         print("This stock market robot is not 100% fully initialized ")
         print("to sell stocks tomorrow until it has bought or sold at least 1 share of stock ")
         print("and the share of stock has been listed under: Trade History In This Robot's Database. ")
-        print("")
-
+        print("\n")
         print("\n")
         print("This Advanced Stock Market Trading Robot is designed to start running ")
         print("after you already own 8 to 28 stock positions. ")
@@ -127,14 +126,13 @@ def stop_if_stock_market_is_closed():
         print("electricity-or-utility-stocks-to-buy-list.txt, 2.) Stop this program, ")
         print("3.) Delete the trading_bot.db file, and 4.) restart this Robot. ")
         print("\n")
-
-        print(" Caution: If you buy or sell stocks without using this stock market trading robot, ")
-        print(" then this stock market robot will need steps 1 thru 4 repeated above ")
-        print(" and you will need to wait an additional 24 or more hours")
-        print(" before the stock market robot begins to be fully initialized to sell your stocks. ")
-        print(" It is usually going to be an additional 24 hour waiting time")
-        print(" unless the stocks are not in a profitable price range to be sold. ")
-        print("")
+        print("     Caution: If you buy or sell stocks without using this stock market trading robot, ")
+        print("              then this robot will need steps 1 thru 4 , that are shown above, repeated ")
+        print("              and you will need to wait an additional 24 or more hours")
+        print("              before the stock market robot begins to be fully initialized to sell your stocks. ")
+        print("              It is usually going to be an additional 24 hour waiting time")
+        print("              unless the stocks are not in a profitable price range to be sold. ")
+        print("\n")
         print("This software is not affiliated or endorsed by Alpaca Securities, LLC ")
         print("This software does, however, try to be a useful, profitable, and valuable ")
         print("stock market trading application. ")
@@ -256,7 +254,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
         cash_available = round(float(api.get_account().cash), 2)
 
-        qty_of_one_stock = 1    # change this number to buy more shares per stock symbol
+        qty_of_one_stock = 1     # change this number to buy more shares per stock symbol
 
         # Calculate the total cost if we buy 'qty_of_one_stock' shares
         total_cost_for_qty = current_price * qty_of_one_stock
@@ -287,10 +285,10 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         time.sleep(1.7)  # keep this under the i in if cash_available. this stops after checking each stock price
 
     # I might not need the extra sleep command below
-    # keep the below time.sleep(1) below the f in for.
-    time.sleep(1.7)  # wait 1.7 seconds to not move too fast for the yfinance rate limit.
+    # keep the below time.sleep(1) below the f in "for symbol"
+    time.sleep(1.7)  # wait 1.7 seconds to not move too fast for the stock price data rate limit.
 
-    with buy_sell_lock:  # keep this under the f in for
+    with buy_sell_lock:  # keep this under the f in "for symbol"
         for symbol, price, date in stocks_to_remove:  # Unpack tuple
             bought_stocks[symbol] = (round(price, 4), date)
             stocks_to_buy.remove(symbol)
@@ -300,7 +298,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             db_position = Position(symbol=symbol, quantity=qty_of_one_stock, avg_price=price, purchase_date=date)
             session.add(db_position)
 
-        session.commit()  # keep this under the f in for ( inside this with statement )
+        session.commit()  # keep this under the f in "for symbol" ( inside this with statement )
 
         refresh_after_buy()  # keep this under the s in session
 
@@ -316,14 +314,9 @@ def update_bought_stocks_from_api():
     positions = api.list_positions()
     bought_stocks = {}
     for position in positions:
-        symbol = position.symbol     # keep under the p in position 
+        symbol = position.symbol
         avg_entry_price = float(position.avg_entry_price)
-        
-        # Convert position.created_at to a date
-        created_at_timestamp = position.created_at
-        created_at_datetime = datetime.fromisoformat(created_at_timestamp)
-        purchase_date = created_at_datetime.date()
-        
+        purchase_date = datetime.today()  # Set the date to today
         bought_stocks[symbol] = (avg_entry_price, purchase_date)
         db_position = session.query(Position).filter_by(symbol=symbol).first()
         if db_position:
@@ -334,7 +327,7 @@ def update_bought_stocks_from_api():
             db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price,
                                    purchase_date=purchase_date)
             session.add(db_position)
-    session.commit()
+    session.commit()  # keep this under the f in for
     return bought_stocks  # keep this under the s in session
 
 
@@ -377,17 +370,16 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
 
     # I might not need the extra sleep command below
-    # keep the below time.sleep(1) below the f in for.
-    time.sleep(2)  # wait 1 second to not move too fast for the yfinance rate limit.
+    # keep the below time.sleep(1) below the f in "for symbol"
+    time.sleep(2)  # wait 1 second to not move too fast for the stock price data rate limit.
 
     with buy_sell_lock:  # keep this under the "f" in "for symbol"
         for symbol in stocks_to_remove:
             del bought_stocks[symbol]  # Delete symbols here
-            trade_history = TradeHistory(symbol=symbol, action='sell', quantity=qty, price=current_price,
-                                         date=today_date)
+            trade_history = TradeHistory(symbol=symbol, action='sell', quantity=qty, price=current_price, date=today_date)
             session.add(trade_history)
             session.query(Position).filter_by(symbol=symbol).delete()
-        session.commit()  # keep this under the f in for
+        session.commit()  # keep this under the f in "for symbol" ( keep inside this buy_sell_lock code block )
 
         refresh_after_sell()  # keep this under the s in session
 
@@ -436,13 +428,13 @@ def main():
             print("to sell stocks tomorrow until it has bought or sold at least 1 share of stock ")
             print("and the share of stock has been listed under: Trade History In This Robot's Database. ")
             print("\n")
-            print("")
-            print(" Caution: If you buy or sell stocks without using this stock market trading robot, ")
-            print(" then this stock market robot will need steps 1 thru 4 repeated above ")
-            print(" and you will need to wait an additional 24 or more hours")
-            print(" before the stock market robot begins to be fully initialized to sell your stocks. ")
-            print(" It is usually going to be an additional 24 hour waiting time")
-            print(" unless the stocks are not in a profitable price range to be sold. ")
+            print("\n")
+            print("     Caution: If you buy or sell stocks without using this stock market trading robot, ")
+            print("              then this robot will need steps 1 thru 4 , that are shown above, repeated ")
+            print("              and you will need to wait an additional 24 or more hours")
+            print("              before the stock market robot begins to be fully initialized to sell your stocks. ")
+            print("              It is usually going to be an additional 24 hour waiting time")
+            print("              unless the stocks are not in a profitable price range to be sold. ")
             print("")
             print("------------------------------------------------------------------------------------")
             print("\n")
@@ -477,7 +469,7 @@ def main():
                 current_price = get_current_price(symbol)
 
                 print(f"Symbol: {symbol} | Current Price: {current_price} ")
-                time.sleep(1)  # wait 1 second to not move too fast for the yfinance rate limit.
+                time.sleep(1)  # wait 1 second to not move too fast for the stock data rate limit.
             print("\n")
             print("------------------------------------------------------------------------------------")
             print("\n")
