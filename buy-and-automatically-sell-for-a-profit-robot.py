@@ -116,7 +116,7 @@ def stop_if_stock_market_is_closed():
         print("to sell stocks tomorrow until it has bought or sold at least 1 share of stock ")
         print("and the share of stock has been listed under: Trade History In This Robot's Database. ")
         print("")
-        print("Caution: If you buy or sell stocks without using this stock market trading robot, 
+        print(f"Caution: If you buy or sell stocks without using this stock market trading robot, 
         \nthen this stock market robot will need steps 1 thru 4 repeated above 
         \nand you will need to wait an additional 24 or more hours 
         \nbefore the stock market robot begins to be fully initialized to sell your stocks. 
@@ -419,7 +419,7 @@ def main():
             print("to sell stocks tomorrow until it has bought or sold at least 1 share of stock ")
             print("and the share of stock has been listed under: Trade History In This Robot's Database. ")
             print("\n")
-            print("***** Caution: If you buy or sell stocks without using this stock market trading robot, 
+            print(f"***** Caution: If you buy or sell stocks without using this stock market trading robot, 
             \nthen this stock market robot will need steps 1 thru 4 repeated above 
             \nand you will need to wait an additional 24 or more hours 
             \nbefore the stock market robot begins to be fully initialized to sell your stocks. 
