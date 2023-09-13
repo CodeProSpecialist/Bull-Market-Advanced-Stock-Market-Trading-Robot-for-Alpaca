@@ -143,12 +143,22 @@ your stocks tomorrow unless you perform the following steps:
         3.) Delete the trading_bot.db file
         4.) restart this Robot with the command:      python3 buy-and-automatically-sell-for-a-profit-robot.py
 
-Caution: If you buy or sell stocks without using this stock market trading robot, 
-then this stock market robot will need the steps 1 thru 4, that are shown above, repeated and you will need to wait 
-an additional 24 or more hours before the stock market robot begins to be fully initialized to sell your stocks. 
-It is usually going to be an additional 24 hour waiting time unless the stocks are not in 
-a profitable price range to be sold. 
-        
+        Caution: If you buy or sell stocks without using this stock market trading robot, 
+        then this stock market robot will need the steps 1 thru 4, that are shown above, repeated and you will need to wait 
+        an additional 24 or more hours before the stock market robot begins to be fully initialized to sell your stocks. 
+        It is usually going to be an additional 24 hour waiting time unless the stocks are not in 
+        a profitable price range to be sold. 
+
+        There is a feature to allow yesterday's stocks to be sold today 
+                     by setting a variable to True instead of False. The variable is: 
+              PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False  
+              After changing the above variable to = True, 
+              you delete the file named 
+              "trading_bot_run_counter.txt"  
+              Then you can sell the stocks today that 
+              were purchased yesterday after deleting and creating a new trading_bot.db file.  
+              Then, after running this stock robot the first time,  
+              it will update the dates of the owned positions to yesterday's date.        
 ************************************************************************************************************
 
 You can modify the python script to make DEBUG = True   and this will print out your stocks with the price information. 
