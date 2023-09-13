@@ -432,7 +432,7 @@ def refresh_after_sell():
 
 
 def main():
-    global stocks_to_buy, START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY
+    global stocks_to_buy
     stocks_to_buy = get_stocks_to_trade()
     bought_stocks = load_positions_from_database()
     buy_sell_lock = threading.Lock()
@@ -450,6 +450,9 @@ def main():
             with open(run_counter_file, "r") as f:
                 run_counter = int(f.read())
             run_counter += 1
+
+            global START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY
+            START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = False
 
             # Check if the program should start with all owned position dates as yesterday
             if run_counter == 1:
