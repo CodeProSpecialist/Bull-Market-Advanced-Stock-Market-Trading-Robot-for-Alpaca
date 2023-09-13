@@ -21,9 +21,9 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-PRINT_DATABASE = True  # keep this as True to view the stocks to sell.
+PRINT_DATABASE = True   # keep this as True to view the stocks to sell.
 
-DEBUG = False  # this robot works faster when this is False.
+DEBUG = False   # this robot works faster when this is False.
 
 eastern = pytz.timezone('US/Eastern')
 
