@@ -2,13 +2,14 @@ import threading
 import logging
 import os, sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from datetime import time as time2
 import alpaca_trade_api as tradeapi
 import pytz
 import talib
 import yfinance as yf
 import sqlalchemy
+from alpaca_trade_api.entity import PortfolioHistory
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -21,9 +22,15 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
+# Define the API datetime format
+api_time_format = '%Y-%m-%dT%H:%M:%S.%f-04:00'
+
 PRINT_DATABASE = True   # keep this as True to view the stocks to sell.
 
 DEBUG = False   # this robot works faster when this is False.
+
+# Default value for PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN
+PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False
 
 eastern = pytz.timezone('US/Eastern')
 
@@ -132,6 +139,14 @@ def stop_if_stock_market_is_closed():
         print("              before the stock market robot begins to be fully initialized to sell your stocks. ")
         print("              It is usually going to be an additional 24 hour waiting time")
         print("              unless the stocks are not in a profitable price range to be sold. ")
+        print("              There is a feature to allow yesterday's stocks to be sold today ")
+        print("              by setting a variable to True instead of False. The variable is: ")
+        print("      PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False  ")
+        print("      After changing the above variable to True, you delete the file named trading_bot_run_counter.txt ")
+        print("      Then you can sell the stocks today that ")
+        print("      were purchased yesterday after deleting and creating a new trading_bot.db file.  ")
+        print("      Then, after running this stock robot the first time,  ")
+        print("      it will update the dates of the owned positions to yesterday's date. ")
         print("\n")
         print("This software is not affiliated or endorsed by Alpaca Securities, LLC ")
         print("This software does, however, try to be a useful, profitable, and valuable ")
@@ -142,6 +157,9 @@ def stop_if_stock_market_is_closed():
 
 def print_database_tables():
     if PRINT_DATABASE:
+        positions = api.list_positions()
+        show_price_percentage_change = True  # set to true to view % price changes
+
         # Print TradeHistory table
         print("\nTrade History In This Robot's Database:")
         print("\n")
@@ -149,7 +167,7 @@ def print_database_tables():
         print("\n")
 
         for record in session.query(TradeHistory).all():
-            print(record.symbol, record.action, record.quantity, record.price, record.date)
+            print(f"{record.symbol} | {record.action} | {record.quantity} | {record.price:.2f} | {record.date}")
 
         print("----------------------------------------------------------------")
         # Print Position table
@@ -159,8 +177,19 @@ def print_database_tables():
         print("Stock | Quantity | Avg. Price | Purchase Date or The 1st Day This Robot Began Working ")
         print("\n")
         for record in session.query(Position).all():
-            print(record.symbol, record.quantity, record.avg_price, record.purchase_date)
-        print("\n")  # keep this under the f in for
+            symbol, quantity, avg_price, purchase_date = record.symbol, record.quantity, record.avg_price, record.purchase_date
+
+            # Format purchase_date to show 0 digits after the decimal point
+            purchase_date_str = purchase_date.strftime("%Y-%m-%d %H:%M:%S")
+
+            # Calculate percentage change if show_price_percentage_change is True
+            if show_price_percentage_change:
+                current_price = get_current_price(symbol)  # Replace with your actual method to get current price
+                percentage_change = ((current_price - avg_price) / avg_price) * 100
+                print(f"{symbol} | {quantity} | {avg_price:.2f} | {purchase_date_str} | Price Change: {percentage_change:.2f}%")
+            else:
+                print(f"{symbol} | {quantity} | {avg_price:.2f} | {purchase_date_str}")
+        print("\n")
 
 
 def get_stocks_to_trade():
@@ -310,15 +339,25 @@ def refresh_after_buy():
     bought_stocks = update_bought_stocks_from_api()
 
 
+# Modify the update_bought_stocks_from_api function to use the correct purchase date
 def update_bought_stocks_from_api():
     positions = api.list_positions()
     bought_stocks = {}
+
+    # Check if the program should start with all owned position dates as yesterday
+    if START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY:
+        yesterday = datetime.today() - timedelta(days=1)
+    else:
+        yesterday = datetime.today()
+
     for position in positions:
         symbol = position.symbol
         avg_entry_price = float(position.avg_entry_price)
-        purchase_date = datetime.today()  # Set the date to today
+        purchase_date = yesterday  # Set the date to yesterday if required
+
         bought_stocks[symbol] = (avg_entry_price, purchase_date)
         db_position = session.query(Position).filter_by(symbol=symbol).first()
+
         if db_position:
             db_position.quantity = position.qty
             db_position.avg_price = avg_entry_price
@@ -327,8 +366,9 @@ def update_bought_stocks_from_api():
             db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price,
                                    purchase_date=purchase_date)
             session.add(db_position)
-    session.commit()  # keep this under the f in for
-    return bought_stocks  # keep this under the s in session
+
+    session.commit()  # Keep this under the for loop
+    return bought_stocks  # Keep this under the s in session
 
 
 def sell_stocks(bought_stocks, buy_sell_lock):
@@ -391,10 +431,36 @@ def refresh_after_sell():
 
 
 def main():
-    global stocks_to_buy
+    global stocks_to_buy, START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY
     stocks_to_buy = get_stocks_to_trade()
     bought_stocks = load_positions_from_database()
     buy_sell_lock = threading.Lock()
+
+    # Check if the run counter file exists
+    run_counter_file = "trading_bot_run_counter.txt"
+
+    if PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN:
+        if not os.path.exists(run_counter_file):
+            # The run counter file doesn't exist, so create it and set the initial value to 1
+            with open(run_counter_file, "w") as f:
+                f.write("1")
+        else:
+            # The run counter file exists, read its value and increment it by 1
+            with open(run_counter_file, "r") as f:
+                run_counter = int(f.read())
+            run_counter += 1
+
+            # Check if the program should start with all owned position dates as yesterday
+            if run_counter == 1:
+                START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = True
+            else:
+                START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = False  # Set to False if run counter is not 1
+
+            # Update the run counter in the file
+            with open(run_counter_file, "w") as f:
+                f.write(str(run_counter))
+    else:
+        START_ROBOT_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY = False
 
     while True:
         try:
@@ -435,6 +501,15 @@ def main():
             print("              before the stock market robot begins to be fully initialized to sell your stocks. ")
             print("              It is usually going to be an additional 24 hour waiting time")
             print("              unless the stocks are not in a profitable price range to be sold. ")
+            print("              There is a feature to allow yesterday's stocks to be sold today ")
+            print("              by setting a variable to True instead of False. The variable is: ")
+            print("      PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False  ")
+            print(
+                "      After changing the above variable to True, you delete the file named trading_bot_run_counter.txt ")
+            print("      Then you can sell the stocks today that ")
+            print("      were purchased yesterday after deleting and creating a new trading_bot.db file.  ")
+            print("      Then, after running this stock robot the first time,  ")
+            print("      it will update the dates of the owned positions to yesterday's date. ")
             print("")
             print("------------------------------------------------------------------------------------")
             print("\n")
