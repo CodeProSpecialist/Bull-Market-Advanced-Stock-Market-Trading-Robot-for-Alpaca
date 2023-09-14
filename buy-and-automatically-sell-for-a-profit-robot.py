@@ -11,7 +11,10 @@ import yfinance as yf
 import sqlalchemy
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.exc import SQLAlchemyError
+
 
 # Load environment variables for Alpaca API
 APIKEYID = os.getenv('APCA_API_KEY_ID')
@@ -22,6 +25,10 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
 global stocks_to_buy, today_date, today_datetime
+
+PRINT_STOCKS_TO_BUY = True     # keep this as False for the robot to work faster.
+
+PRINT_ROBOT_STORED_BUY_AND_SELL_LIST_DATABASE = True     # keep this as False for the robot to work faster.
 
 PRINT_DATABASE = True   # keep this as True to view the stocks to sell.
 
@@ -278,19 +285,23 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # keep the below time.sleep(1) below the f in "for symbol"
     time.sleep(1.7)  # wait 1.7 seconds to not move too fast for the stock price data rate limit.
 
-    with buy_sell_lock:  # keep this under the f in "for symbol"
-        for symbol, price, date in stocks_to_remove:  # Unpack tuple
-            bought_stocks[symbol] = (round(price, 4), date)
-            stocks_to_buy.remove(symbol)
-            remove_symbol_from_trade_list(symbol)
-            trade_history = TradeHistory(symbol=symbol, action='buy', quantity=qty_of_one_stock, price=price, date=date)
-            session.add(trade_history)
-            db_position = Position(symbol=symbol, quantity=qty_of_one_stock, avg_price=price, purchase_date=date)
-            session.add(db_position)
+    try:            # keep this under the b in "buy_stocks"
+        with buy_sell_lock:
+            for symbol, price, date in stocks_to_remove:
+                bought_stocks[symbol] = (round(price, 4), date)
+                stocks_to_buy.remove(symbol)
+                remove_symbol_from_trade_list(symbol)
+                trade_history = TradeHistory(symbol=symbol, action='buy', quantity=qty_of_one_stock, price=price,
+                                             date=date)
+                session.add(trade_history)
+                db_position = Position(symbol=symbol, quantity=qty_of_one_stock, avg_price=price, purchase_date=date)
+                session.add(db_position)
 
-        session.commit()  # keep this under the f in "for symbol" ( inside this with statement )
-
-        refresh_after_buy()  # keep this under the s in session
+            session.commit()
+            refresh_after_buy()
+    except SQLAlchemyError as e:            # keep this under the t in "try"
+        session.rollback()  # Roll back the transaction on error
+        # Handle the error or log it
 
 
 def refresh_after_buy():
@@ -310,33 +321,26 @@ def update_bought_stocks_from_api():
     run_counter_file = "trading_bot_run_counter.txt"
 
     if not os.path.exists(run_counter_file):
-        # The run counter file doesn't exist, so create it and set the initial value to 0 for the first run
         with open(run_counter_file, "w") as f:
             f.write("0")
-        run_counter = 0  # Set run_counter to 0 for the first run
+        run_counter = 0
     else:
-        # The run counter file exists, read its value and increment it by 1
         with open(run_counter_file, "r") as f:
             run_counter = int(f.read())
-        run_counter += 1  # Increment run_counter for each run
+        run_counter += 1
 
     for position in positions:
         symbol = position.symbol
         avg_entry_price = float(position.avg_entry_price)
 
-        # Check if the position already exists in the database
-        db_position = session.query(Position).filter_by(symbol=symbol).first()
-
-        if db_position:
-            # If it exists, update the relevant fields
+        try:
+            db_position = session.query(Position).filter_by(symbol=symbol).one()
             db_position.quantity = position.qty
             db_position.avg_price = avg_entry_price
 
-            # Only update the purchase date if POSITION_DATES_AS_YESTERDAY_OPTION is True
-            if POSITION_DATES_AS_YESTERDAY_OPTION and run_counter < 1 :
+            if POSITION_DATES_AS_YESTERDAY_OPTION and run_counter < 1:
                 db_position.purchase_date = yesterday
-        else:
-            # If it doesn't exist, create a new Position object
+        except NoResultFound:
             purchase_date = yesterday if POSITION_DATES_AS_YESTERDAY_OPTION and run_counter < 1 else datetime.today()
             db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price,
                                    purchase_date=purchase_date)
@@ -344,13 +348,11 @@ def update_bought_stocks_from_api():
 
         bought_stocks[symbol] = (avg_entry_price, db_position.purchase_date)
 
-    # Update the run_counter in the run_counter_file
     with open(run_counter_file, "w") as f:
         f.write(str(run_counter))
 
-    session.commit()  # Keep this under the for loop
-    return bought_stocks  # Keep this under the session.commit()
-
+    session.commit()
+    return bought_stocks
 
 
 def sell_stocks(bought_stocks, buy_sell_lock):
@@ -395,15 +397,19 @@ def sell_stocks(bought_stocks, buy_sell_lock):
     # keep the below time.sleep(1) below the f in "for symbol"
     time.sleep(2)  # wait 1 second to not move too fast for the stock price data rate limit.
 
-    with buy_sell_lock:  # keep this under the "f" in "for symbol"
-        for symbol in stocks_to_remove:
-            del bought_stocks[symbol]  # Delete symbols here
-            trade_history = TradeHistory(symbol=symbol, action='sell', quantity=qty, price=current_price, date=today_date)
-            session.add(trade_history)
-            session.query(Position).filter_by(symbol=symbol).delete()
-        session.commit()  # keep this under the f in "for symbol" ( keep inside this buy_sell_lock code block )
-
-        refresh_after_sell()  # keep this under the s in session
+    try:            # keep this under the s in "sell stocks"
+        with buy_sell_lock:
+            for symbol in stocks_to_remove:
+                del bought_stocks[symbol]
+                trade_history = TradeHistory(symbol=symbol, action='sell', quantity=qty, price=current_price,
+                                             date=today_date)
+                session.add(trade_history)
+                session.query(Position).filter_by(symbol=symbol).delete()
+            session.commit()
+            refresh_after_sell()
+    except SQLAlchemyError as e:        # keep this under the t in "try"
+        session.rollback()
+        # Handle the error or log it
 
 
 def refresh_after_sell():
@@ -459,21 +465,23 @@ def main():
             buy_thread.join()
             sell_thread.join()
 
-            print("\n")
-            print("------------------------------------------------------------------------------------")
-            print("\n")
-            print("Stocks to Purchase:")
-            print("\n")
-            for symbol in stocks_to_buy:
-                current_price = get_current_price(symbol)
+            if PRINT_STOCKS_TO_BUY:
+                print("\n")
+                print("------------------------------------------------------------------------------------")
+                print("\n")
+                print("Stocks to Purchase:")
+                print("\n")
+                for symbol in stocks_to_buy:
+                    current_price = get_current_price(symbol)
 
-                print(f"Symbol: {symbol} | Current Price: {current_price} ")
-                time.sleep(1)  # wait 1 second to not move too fast for the stock data rate limit.
-            print("\n")
-            print("------------------------------------------------------------------------------------")
-            print("\n")
+                    print(f"Symbol: {symbol} | Current Price: {current_price} ")
+                    time.sleep(1)  # wait 1 second to not move too fast for the stock data rate limit.
+                print("\n")
+                print("------------------------------------------------------------------------------------")
+                print("\n")
 
-            print_database_tables()
+            if PRINT_ROBOT_STORED_BUY_AND_SELL_LIST_DATABASE:
+                print_database_tables()
 
             # account = api.get_account()
             # print(account)   # uncomment to print Alpaca Account details to debug the software
