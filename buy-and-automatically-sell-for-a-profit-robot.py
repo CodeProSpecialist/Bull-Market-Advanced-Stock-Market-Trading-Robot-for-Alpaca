@@ -364,16 +364,17 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
     today_date = datetime.today().date()
 
-    for symbol, (bought_price, bought_date) in bought_stocks.items():
+    for symbol, (bought_price, purchase_date) in bought_stocks.items():
 
         status_printer_sell_stocks()    # keep this under the "s" in "for symbol"
 
-        # Extract the date part of bought_date to compare with today_date
-        bought_date = bought_date.date()
+        # Extract the date part of purchase_date to compare with today_date
+        bought_date = purchase_date.date()     # this is the only part of the code to find bought_date 
+        # the rest of the code goes by purchase_date instead of bought_date 
 
         #print("today_date = ", symbol, today_date)  # uncomment to print variable date to debug as same date
 
-        #print("bought_date = ", symbol, bought_date)  # uncomment to print variable date to debug as same date
+        #print("bought_date = ", symbol, purchase_date)  # uncomment to print variable date to debug as same date
 
         # Check if the stock was purchased at least one day before today
         #if bought_date < today_date:
