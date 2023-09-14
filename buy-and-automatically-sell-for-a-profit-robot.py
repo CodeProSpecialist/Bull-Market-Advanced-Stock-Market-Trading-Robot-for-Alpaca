@@ -21,9 +21,7 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-global stocks_to_buy, today_date, today_datetime, run_counter
-
-global POSITION_DATES_AS_YESTERDAY_OPTION
+global stocks_to_buy, today_date, today_datetime
 
 PRINT_DATABASE = True   # keep this as True to view the stocks to sell.
 
@@ -312,10 +310,10 @@ def update_bought_stocks_from_api():
     run_counter_file = "trading_bot_run_counter.txt"
 
     if not os.path.exists(run_counter_file):
-        # The run counter file doesn't exist, so create it and set the initial value to 1
+        # The run counter file doesn't exist, so create it and set the initial value to 0 for the first run
         with open(run_counter_file, "w") as f:
-            f.write("1")
-        run_counter = 1  # Set run_counter to 1 since it's the first run
+            f.write("0")
+        run_counter = 0  # Set run_counter to 0 for the first run
     else:
         # The run counter file exists, read its value and increment it by 1
         with open(run_counter_file, "r") as f:
@@ -352,6 +350,7 @@ def update_bought_stocks_from_api():
 
     session.commit()  # Keep this under the for loop
     return bought_stocks  # Keep this under the session.commit()
+
 
 
 def sell_stocks(bought_stocks, buy_sell_lock):
@@ -447,7 +446,6 @@ def main():
 
             # the below threads will run the buy_stocks and the sell_stocks functions at the same time
             # in parallel to buy and sell more without taking more time than necessary.
-
             # keep the below python code below the i in if not bought stocks
             # Create threads for buy_stocks and sell_stocks
             buy_thread = threading.Thread(target=buy_stocks, args=(bought_stocks, stocks_to_buy, buy_sell_lock))
