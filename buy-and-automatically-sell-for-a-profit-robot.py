@@ -27,7 +27,7 @@ DEBUG = False   # this robot works faster when this is False.
 
 # the below Permission variable will allow all owned position shares to sell today when True on the first run.
 # Default value for PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False
-PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = True
+PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False
 
 # set the timezone to Eastern
 eastern = pytz.timezone('US/Eastern')
