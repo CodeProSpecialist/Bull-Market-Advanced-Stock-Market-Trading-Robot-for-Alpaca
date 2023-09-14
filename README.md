@@ -153,7 +153,7 @@ your stocks tomorrow unless you perform the following steps:
         after the trading_bot.db database file has been deleted and is brand new. 
         You set the following variable to True instead of False. The variable is: 
                      
-              PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False  
+              POSITION_DATES_AS_YESTERDAY_OPTION = False  
               
               After changing the above variable to = True, 
               you delete the files named:
