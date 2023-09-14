@@ -88,8 +88,8 @@ while True:
                 for stock in top_stocks:
                     output_file.write(f"{stock[0]}\n")
 
-            # Calculate the time of the next run
-            next_run = now + timedelta(minutes=30)
+            # Calculate the time of the next run for the following day
+            next_run = now + timedelta(days=1, minutes=30)
             next_run = next_run.replace(hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
             next_run_time = next_run.strftime('%I:%M:%S %p')
             print("")
@@ -99,8 +99,14 @@ while True:
             print("")
 
         # Calculate the time until the next run
-        next_run = now + timedelta(minutes=30)
-        next_run = next_run.replace(hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
+        if now.time() > end_time:
+            # If the current time is past the end time, calculate the time until the next run for the following day
+            next_run = now + timedelta(days=1, minutes=30)
+            next_run = next_run.replace(hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
+        else:
+            next_run = now + timedelta(minutes=30)
+            next_run = next_run.replace(hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
+
         time_until_next_run = (next_run - now).total_seconds()
 
         # Display the time until the next run
