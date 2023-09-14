@@ -26,13 +26,17 @@ api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
 global stocks_to_buy, today_date, today_datetime
 
-PRINT_STOCKS_TO_BUY = True     # keep this as False for the robot to work faster.
+# the below will print the list of stocks to buy and their prices when True.
+PRINT_STOCKS_TO_BUY = False      # keep this as False for the robot to work faster.
 
+# the below will print the Robot's personal buy and sell database when True.
 PRINT_ROBOT_STORED_BUY_AND_SELL_LIST_DATABASE = True     # keep this as False for the robot to work faster.
 
-PRINT_DATABASE = True   # keep this as True to view the stocks to sell.
+# the below will print the stocks to sell when True.
+PRINT_DATABASE = True   # keep this as True to view the stocks to sell. False for a faster robot.
 
-DEBUG = False   # this robot works faster when this is False.
+# the below will print the Average True Range of stock prices when True.
+DEBUG = False     # this robot works faster when this is False.
 
 # the below Permission variable will allow all owned position shares to sell today when True on the first run.
 # Default value POSITION_DATES_AS_YESTERDAY_OPTION = False
