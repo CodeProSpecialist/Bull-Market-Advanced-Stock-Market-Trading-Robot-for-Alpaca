@@ -27,7 +27,7 @@ DEBUG = False   # this robot works faster when this is False.
 
 # the below Permission variable will allow all owned position shares to sell today when True on the first run.
 # Default value for PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False
-PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False
+PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = True
 
 # set the timezone to Eastern
 eastern = pytz.timezone('US/Eastern')
@@ -35,7 +35,7 @@ eastern = pytz.timezone('US/Eastern')
 # Dictionary to maintain previous prices and price increase and price decrease counts
 stock_data = {}
 
-POSITION_DATES_AS_YESTERDAY_OPTION = bool
+POSITION_DATES_AS_YESTERDAY_OPTION = False    # ( default value is False )
 
 global stocks_to_buy, today_date, today_datetime
 
@@ -316,19 +316,26 @@ def update_bought_stocks_from_api():
     for position in positions:
         symbol = position.symbol
         avg_entry_price = float(position.avg_entry_price)
-        purchase_date = yesterday  # Set the date to yesterday if required
 
-        bought_stocks[symbol] = (avg_entry_price, purchase_date)
+        # Check if the position already exists in the database
         db_position = session.query(Position).filter_by(symbol=symbol).first()
 
         if db_position:
+            # If it exists, update the relevant fields
             db_position.quantity = position.qty
             db_position.avg_price = avg_entry_price
-            db_position.purchase_date = purchase_date
+
+            # Only update the purchase date if POSITION_DATES_AS_YESTERDAY_OPTION is True
+            if POSITION_DATES_AS_YESTERDAY_OPTION:
+                db_position.purchase_date = yesterday
         else:
+            # If it doesn't exist, create a new Position object
+            purchase_date = yesterday if POSITION_DATES_AS_YESTERDAY_OPTION else datetime.today()
             db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price,
                                    purchase_date=purchase_date)
             session.add(db_position)
+
+        bought_stocks[symbol] = (avg_entry_price, db_position.purchase_date)
 
     session.commit()  # Keep this under the for loop
     return bought_stocks  # Keep this under the s in session
@@ -415,10 +422,10 @@ def main():
             run_counter += 1     # keep this under the w in with open
 
             # Check if the program should start with all owned position dates as yesterday
-            if run_counter == 0:  # keep this under "with open"
-                POSITION_DATES_AS_YESTERDAY_OPTION = True
+            if run_counter > 0:  # keep this under "with open"
+                POSITION_DATES_AS_YESTERDAY_OPTION = False
             else:
-                POSITION_DATES_AS_YESTERDAY_OPTION = False  # Set to False if run counter is not 1
+                POSITION_DATES_AS_YESTERDAY_OPTION = True  # Set to False if run counter is not 1
 
             # Update the run counter in the file
             with open(run_counter_file, "w") as f:  # keep this under else in "if run_counter"
