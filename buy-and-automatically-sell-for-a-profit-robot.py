@@ -21,17 +21,17 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-global stocks_to_buy, bought_stocks, today_date, today_datetime, run_counter
+global stocks_to_buy, today_date, today_datetime, run_counter
 
-global PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN
+global POSITION_DATES_AS_YESTERDAY_OPTION
 
 PRINT_DATABASE = True   # keep this as True to view the stocks to sell.
 
 DEBUG = False   # this robot works faster when this is False.
 
 # the below Permission variable will allow all owned position shares to sell today when True on the first run.
-# Default value for PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False
-PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False
+# Default value POSITION_DATES_AS_YESTERDAY_OPTION = False
+POSITION_DATES_AS_YESTERDAY_OPTION = False     # keep this as False to not change the dates of owned stocks
 
 # set the timezone to Eastern
 eastern = pytz.timezone('US/Eastern')
@@ -306,9 +306,21 @@ def refresh_after_buy():
 def update_bought_stocks_from_api():
     positions = api.list_positions()
     bought_stocks = {}
-    start_with_yesterday = bool
 
-    yesterday = datetime.today() - timedelta(days=1) if start_with_yesterday else datetime.today()
+    yesterday = datetime.today() - timedelta(days=1)
+
+    run_counter_file = "trading_bot_run_counter.txt"
+
+    if not os.path.exists(run_counter_file):
+        # The run counter file doesn't exist, so create it and set the initial value to 1
+        with open(run_counter_file, "w") as f:
+            f.write("1")
+        run_counter = 1  # Set run_counter to 1 since it's the first run
+    else:
+        # The run counter file exists, read its value and increment it by 1
+        with open(run_counter_file, "r") as f:
+            run_counter = int(f.read())
+        run_counter += 1  # Increment run_counter for each run
 
     for position in positions:
         symbol = position.symbol
@@ -322,20 +334,24 @@ def update_bought_stocks_from_api():
             db_position.quantity = position.qty
             db_position.avg_price = avg_entry_price
 
-            # Only update the purchase date if start_with_yesterday is True
-            if start_with_yesterday:
+            # Only update the purchase date if POSITION_DATES_AS_YESTERDAY_OPTION is True
+            if POSITION_DATES_AS_YESTERDAY_OPTION and run_counter < 1 :
                 db_position.purchase_date = yesterday
         else:
             # If it doesn't exist, create a new Position object
-            purchase_date = yesterday if start_with_yesterday else datetime.today()
+            purchase_date = yesterday if POSITION_DATES_AS_YESTERDAY_OPTION and run_counter < 1 else datetime.today()
             db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price,
                                    purchase_date=purchase_date)
             session.add(db_position)
 
         bought_stocks[symbol] = (avg_entry_price, db_position.purchase_date)
 
+    # Update the run_counter in the run_counter_file
+    with open(run_counter_file, "w") as f:
+        f.write(str(run_counter))
+
     session.commit()  # Keep this under the for loop
-    return bought_stocks  # Keep this under the s in session
+    return bought_stocks  # Keep this under the session.commit()
 
 
 def sell_stocks(bought_stocks, buy_sell_lock):
@@ -404,28 +420,7 @@ def main():
     bought_stocks = load_positions_from_database()
     buy_sell_lock = threading.Lock()
 
-    # Check if the run counter file exists
-    run_counter_file = "trading_bot_run_counter.txt"
-
-    if not os.path.exists(run_counter_file):  # keep this under the E in permission
-        # The run counter file doesn't exist, so create it and set the initial value to 1
-        with open(run_counter_file, "w") as f:  # keep this under the o in "if not"
-            f.write("1")  # keep this under the space between the h and o
-
-    # Read the run counter value
-    with open(run_counter_file, "r") as f:  # keep this under the o in "if not"
-        run_counter = int(f.read())  # keep this under the space between the h and o
-
-    run_counter += 1  # keep this under the w in with open
-
-    # Check if the program should start with all owned position dates as yesterday
-    start_with_yesterday = run_counter < 1  # Change the condition to less than 1
-
-    # Update the run counter in the file
-    with open(run_counter_file, "w") as f:  # keep this under else in "if run_counter"
-        f.write(str(run_counter))  # keep this under the space between the h and o
-
-while True:
+    while True:     # keep this under the m in main
         try:
             stop_if_stock_market_is_closed()  # comment this line to debug the Python code
             now = datetime.now(pytz.timezone('US/Eastern'))
