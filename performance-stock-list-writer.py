@@ -110,6 +110,7 @@ while True:
         # Display the message while waiting and the time until the next run
         next_run_time = (now + timedelta(seconds=time_until_next_run)).strftime('%I:%M:%S %p')
         print(f"Next run will be at {next_run_time} (Eastern Time).")
+        print("")
         print(f"Next run in {time_until_next_run / 3600:.2f} hours.")
         print("")
 
