@@ -25,7 +25,8 @@ PRINT_DATABASE = True   # keep this as True to view the stocks to sell.
 
 DEBUG = False   # this robot works faster when this is False.
 
-# Default value for PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN
+# the below Permission variable will allow all owned position shares to sell today when True on the first run.
+# Default value for PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False
 PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False
 
 # set the timezone to Eastern
@@ -93,7 +94,8 @@ def stop_if_stock_market_is_closed():
         # Check if the current time is within market hours
         if now.weekday() <= 4 and market_open_time <= current_time <= market_close_time:
             break
-        print("")
+
+        print("\n")
         print('''
 
             2023 Edition of the Advanced Stock Market Trading Robot, Version 2 
@@ -111,48 +113,7 @@ def stop_if_stock_market_is_closed():
         print(f'Current date & time (Eastern Time): {now.strftime("%A, %B %d, %Y, %I:%M:%S %p")}')
         print("Stockbot only works Monday through Friday: 9:30 am - 4:00 pm Eastern Time.")
         print("Waiting until Stock Market Hours to begin the Stockbot Trading Program.")
-        print("                                                                       ")
-        print("This program will only work correctly if there is at least 1 stock symbol ")
-        print("in the file named electricity-or-utility-stocks-to-buy-list.txt ")
-        print("                                                                       ")
-        print("The Stock Market Robot requires that you own at least 1 share or a fractional share of stock ")
-        print("before you run the Stock Market Robot to allow the database to not be empty ")
-        print("Thanks for understanding. Stocks can be purchased at the Alpaca website. ")
-        print("because the database can not be created when it is completely empty. ")
-        print("A database needs to be created when this Stock Market Robot begins working ")
-        print("to keep track of all of the stock position buying and selling. ")
-        print("This stock market robot is not 100% fully initialized ")
-        print("to sell stocks tomorrow until it has bought or sold at least 1 share of stock ")
-        print("and the share of stock has been listed under: Trade History In This Robot's Database. ")
         print("\n")
-        print("\n")
-        print("This Advanced Stock Market Trading Robot is designed to start running ")
-        print("after you already own 8 to 28 stock positions. ")
-        print("This Robot is programmed to only Sell the stocks that are currently in ")
-        print("This Robot's Database. ")
-        print("If no Positions are listed below, and you own stock ")
-        print("Positions then: 1.) Place 8 to 28 stock symbols to buy in the file named: ")
-        print("electricity-or-utility-stocks-to-buy-list.txt, 2.) Stop this program, ")
-        print("3.) Delete the trading_bot.db file, and 4.) restart this Robot. ")
-        print("\n")
-        print("     Caution: If you buy or sell stocks without using this stock market trading robot, ")
-        print("              then this robot will need steps 1 thru 4 , that are shown above, repeated ")
-        print("              and you will need to wait an additional 24 or more hours")
-        print("              before the stock market robot begins to be fully initialized to sell your stocks. ")
-        print("              It is usually going to be an additional 24 hour waiting time")
-        print("              unless the stocks are not in a profitable price range to be sold. ")
-        print("              There is a feature to allow yesterday's stocks to be sold today ")
-        print("              by setting a variable to True instead of False. The variable is: ")
-        print("      PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False  ")
-        print("      After changing the above variable to True, you delete the file named trading_bot_run_counter.txt ")
-        print("      Then you can sell the stocks today that ")
-        print("      were purchased yesterday after deleting and creating a new trading_bot.db file.  ")
-        print("      Then, after running this stock robot the first time,  ")
-        print("      it will update the dates of the owned positions to yesterday's date. ")
-        print("\n")
-        print("This software is not affiliated or endorsed by Alpaca Securities, LLC ")
-        print("This software does, however, try to be a useful, profitable, and valuable ")
-        print("stock market trading application. ")
         print("\n")
         time.sleep(60)  # Sleep for 1 minute and check again. Keep this under the p in print.
 
@@ -443,29 +404,27 @@ def main():
     run_counter_file = "trading_bot_run_counter.txt"
 
     if PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN:
-        if not os.path.exists(run_counter_file):
+        if not os.path.exists(run_counter_file):     # keep this under the E in permission
             # The run counter file doesn't exist, so create it and set the initial value to 1
-            with open(run_counter_file, "w") as f:
-                f.write("1")
+            with open(run_counter_file, "w") as f:      # keep this under the o in "if not"
+                f.write("1")     # keep this under the space between the h and o
         else:
             # The run counter file exists, read its value and increment it by 1
-            with open(run_counter_file, "r") as f:
-                run_counter = int(f.read())
-            run_counter += 1
+            with open(run_counter_file, "r") as f:     # keep this under the o in "if not"
+                run_counter = int(f.read())     # keep this under the space between the h and o
+            run_counter += 1     # keep this under the w in with open
 
             # Check if the program should start with all owned position dates as yesterday
-
-            if run_counter == 0:     # keep this under "with open"
+            if run_counter == 0:  # keep this under "with open"
                 POSITION_DATES_AS_YESTERDAY_OPTION = True
             else:
                 POSITION_DATES_AS_YESTERDAY_OPTION = False  # Set to False if run counter is not 1
 
             # Update the run counter in the file
-            with open(run_counter_file, "w") as f:    # keep this under else in "if run_counter"
-                f.write(str(run_counter))
-
-    else:      # keep this under "if PERMISSION"
-        POSITION_DATES_AS_YESTERDAY_OPTION = False   # keep this under "if not os.path.exists"
+            with open(run_counter_file, "w") as f:  # keep this under else in "if run_counter"
+                f.write(str(run_counter))     # keep this under the space between the h and o
+    else:   # keep this under "if PERMISSION"
+        POSITION_DATES_AS_YESTERDAY_OPTION = False  # keep this under "if not os.path.exists"
 
     while True:
         try:
@@ -483,39 +442,7 @@ def main():
             print("\n")
             print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
             print("\n")
-            print("This Advanced Stock Market Trading Robot is designed to start running ")
-            print("after you already own 8 to 28 stock positions. ")
-            print("This Robot is programmed to only Sell the stocks that are currently in ")
-            print("This Robot's Database. ")
-            print("If no Positions are listed below, and you own stock ")
-            print("Positions then: 1.) Place 8 to 28 stock symbols to buy in the file named: ")
-            print("electricity-or-utility-stocks-to-buy-list.txt, 2.) Stop this program, ")
-            print("3.) Delete the trading_bot.db file, and 4.) restart this Robot. ")
             print("\n")
-            print("Make sure you see your owned stock Positions listed below ")
-            print("in the section named: 'Positions in the Database To Sell 1 or More Days After the Date Shown' ")
-            print("for the Robot To Sell the stock positions 1 day after the purchased date shown. ")
-            print("This stock market robot is not 100% fully initialized ")
-            print("to sell stocks tomorrow until it has bought or sold at least 1 share of stock ")
-            print("and the share of stock has been listed under: Trade History In This Robot's Database. ")
-            print("\n")
-            print("\n")
-            print("     Caution: If you buy or sell stocks without using this stock market trading robot, ")
-            print("              then this robot will need steps 1 thru 4 , that are shown above, repeated ")
-            print("              and you will need to wait an additional 24 or more hours")
-            print("              before the stock market robot begins to be fully initialized to sell your stocks. ")
-            print("              It is usually going to be an additional 24 hour waiting time")
-            print("              unless the stocks are not in a profitable price range to be sold. ")
-            print("              There is a feature to allow yesterday's stocks to be sold today ")
-            print("              by setting a variable to True instead of False. The variable is: ")
-            print("      PERMISSION_TO_START_WITH_ALL_OWNED_POSITION_DATES_AS_YESTERDAY_ON_FIRST_RUN = False  ")
-            print(
-                "      After changing the above variable to True, you delete the file named trading_bot_run_counter.txt ")
-            print("      Then you can sell the stocks today that ")
-            print("      were purchased yesterday after deleting and creating a new trading_bot.db file.  ")
-            print("      Then, after running this stock robot the first time,  ")
-            print("      it will update the dates of the owned positions to yesterday's date. ")
-            print("")
             print("------------------------------------------------------------------------------------")
             print("\n")
 
