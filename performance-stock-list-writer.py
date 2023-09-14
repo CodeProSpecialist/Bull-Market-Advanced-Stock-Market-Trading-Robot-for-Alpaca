@@ -32,8 +32,8 @@ def update_run_counter():
             counter_file.write("1")
 
 # Define the start and end times for when the program should run
-start_time = datetime.now().replace(hour=2, minute=30, second=0, microsecond=0).time()
-end_time = datetime.now().replace(hour=9, minute=25, second=0, microsecond=0).time()
+start_time = datetime.now().replace(hour=9, minute=8, second=0, microsecond=0).time()
+end_time = datetime.now().replace(hour=15, minute=45, second=0, microsecond=0).time()
 
 # Main program loop
 while True:
@@ -87,7 +87,7 @@ while True:
                     output_file.write(f"{stock[0]}\n")
 
             # Calculate the time of the next run
-            next_run = now + timedelta(hours=24)
+            next_run = now + timedelta(minutes=30)
             next_run = next_run.replace(hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
             next_run_time = next_run.strftime('%I:%M:%S %p')
             print("")
@@ -98,7 +98,7 @@ while True:
 
 
         # Calculate the time until the next run
-        next_run = now + timedelta(hours=24)
+        next_run = now + timedelta(minutes=30)
         next_run = next_run.replace(hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
         time_until_next_run = (next_run - now).total_seconds()
 
