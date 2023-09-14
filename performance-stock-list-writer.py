@@ -33,7 +33,7 @@ def update_run_counter():
 
 # Define the start and end times for when the program should run
 start_time = datetime.now().replace(hour=9, minute=8, second=0, microsecond=0).time()
-end_time = datetime.now().replace(hour=15, minute=45, second=0, microsecond=0).time()
+end_time = datetime.now().replace(hour=15, minute=48, second=0, microsecond=0).time()  # Updated end time to 3:48 PM
 
 # Main program loop
 while True:
@@ -53,8 +53,10 @@ while True:
 
         print("")
 
-        if is_first_run() or (not is_first_run() and (now.weekday() in [0, 1, 2, 3, 4] and start_time <= now.time() <= end_time)):
+        # Check if it's a weekday (Monday through Friday) and within the specified time range
+        if now.weekday() in [0, 1, 2, 3, 4] and start_time <= now.time() <= end_time:
             # Add the code to run during the specified time range here
+
             if is_first_run():
                 update_run_counter()
 
@@ -95,7 +97,6 @@ while True:
             print("")
             print("Stocks list updated successfully.")
             print("")
-
 
         # Calculate the time until the next run
         next_run = now + timedelta(minutes=30)
