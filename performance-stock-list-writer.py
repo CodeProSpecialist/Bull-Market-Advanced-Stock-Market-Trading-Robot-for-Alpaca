@@ -3,6 +3,7 @@ import pytz
 import yfinance as yf
 from datetime import datetime, timedelta
 
+
 # Function to calculate the percentage change in stock price over the past 14 days
 def calculate_percentage_change(stock):
     history = stock.history(period="14d")
@@ -10,6 +11,7 @@ def calculate_percentage_change(stock):
     end_price = history['Close'][-1]
     percentage_change = ((end_price - start_price) / start_price) * 100
     return percentage_change
+
 
 # Function to check if this is the first run
 def is_first_run():
@@ -19,6 +21,7 @@ def is_first_run():
             return count == 0
     except FileNotFoundError:
         return True
+
 
 # Function to update the run counter
 def update_run_counter():
@@ -31,9 +34,11 @@ def update_run_counter():
         with open("run_counter.txt", "w") as counter_file:
             counter_file.write("1")
 
+
 # Define the start and end times for when the program should run
 start_time = datetime.now().replace(hour=9, minute=8, second=0, microsecond=0).time()
-end_time = datetime.now().replace(hour=15, minute=48, second=0, microsecond=0).time()  # Updated end time to 3:48 PM
+end_time = datetime.now().replace(hour=15, minute=48, second=0, microsecond=0).time()
+# Updated end time to 3:48 PM Eastern Time as the hour 15.
 
 # Main program loop
 while True:
@@ -50,6 +55,10 @@ while True:
         # Display current date and time
         current_time = now.strftime('%A, %B %d, %Y, %I:%M:%S %p')
         print(f"Current date & time (Eastern Time): {current_time}")
+
+        print("")
+
+        print("This program works Monday through Friday, 9:08am - 3:48pm, every 5 minutes. ")
 
         print("")
 
@@ -93,9 +102,9 @@ while True:
             print("")
 
         # Sleep for 5 minutes before the next run
-        time.sleep(300)
+        time.sleep(300)  # keep this under the if in "if now"
 
-    except Exception as e:
+    except Exception as e:  # keep this under the t in "try"
         print("")
         print(f"An error occurred: {str(e)}")
         print("Restarting the program in 5 minutes...")
