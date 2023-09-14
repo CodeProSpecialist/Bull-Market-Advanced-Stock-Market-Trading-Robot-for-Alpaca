@@ -37,8 +37,7 @@ def update_run_counter():
 
 # Define the start and end times for when the program should run
 start_time = datetime.now().replace(hour=9, minute=8, second=0, microsecond=0).time()
-end_time = datetime.now().replace(hour=15, minute=48, second=0, microsecond=0).time()
-# Updated end time to 3:48 PM Eastern Time as the hour 15.
+end_time = datetime.now().replace(hour=15, minute=48, second=0, microsecond=0).time()  # Updated end time to 3:48 PM
 
 # Main program loop
 while True:
@@ -55,10 +54,6 @@ while True:
         # Display current date and time
         current_time = now.strftime('%A, %B %d, %Y, %I:%M:%S %p')
         print(f"Current date & time (Eastern Time): {current_time}")
-
-        print("")
-
-        print("This program works Monday through Friday, 9:08am - 3:48pm, every 5 minutes. ")
 
         print("")
 
@@ -101,10 +96,27 @@ while True:
             print("Stocks list updated successfully.")
             print("")
 
-        # Sleep for 5 minutes before the next run
-        time.sleep(300)  # keep this under the if in "if now"
+        # Calculate the time until the next run
+        if now.time() > end_time:
+            # If the current time is past the end time, calculate the time until the next run for the following day
+            next_run = now + timedelta(days=1, minutes=30)
+            next_run = next_run.replace(hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
+        else:
+            next_run = now + timedelta(minutes=30)
+            next_run = next_run.replace(hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
 
-    except Exception as e:  # keep this under the t in "try"
+        time_until_next_run = (next_run - now).total_seconds()
+
+        # Display the message while waiting and the time until the next run
+        next_run_time = (now + timedelta(seconds=time_until_next_run)).strftime('%I:%M:%S %p')
+        print(f"Next run will be at {next_run_time} (Eastern Time).")
+        print(f"Next run in {time_until_next_run / 3600:.2f} hours.")
+        print("")
+
+        # Sleep for 5 minutes before the next run
+        time.sleep(300)
+
+    except Exception as e:
         print("")
         print(f"An error occurred: {str(e)}")
         print("Restarting the program in 5 minutes...")
