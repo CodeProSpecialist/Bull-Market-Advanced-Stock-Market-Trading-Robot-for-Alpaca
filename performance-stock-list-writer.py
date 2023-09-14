@@ -53,7 +53,7 @@ while True:
 
         print("")
 
-        # Check if it's a weekday (Monday through Friday) and within the specified time range
+        # Check if it's a weekday (Monday through Friday), within the specified time range, and update every 5 minutes
         if now.weekday() in [0, 1, 2, 3, 4] and start_time <= now.time() <= end_time:
             # Add the code to run during the specified time range here
 
@@ -88,32 +88,12 @@ while True:
                 for stock in top_stocks:
                     output_file.write(f"{stock[0]}\n")
 
-            # Calculate the time of the next run for the following day
-            next_run = now + timedelta(days=1, minutes=30)
-            next_run = next_run.replace(hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
-            next_run_time = next_run.strftime('%I:%M:%S %p')
-            print("")
-            print(f"Next run will be at {next_run_time} (Eastern Time).")
             print("")
             print("Stocks list updated successfully.")
             print("")
 
-        # Calculate the time until the next run
-        if now.time() > end_time:
-            # If the current time is past the end time, calculate the time until the next run for the following day
-            next_run = now + timedelta(days=1, minutes=30)
-            next_run = next_run.replace(hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
-        else:
-            next_run = now + timedelta(minutes=30)
-            next_run = next_run.replace(hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
-
-        time_until_next_run = (next_run - now).total_seconds()
-
-        # Display the time until the next run
-        print("")
-        print(f"Next run in {time_until_next_run / 3600:.2f} hours.")
-        print("")
-        time.sleep(time_until_next_run)
+        # Sleep for 5 minutes before the next run
+        time.sleep(300)
 
     except Exception as e:
         print("")
