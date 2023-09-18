@@ -74,7 +74,7 @@ while True:
                     print("")
                     print("Please wait. The stock data is being calculated right now.....")
                     print("")
-                    time.sleep(2)  # Delay to avoid overloading the API
+                    time.sleep(5)  # Delay to avoid overloading the API
                     percentage_change = calculate_percentage_change(stock)
                     stock_data.append((symbol, percentage_change))
 
