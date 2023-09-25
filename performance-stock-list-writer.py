@@ -106,7 +106,7 @@ while True:
         next_run_time = next_run.strftime('%I:%M %p')
 
         # Display the main message with the next run time
-        main_message = f"Next run will be at {next_run_time} (Eastern Time)."
+        main_message = f"Next run will be soon after the time of {next_run_time} (Eastern Time)."
         print(main_message)
         print("")
 
