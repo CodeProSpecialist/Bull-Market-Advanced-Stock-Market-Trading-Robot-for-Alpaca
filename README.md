@@ -115,7 +115,7 @@ Invest with confidence in the electricity market. Get the "Performance Stock Lis
 
 ------------------------------------------------------------
 
- Next run will be at [Next Run Time] (Eastern Time).
+ Next run will be soon after the time of [Next Run Time] (Eastern Time).
 
  Stocks list updated successfully.
 
