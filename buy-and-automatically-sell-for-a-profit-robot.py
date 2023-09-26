@@ -39,7 +39,7 @@ DEBUG = False  # this robot works faster when this is False.
 
 # the below Permission variable will allow all owned position shares to sell today when True on the first run.
 # Default value POSITION_DATES_AS_YESTERDAY_OPTION = False
-POSITION_DATES_AS_YESTERDAY_OPTION = False  # keep this as False to not change the dates of owned stocks
+POSITION_DATES_AS_YESTERDAY_OPTION = False     # keep this as False to not change the dates of owned stocks
 
 # set the timezone to Eastern
 eastern = pytz.timezone('US/Eastern')
@@ -249,6 +249,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     stocks_to_remove = []
 
     for symbol in stocks_to_buy:
+        # the below date is used in the database when buying stocks
         today_date = datetime.today().date()
         current_price = get_current_price(symbol)
         opening_price = get_opening_price(symbol)
@@ -256,6 +257,12 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         cash_available = round(float(api.get_account().cash), 2)
 
         qty_of_one_stock = 8  # change this number to buy more shares per stock symbol
+
+
+
+        # below time and date are only used in the logging file
+        now = datetime.now(pytz.timezone('US/Eastern'))
+        current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
 
         # Calculate the total cost if we buy 'qty_of_one_stock' shares
         total_cost_for_qty = current_price * qty_of_one_stock
@@ -278,7 +285,9 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         if (cash_available >= total_cost_for_qty and current_price <= profit_buy_price_setting):
             api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
             print(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
-            logging.info(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
+            cash_available = round(float(api.get_account().cash), 2)
+            shares_owned = api.get_position(symbol).qty
+            logging.info(f"{current_time_str} Buy {qty_of_one_stock} shares of {symbol} at {current_price:.2f} | Cash Available: {cash_available:.2f} | Owned: {shares_owned} shares valued at ${shares_owned * current_price:.2f}")
             stocks_to_remove.append((symbol, current_price, today_date))  # Append tuple
 
             time.sleep(2)  # keep this under the s in stocks
@@ -363,6 +372,11 @@ def update_bought_stocks_from_api():
 def sell_stocks(bought_stocks, buy_sell_lock):
     stocks_to_remove = []
 
+    #below time and date are only used in the logging file
+    now = datetime.now(pytz.timezone('US/Eastern'))
+    current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
+
+    # below date is used in the database and to sell stocks
     today_date = datetime.today().date()
 
     for symbol, (bought_price, purchase_date) in bought_stocks.items():
@@ -391,11 +405,11 @@ def sell_stocks(bought_stocks, buy_sell_lock):
             # Sell stocks if the current price is more than 0.3% higher than the purchase price.
             if current_price >= bought_price * 1.003:  # keep this under the "o" in "bought"
                 qty = api.get_position(symbol).qty
+                cash_available = round(float(api.get_account().cash), 2)
                 api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
-                print(
-                    f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
-                logging.info(
-                    f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
+                print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
+
+                logging.info(f"{current_time_str} Sell {qty} shares of {symbol} at {current_price:.2f} | Cash Available: {cash_available:.2f} | Sold: {qty} shares valued at ${qty * current_price:.2f}")
                 stocks_to_remove.append(symbol)  # Append symbols to remove
 
                 time.sleep(2)  # keep this under the s in stocks
