@@ -284,10 +284,8 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
         if (cash_available >= total_cost_for_qty and current_price <= profit_buy_price_setting):
             api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
-            print(f" {today_date} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
-            cash_available = round(float(api.get_account().cash), 2)
-            shares_owned = api.get_position(symbol).qty
-            logging.info(f"{current_time_str} Buy {qty_of_one_stock} shares of {symbol} at {current_price:.2f} | Cash Available: {cash_available:.2f} | Owned: {shares_owned} shares valued at ${shares_owned * current_price:.2f}")
+            print(f" {current_time_str} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
+            logging.info(f"{current_time_str} Buy {qty_of_one_stock} shares of {symbol}.")
             stocks_to_remove.append((symbol, current_price, today_date))  # Append tuple
 
             time.sleep(2)  # keep this under the s in stocks
@@ -405,11 +403,9 @@ def sell_stocks(bought_stocks, buy_sell_lock):
             # Sell stocks if the current price is more than 0.3% higher than the purchase price.
             if current_price >= bought_price * 1.003:  # keep this under the "o" in "bought"
                 qty = api.get_position(symbol).qty
-                cash_available = round(float(api.get_account().cash), 2)
                 api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
-                print(f" {today_date}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price")
-
-                logging.info(f"{current_time_str} Sell {qty} shares of {symbol} at {current_price:.2f} | Cash Available: {cash_available:.2f} | Sold: {qty} shares valued at ${qty * current_price:.2f}")
+                print(f" {current_time_str}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price. ")
+                logging.info(f"{current_time_str} Sell {qty} shares of {symbol} based on a higher selling price. ")
                 stocks_to_remove.append(symbol)  # Append symbols to remove
 
                 time.sleep(2)  # keep this under the s in stocks
