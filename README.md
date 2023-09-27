@@ -16,6 +16,8 @@
 
 ![Screenshot-2](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/f3ac8445-3c3d-492d-b9d8-83c602714202)
 
+![image](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/a055ae45-bf3e-4dde-8084-11afcbe26cc1)
+
 ![Screenshot-3](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/65a4ce80-4470-4bd9-a5a2-4c9d0eff3155)
 
 ![Screenshot-4](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/aa3e467a-2d67-44d4-afbf-495d5e24cf50)
