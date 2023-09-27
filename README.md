@@ -1,3 +1,9 @@
+******** There is currently a known datetime error message that is being worked on to remove. You can ignore the error message because this Stock Trading Robot is still functioning really well without any problems. Just make sure to download the newest version of this Stock Trading Robot from week to week until this message is deleted from the README file. Thanks for understanding.  ********
+
+
+
+
+
 -----------------------------------------------------------------------------------------------
         Welcome to the Future of Trading with the Advanced Stock Market Trading Robot! 
 
