@@ -6,7 +6,8 @@
         Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, Version 2  
 -----------------------------------------------------------------------------------------------
 
-![Screenshot-1](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/c9f0bfb9-f964-440d-a208-e520ef30e0d5)
+![Screenshot-1](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/31c4654b-85e9-4742-be90-1702c608b228)
+
 
 ![Screenshot-2](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/f3ac8445-3c3d-492d-b9d8-83c602714202)
 
