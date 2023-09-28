@@ -2,7 +2,7 @@ import threading
 import logging
 import os, sys
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from datetime import time as time2
 import alpaca_trade_api as tradeapi
 import pytz
@@ -258,7 +258,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
         cash_available = round(float(api.get_account().cash), 2)
 
-        qty_of_one_stock = 8  # change this number to buy more shares per stock symbol
+        qty_of_one_stock = 1  # change this number to buy more shares per stock symbol
 
 
 
@@ -377,26 +377,26 @@ def sell_stocks(bought_stocks, buy_sell_lock):
     current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
 
     # below date is used in the database and to sell stocks
-    today_date = datetime.today().date()
+    extracted_date_from_today_date = datetime.today().date()
 
     for symbol, (bought_price, purchase_date) in bought_stocks.items():
 
         status_printer_sell_stocks()  # keep this under the "s" in "for symbol"
 
-        # Extract the date part of purchase_date to compare with today_date
-        extracted_date_from_purchase_date = purchase_date.date()
+        # Convert today_date and bought_date to text strings
+        today_date_str = extracted_date_from_today_date.strftime("%Y-%m-%d")
+        bought_date_str = purchase_date.strftime("%Y-%m-%d")
 
-        bought_date = extracted_date_from_purchase_date  # this is the only part of the code to find bought_date
         # the rest of the code goes by purchase_date instead of bought_date
 
-        # print("today_date = ", symbol, today_date)  # uncomment to print variable date to debug as same date
+        #print("today_date_str = ", symbol, today_date_str)  # uncomment to print variable date to debug as same date
 
-        # print("bought_date = ", symbol, purchase_date)  # uncomment to print variable date to debug as same date
+        #print("bought_date_str = ", symbol, bought_date_str)  # uncomment to print variable date to debug as same date
 
         # Check if the stock was purchased at least one day before today
-        # if bought_date < today_date:
+        # if bought_date_str < today_date_str:
 
-        if bought_date < today_date:  # keep under the "s" in "for symbol"
+        if bought_date_str < today_date_str:    # keep under the "s" in "for symbol"
             current_price = get_current_price(symbol)  # keep this under the "o" in "bought"
             position = api.get_position(symbol)  # keep this under the "o" in "bought"
             bought_price = float(position.avg_entry_price)  # keep this under the "o" in "bought"
