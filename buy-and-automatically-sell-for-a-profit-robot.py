@@ -15,6 +15,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import SQLAlchemyError
 import warnings
+
 warnings.filterwarnings('ignore')     # comment out this line to display more error messages.
 
 # Load environment variables for Alpaca API
@@ -259,8 +260,6 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         cash_available = round(float(api.get_account().cash), 2)
 
         qty_of_one_stock = 1  # change this number to buy more shares per stock symbol
-
-
 
         # below time and date are only used in the logging file
         now = datetime.now(pytz.timezone('US/Eastern'))
