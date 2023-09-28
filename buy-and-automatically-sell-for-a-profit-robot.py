@@ -305,10 +305,10 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 stocks_to_buy.remove(symbol)
                 remove_symbol_from_trade_list(symbol)
                 trade_history = TradeHistory(symbol=symbol, action='buy', quantity=qty_of_one_stock, price=price,
-                                             date=date.date())
+                                             date=date)
                 session.add(trade_history)
                 db_position = Position(symbol=symbol, quantity=qty_of_one_stock, avg_price=price,
-                                       purchase_date=date.date())
+                                       purchase_date=date)
                 session.add(db_position)
 
             session.commit()
