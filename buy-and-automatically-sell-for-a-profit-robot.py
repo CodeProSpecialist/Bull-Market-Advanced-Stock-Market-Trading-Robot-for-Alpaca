@@ -252,8 +252,13 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     stocks_to_remove = []
 
     for symbol in stocks_to_buy:
+        
         # the below date is used in the database when buying stocks
-        today_date = datetime.today().date()
+        extracted_date_from_today_date = datetime.today().date()
+
+        #convert today_date from datetime format to string data format
+        today_date_str = extracted_date_from_today_date.strftime("%Y-%m-%d")
+        
         current_price = get_current_price(symbol)
         opening_price = get_opening_price(symbol)
 
@@ -287,7 +292,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
             print(f" {current_time_str} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
             logging.info(f"{current_time_str} Buy {qty_of_one_stock} shares of {symbol}.")
-            stocks_to_remove.append((symbol, current_price, today_date))  # Append tuple
+            stocks_to_remove.append((symbol, current_price, today_date_str))  # Append tuple
 
             time.sleep(2)  # keep this under the s in stocks
 
@@ -304,10 +309,10 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 stocks_to_buy.remove(symbol)
                 remove_symbol_from_trade_list(symbol)
                 trade_history = TradeHistory(symbol=symbol, action='buy', quantity=qty_of_one_stock, price=price,
-                                             date=date)
+                                             date=today_date_str)
                 session.add(trade_history)
                 db_position = Position(symbol=symbol, quantity=qty_of_one_stock, avg_price=price,
-                                       purchase_date=date)
+                                       purchase_date=today_date_str)
                 session.add(db_position)
 
             session.commit()
