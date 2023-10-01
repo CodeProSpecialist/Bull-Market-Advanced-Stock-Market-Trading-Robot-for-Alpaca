@@ -252,8 +252,13 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     stocks_to_remove = []
 
     for symbol in stocks_to_buy:
+        
         # the below date is used in the database when buying stocks
-        today_date = datetime.today().date()
+        extracted_date_from_today_date = datetime.today().date()
+
+        #convert today_date from datetime format to string data format
+        today_date_str = extracted_date_from_today_date.strftime("%Y-%m-%d")
+        
         current_price = get_current_price(symbol)
         opening_price = get_opening_price(symbol)
 
@@ -287,7 +292,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
             print(f" {current_time_str} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
             logging.info(f"{current_time_str} Buy {qty_of_one_stock} shares of {symbol}.")
-            stocks_to_remove.append((symbol, current_price, today_date))  # Append tuple
+            stocks_to_remove.append((symbol, current_price, today_date_str))  # Append tuple
 
             time.sleep(2)  # keep this under the s in stocks
 
@@ -304,10 +309,10 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 stocks_to_buy.remove(symbol)
                 remove_symbol_from_trade_list(symbol)
                 trade_history = TradeHistory(symbol=symbol, action='buy', quantity=qty_of_one_stock, price=price,
-                                             date=date)
+                                             date=date)     # using the string date from the Append tuple
                 session.add(trade_history)
                 db_position = Position(symbol=symbol, quantity=qty_of_one_stock, avg_price=price,
-                                       purchase_date=date)
+                                       purchase_date=date)     # using the string date from the Append tuple
                 session.add(db_position)
 
             session.commit()
@@ -352,11 +357,11 @@ def update_bought_stocks_from_api():
             db_position.avg_price = avg_entry_price
 
             if POSITION_DATES_AS_YESTERDAY_OPTION and run_counter < 1:
-                db_position.purchase_date = yesterday
+                db_position.purchase_date = yesterday.strftime("%Y-%m-%d")     # Use the "string data" date format
         except NoResultFound:
             purchase_date = yesterday if POSITION_DATES_AS_YESTERDAY_OPTION and run_counter < 1 else datetime.today()
             db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price,
-                                   purchase_date=purchase_date)
+                                   purchase_date=purchase_date.strftime("%Y-%m-%d"))     # Use the provided date format
             session.add(db_position)
 
         bought_stocks[symbol] = (avg_entry_price, db_position.purchase_date)
@@ -365,6 +370,17 @@ def update_bought_stocks_from_api():
         f.write(str(run_counter))
 
     session.commit()
+    return bought_stocks
+
+
+def load_positions_from_database():
+    positions = session.query(Position).all()
+    bought_stocks = {}
+    for position in positions:
+        symbol = position.symbol
+        avg_price = position.avg_price
+        purchase_date = position.purchase_date
+        bought_stocks[symbol] = (avg_price, purchase_date)
     return bought_stocks
 
 
@@ -422,7 +438,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
             for symbol in stocks_to_remove:
                 del bought_stocks[symbol]
                 trade_history = TradeHistory(symbol=symbol, action='sell', quantity=qty, price=current_price,
-                                             date=today_date)
+                                             date=today_date_str)     # Use the provided "string data" date format
                 session.add(trade_history)
                 session.query(Position).filter_by(symbol=symbol).delete()
             session.commit()
@@ -539,17 +555,6 @@ def main():
         except Exception as e:
             logging.error(f"Error encountered: {e}")
             time.sleep(120)  # keep this under the l in logging
-
-
-def load_positions_from_database():
-    positions = session.query(Position).all()
-    bought_stocks = {}
-    for position in positions:
-        symbol = position.symbol
-        avg_price = position.avg_price
-        purchase_date = position.purchase_date
-        bought_stocks[symbol] = (avg_price, purchase_date)
-    return bought_stocks
 
 
 if __name__ == '__main__':  # keep this to the far left side.

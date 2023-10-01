@@ -6,15 +6,14 @@
         Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, Version 2  
 -----------------------------------------------------------------------------------------------
 
-![Screenshot-1](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/c9f0bfb9-f964-440d-a208-e520ef30e0d5)
+![Screenshot-1](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/31c4654b-85e9-4742-be90-1702c608b228)
+
 
 ![Screenshot-2](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/f3ac8445-3c3d-492d-b9d8-83c602714202)
 
 ![image](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/a055ae45-bf3e-4dde-8084-11afcbe26cc1)
 
-![Screenshot-3](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/65a4ce80-4470-4bd9-a5a2-4c9d0eff3155)
-
-![Screenshot-4](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/aa3e467a-2d67-44d4-afbf-495d5e24cf50)
+![Screenshot-3](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/21593f1f-4c54-4dc0-a417-11d2fa7fb1a7)
 
 
  Are you ready to take your stock trading game to the next level? The Advanced Stock Market Trading Robot is here to help you navigate the complexities of the stock market and make informed trading decisions. This cutting-edge trading software is designed to excel in recession market conditions, focusing exclusively on electric utility and energy stocks. 
@@ -93,13 +92,16 @@ Look no further! Our Python script, the "Performance Stock List Writer," is here
 Key Features:
 - Automated Stock Analysis: Our script automatically analyzes electricity stocks to provide you with a list of top-performing stocks.
 
-- Regular Updates: The stock list is updated Monday thru Friday, every 24 hours,
-  and every 5 minutes during most of the day when the Stock Market is open for trading to ensure you have the most current information.
+- During difficult stock market 
+conditions, we need to limit 
+our buy list to 1 to 2 stocks maximum. The tough market requires the toughest stock screening selection. 
+The top 2 stocks are selected for a successful list of the top 2 performing stocks. 
+
+- Regular Updates: The stock list is updated every 5 minutes during most of the day when the Stock Market is open for trading to ensure you have the most current information.
   This has been really effective for keeping the most successful stocks at the top of the list of stocks to purchase. 
 
 - Time-Specific Execution: The script runs during specific hours, allowing you to focus on other tasks without interruption.
   
-
 - Easy Configuration: Customize your list of stock symbols in the "list-of-stock-symbols-to-scan.txt" file.
 
 - Data-Driven Decisions: Make investment decisions based on percentage changes in stock prices over the past 14 days.
