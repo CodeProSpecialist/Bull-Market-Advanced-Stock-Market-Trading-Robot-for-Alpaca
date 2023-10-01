@@ -438,7 +438,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
             for symbol in stocks_to_remove:
                 del bought_stocks[symbol]
                 trade_history = TradeHistory(symbol=symbol, action='sell', quantity=qty, price=current_price,
-                                             date=today_date_str)
+                                             date=today_date_str)     # Use the provided "string data" date format
                 session.add(trade_history)
                 session.query(Position).filter_by(symbol=symbol).delete()
             session.commit()
