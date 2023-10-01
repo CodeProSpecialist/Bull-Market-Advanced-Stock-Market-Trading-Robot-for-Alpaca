@@ -9,7 +9,7 @@ import pytz
 import talib
 import yfinance as yf
 import sqlalchemy
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, Float
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.ext.declarative import declarative_base
@@ -70,7 +70,7 @@ class TradeHistory(Base):
     action = Column(String)  # 'buy' or 'sell'
     quantity = Column(Integer)
     price = Column(Float)
-    date = Column(DateTime)
+    date = Column(String)
 
 
 class Position(Base):
@@ -78,7 +78,7 @@ class Position(Base):
     symbol = Column(String, primary_key=True)
     quantity = Column(Integer)
     avg_price = Column(Float)
-    purchase_date = Column(DateTime)
+    purchase_date = Column(String)
 
 
 # Initialize SQLAlchemy
@@ -359,11 +359,11 @@ def update_bought_stocks_from_api():
             db_position.avg_price = avg_entry_price
 
             if POSITION_DATES_AS_YESTERDAY_OPTION and run_counter < 1:
-                db_position.purchase_date = yesterday     # the database requires the datetime date format
+                db_position.purchase_date = yesterday.strftime("%Y-%m-%d")  # Use the provided date format
         except NoResultFound:
             purchase_date = yesterday if POSITION_DATES_AS_YESTERDAY_OPTION and run_counter < 1 else datetime.today()
             db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price,
-                                   purchase_date=purchase_date)     # the database requires the datetime date format
+                                   purchase_date=purchase_date.strftime("%Y-%m-%d"))  # Use the provided date format
             session.add(db_position)
 
         bought_stocks[symbol] = (avg_entry_price, db_position.purchase_date)
@@ -381,7 +381,9 @@ def load_positions_from_database():
     for position in positions:
         symbol = position.symbol
         avg_price = position.avg_price
-        purchase_date = position.purchase_date
+        initial_api_returned_purchase_date = position.purchase_date
+        # the purchase date below is changed to string data format
+        purchase_date = initial_api_returned_purchase_date.strftime("%Y-%m-%d")
         bought_stocks[symbol] = (avg_price, purchase_date)
     return bought_stocks
 
