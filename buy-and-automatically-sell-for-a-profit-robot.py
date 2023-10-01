@@ -368,6 +368,17 @@ def update_bought_stocks_from_api():
     return bought_stocks
 
 
+def load_positions_from_database():
+    positions = session.query(Position).all()
+    bought_stocks = {}
+    for position in positions:
+        symbol = position.symbol
+        avg_price = position.avg_price
+        purchase_date = position.purchase_date
+        bought_stocks[symbol] = (avg_price, purchase_date)
+    return bought_stocks
+
+
 def sell_stocks(bought_stocks, buy_sell_lock):
     stocks_to_remove = []
 
@@ -422,7 +433,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
             for symbol in stocks_to_remove:
                 del bought_stocks[symbol]
                 trade_history = TradeHistory(symbol=symbol, action='sell', quantity=qty, price=current_price,
-                                             date=today_date)
+                                             date=today_date_str)
                 session.add(trade_history)
                 session.query(Position).filter_by(symbol=symbol).delete()
             session.commit()
@@ -539,17 +550,6 @@ def main():
         except Exception as e:
             logging.error(f"Error encountered: {e}")
             time.sleep(120)  # keep this under the l in logging
-
-
-def load_positions_from_database():
-    positions = session.query(Position).all()
-    bought_stocks = {}
-    for position in positions:
-        symbol = position.symbol
-        avg_price = position.avg_price
-        purchase_date = position.purchase_date
-        bought_stocks[symbol] = (avg_price, purchase_date)
-    return bought_stocks
 
 
 if __name__ == '__main__':  # keep this to the far left side.
