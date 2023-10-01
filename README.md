@@ -92,13 +92,16 @@ Look no further! Our Python script, the "Performance Stock List Writer," is here
 Key Features:
 - Automated Stock Analysis: Our script automatically analyzes electricity stocks to provide you with a list of top-performing stocks.
 
-- Regular Updates: The stock list is updated Monday thru Friday, every 24 hours,
-  and every 5 minutes during most of the day when the Stock Market is open for trading to ensure you have the most current information.
+- during difficult stock market 
+conditions, we need to limit 
+our buy list to 1 to 2 stocks maximum. The tough market requires the toughest stock screening selection. 
+The top 2 stocks are selected for a successful list of the top 2 performing stocks. 
+
+- Regular Updates: The stock list is updated every 5 minutes during most of the day when the Stock Market is open for trading to ensure you have the most current information.
   This has been really effective for keeping the most successful stocks at the top of the list of stocks to purchase. 
 
 - Time-Specific Execution: The script runs during specific hours, allowing you to focus on other tasks without interruption.
   
-
 - Easy Configuration: Customize your list of stock symbols in the "list-of-stock-symbols-to-scan.txt" file.
 
 - Data-Driven Decisions: Make investment decisions based on percentage changes in stock prices over the past 14 days.
