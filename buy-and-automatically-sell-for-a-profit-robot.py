@@ -357,11 +357,11 @@ def update_bought_stocks_from_api():
             db_position.avg_price = avg_entry_price
 
             if POSITION_DATES_AS_YESTERDAY_OPTION and run_counter < 1:
-                db_position.purchase_date = yesterday.strftime("%Y-%m-%d")     # Use the "string data" date format
+                db_position.purchase_date = yesterday     # the database requires the datetime date format
         except NoResultFound:
             purchase_date = yesterday if POSITION_DATES_AS_YESTERDAY_OPTION and run_counter < 1 else datetime.today()
             db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price,
-                                   purchase_date=purchase_date.strftime("%Y-%m-%d"))     # Use the provided date format
+                                   purchase_date=purchase_date)     # the database requires the datetime date format
             session.add(db_position)
 
         bought_stocks[symbol] = (avg_entry_price, db_position.purchase_date)
@@ -463,7 +463,7 @@ def main():
 
     while True:  # keep this under the m in main
         try:
-            stop_if_stock_market_is_closed()  # comment this line to debug the Python code
+            #stop_if_stock_market_is_closed()  # comment this line to debug the Python code
             now = datetime.now(pytz.timezone('US/Eastern'))
             current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
 
