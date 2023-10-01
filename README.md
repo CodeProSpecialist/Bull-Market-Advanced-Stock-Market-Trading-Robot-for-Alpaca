@@ -92,7 +92,7 @@ Look no further! Our Python script, the "Performance Stock List Writer," is here
 Key Features:
 - Automated Stock Analysis: Our script automatically analyzes electricity stocks to provide you with a list of top-performing stocks.
 
-- during difficult stock market 
+- During difficult stock market 
 conditions, we need to limit 
 our buy list to 1 to 2 stocks maximum. The tough market requires the toughest stock screening selection. 
 The top 2 stocks are selected for a successful list of the top 2 performing stocks. 
