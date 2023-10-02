@@ -16,7 +16,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import SQLAlchemyError
 import warnings
 
-#warnings.filterwarnings('ignore')     # comment out this line to display more error messages.
+warnings.filterwarnings('ignore')     # comment out this line to display more error messages.
 
 # Load environment variables for Alpaca API
 APIKEYID = os.getenv('APCA_API_KEY_ID')
@@ -71,6 +71,7 @@ class TradeHistory(Base):
     quantity = Column(Integer)
     price = Column(Float)
     date = Column(String)
+    # the above date is string data format in the database
 
 
 class Position(Base):
@@ -79,7 +80,7 @@ class Position(Base):
     quantity = Column(Integer)
     avg_price = Column(Float)
     purchase_date = Column(String)
-
+    # the above date is string data format in the database
 
 # Initialize SQLAlchemy
 engine = create_engine('sqlite:///trading_bot.db')
@@ -471,7 +472,7 @@ def main():
 
     while True:  # keep this under the m in main
         try:
-            stop_if_stock_market_is_closed()  # comment this line to debug the Python code
+            stop_if_stock_market_is_closed()   # comment this line to debug the Python code
             now = datetime.now(pytz.timezone('US/Eastern'))
             current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
 
