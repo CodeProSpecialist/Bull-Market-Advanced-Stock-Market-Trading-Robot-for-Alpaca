@@ -154,7 +154,7 @@ def print_database_tables():
             symbol, quantity, avg_price, purchase_date = record.symbol, record.quantity, record.avg_price, record.purchase_date
 
             # Format purchase_date to show 0 digits after the decimal point
-            purchase_date_str = purchase_date.strftime("%Y-%m-%d %H:%M:%S")
+            purchase_date_str = purchase_date    # this is already correct string data format
 
             # Calculate percentage change if show_price_percentage_change is True
             if show_price_percentage_change:
