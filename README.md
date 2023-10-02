@@ -98,14 +98,16 @@ our buy list to 1 stock maximum. The tough market requires the toughest stock sc
 The top #1 stock is selected for a successful list of the top number 1 performing stock. 
 
 - Regular Updates: The stock list is updated every 5 minutes during most of the day when the Stock Market is open for trading to ensure you have the most current information.
-  This has been really effective for keeping the most successful stocks at the top of the list of stocks to purchase. 
+  This has been really effective for keeping the most successful stock at the top of the list of stock to purchase. 
 
 - Time-Specific Execution: The script runs during specific hours, allowing you to focus on other tasks without interruption.
   
 - Easy Configuration: Customize your list of stock symbols in the "list-of-stock-symbols-to-scan.txt" file.
 
 - Data-Driven Decisions: The stock data analysis in this code involves collecting historical stock price data for a list of stock symbols,
-   calculating various percentage change metrics over different time intervals, and selecting the top 2 stocks based on these metrics. Here's a breakdown of the stock data analysis process:
+   calculating various percentage change metrics over different time intervals, and selecting the top #1 stock based on these metrics.
+
+  Here's a breakdown of the stock data analysis process:
 
 Data Retrieval: The code retrieves the historical stock price data for each stock symbol. 
 It collects data for four different time periods: 1-year, 7 days, 14 days, and 1 month.
