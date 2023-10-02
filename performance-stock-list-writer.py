@@ -3,13 +3,19 @@ import pytz
 import yfinance as yf
 from datetime import datetime, timedelta
 
+
 # Function to calculate the percentage change in stock price over the past 14 days
 def calculate_percentage_change(stock):
-    history = stock.history(period="14d")
+    # Retrieve historical data for the past 1 year
+    history = stock.history(period="1y")
+    
+    # Calculate percentage change
     start_price = history['Open'][0]
     end_price = history['Close'][-1]
     percentage_change = ((end_price - start_price) / start_price) * 100
+    
     return percentage_change
+
 
 # Function to check if this is the first run
 def is_first_run():
