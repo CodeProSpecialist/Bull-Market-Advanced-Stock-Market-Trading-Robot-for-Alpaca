@@ -109,8 +109,16 @@ The top 2 stocks are selected for a successful list of the top 2 performing stoc
 Data Retrieval: The code retrieves the historical stock price data for each stock symbol. It collects data for four different time periods: 1-year, 7 days, 14 days, and 1 month.
 Percentage Change Calculation: For each stock, it calculates the percentage change in stock price over these four time periods. This is done by comparing the opening and closing prices of the stock within each period.
 Ranking: The code then ranks the stocks based on their percentage changes over these time periods. It considers all four percentage changes (1-year, 7-day, 14-day, and 1 month) to assess stock performance.
-Selection: The top 2 stocks with the best combined performance across all four time periods are selected. These are considered the most successful stocks based on the provided criteria.
-Output: Finally, the selected stock symbols are written to the "electricity-or-utility-stocks-to-buy-list.txt" file, providing a list of stocks that have demonstrated strong price percentage increases over multiple time intervals.
+Selection: The top #1 stock with the best-combined performance across all four time periods is selected. 
+
+Tough stock market conditions require selecting only the #1 best stock at a time to buy. 
+Tough stock market conditions require the toughest stock selection criteria as 
+has been taught by numerous millionaire and billionaire stock trading professional experts 
+with a lifetime of stock trading experience. 
+The top number 1 stock to buy based on all criteria is what we have found. 
+This is considered the most successful stock based on the provided criteria.
+Output: Finally, the selected stock symbol is written to the "electricity-or-utility-stocks-to-buy-list.txt" file, 
+providing a stock that might be favorable to purchase: a stock that has demonstrated strong price percentage increases over multiple time intervals. 
 Overall, this code automates the analysis of historical stock price data to identify stocks that have shown consistent and significant growth in their prices over different time frames, making them potential candidates for investment in the electricity or utility sector.
 
 - Error Handling: The script handles errors gracefully and restarts after 5 minutes, ensuring uninterrupted performance.
