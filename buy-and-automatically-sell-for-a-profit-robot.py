@@ -253,9 +253,13 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
     for symbol in stocks_to_buy:
 
-        # the database requires the datetime date format
+        # the database requires the string date format
         # the below date is used in the database when buying stocks
-        today_date = datetime.today().date()
+        # the below date is used in the database when buying stocks
+        extracted_date_from_today_date = datetime.today().date()
+
+        # convert today_date from datetime format to string data format
+        today_date_str = extracted_date_from_today_date.strftime("%Y-%m-%d")
 
         current_price = get_current_price(symbol)
         opening_price = get_opening_price(symbol)
@@ -290,7 +294,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
             print(f" {current_time_str} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
             logging.info(f"{current_time_str} Buy {qty_of_one_stock} shares of {symbol}.")
-            stocks_to_remove.append((symbol, current_price, today_date))  # Append tuple
+            stocks_to_remove.append((symbol, current_price, today_date_str))  # Append tuple
             # the database requires the datetime date format from today_date
             # this append tuple will provide the date=date and the purchase_date = date
             # in the correct datetime format for the database. This is the date
@@ -467,7 +471,7 @@ def main():
 
     while True:  # keep this under the m in main
         try:
-            stop_if_stock_market_is_closed()  # comment this line to debug the Python code
+            #stop_if_stock_market_is_closed()  # comment this line to debug the Python code
             now = datetime.now(pytz.timezone('US/Eastern'))
             current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
 
