@@ -114,8 +114,9 @@ while True:
             # Sort the stock data by all percentage changes in descending order
             stock_data.sort(key=lambda x: (x[1], x[2], x[3], x[4]), reverse=True)
 
-            # Select the top 2 stocks based on all criteria
-            top_stocks = stock_data[:2]
+            # Tough stock market conditions require selecting only the #1 best stock at a time to buy. 
+	        # Select the top number 1 stock to buy based on all criteria
+            top_stocks = stock_data[:1]
 
             # Erase the existing file and write the selected stock symbols to the output file
             with open("electricity-or-utility-stocks-to-buy-list.txt", "w") as output_file:
