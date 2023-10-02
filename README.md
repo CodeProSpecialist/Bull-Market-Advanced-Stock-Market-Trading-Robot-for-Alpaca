@@ -106,7 +106,7 @@ The top 2 stocks are selected for a successful list of the top 2 performing stoc
 
 - Data-Driven Decisions: The stock data analysis in this code involves collecting historical stock price data for a list of stock symbols, calculating various percentage change metrics over different time intervals, and selecting the top 2 stocks based on these metrics. Here's a breakdown of the stock data analysis process:
 
-Data Retrieval: The code uses the yfinance library to retrieve historical stock price data for each stock symbol. It collects data for four different time periods: 1-year, 7 days, 14 days, and 1 month.
+Data Retrieval: The code retrieves the historical stock price data for each stock symbol. It collects data for four different time periods: 1-year, 7 days, 14 days, and 1 month.
 Percentage Change Calculation: For each stock, it calculates the percentage change in stock price over these four time periods. This is done by comparing the opening and closing prices of the stock within each period.
 Ranking: The code then ranks the stocks based on their percentage changes over these time periods. It considers all four percentage changes (1-year, 7-day, 14-day, and 1 month) to assess stock performance.
 Selection: The top 2 stocks with the best combined performance across all four time periods are selected. These are considered the most successful stocks based on the provided criteria.
