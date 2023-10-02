@@ -315,10 +315,10 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 stocks_to_buy.remove(symbol)
                 remove_symbol_from_trade_list(symbol)
                 trade_history = TradeHistory(symbol=symbol, action='buy', quantity=qty_of_one_stock, price=price,
-                                             date=date.strftime("%Y-%m-%d"))    # the database requires the string date format
+                                             date=date)    # the database requires the string date format
                 session.add(trade_history)
                 db_position = Position(symbol=symbol, quantity=qty_of_one_stock, avg_price=price,
-                                       purchase_date=date.strftime("%Y-%m-%d"))    # the database requires the string date format
+                                       purchase_date=date)    # the database requires the string date format
                 session.add(db_position)
 
             session.commit()
@@ -379,19 +379,6 @@ def update_bought_stocks_from_api():
     return bought_stocks
 
 
-def load_positions_from_database():
-    positions = session.query(Position).all()
-    bought_stocks = {}
-    for position in positions:
-        symbol = position.symbol
-        avg_price = position.avg_price
-        initial_api_returned_purchase_date = position.purchase_date
-        # the purchase date below is changed to string data format
-        purchase_date = initial_api_returned_purchase_date.strftime("%Y-%m-%d")
-        bought_stocks[symbol] = (avg_price, purchase_date)
-    return bought_stocks
-
-
 def sell_stocks(bought_stocks, buy_sell_lock):
     stocks_to_remove = []
 
@@ -408,7 +395,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
 
         # Convert today_date and bought_date to text strings
         today_date_str = extracted_date_from_today_date.strftime("%Y-%m-%d")
-        bought_date_str = purchase_date.strftime("%Y-%m-%d")
+        bought_date_str = purchase_date     # already string data format
 
         # the rest of the code goes by purchase_date instead of bought_date
 
@@ -460,6 +447,19 @@ def refresh_after_sell():
     global bought_stocks
     time.sleep(2)
     bought_stocks = update_bought_stocks_from_api()
+
+
+def load_positions_from_database():
+    positions = session.query(Position).all()
+    bought_stocks = {}
+    for position in positions:
+        symbol = position.symbol
+        avg_price = position.avg_price
+        initial_api_returned_purchase_date = position.purchase_date
+        # the purchase date below is changed to string data format
+        purchase_date = initial_api_returned_purchase_date.strftime("%Y-%m-%d")
+        bought_stocks[symbol] = (avg_price, purchase_date)
+    return bought_stocks
 
 
 def main():
