@@ -115,7 +115,7 @@ while True:
             stock_data.sort(key=lambda x: (x[1], x[2], x[3], x[4]), reverse=True)
 
             # Tough stock market conditions require selecting only the #1 best stock at a time to buy. 
-	        # Select the top number 1 stock to buy based on all criteria
+	    # Select the top number 1 stock to buy based on all criteria
             top_stocks = stock_data[:1]
 
             # Erase the existing file and write the selected stock symbols to the output file
