@@ -16,7 +16,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import SQLAlchemyError
 import warnings
 
-warnings.filterwarnings('ignore')     # comment out this line to display more error messages.
+#warnings.filterwarnings('ignore')     # comment out this line to display more error messages.
 
 # Load environment variables for Alpaca API
 APIKEYID = os.getenv('APCA_API_KEY_ID')
@@ -315,10 +315,10 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 stocks_to_buy.remove(symbol)
                 remove_symbol_from_trade_list(symbol)
                 trade_history = TradeHistory(symbol=symbol, action='buy', quantity=qty_of_one_stock, price=price,
-                                             date=date)     # the database requires the datetime date format
+                                             date=date.strftime("%Y-%m-%d"))    # the database requires the string date format
                 session.add(trade_history)
                 db_position = Position(symbol=symbol, quantity=qty_of_one_stock, avg_price=price,
-                                       purchase_date=date)     # the database requires the datetime date format
+                                       purchase_date=date.strftime("%Y-%m-%d"))    # the database requires the string date format
                 session.add(db_position)
 
             session.commit()
