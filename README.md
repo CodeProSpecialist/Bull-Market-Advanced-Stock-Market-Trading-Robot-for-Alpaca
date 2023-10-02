@@ -94,8 +94,8 @@ Key Features:
 
 - During difficult stock market 
 conditions, we need to limit 
-our buy list to 1 to 2 stocks maximum. The tough market requires the toughest stock screening selection. 
-The top 2 stocks are selected for a successful list of the top 2 performing stocks. 
+our buy list to 1 stock maximum. The tough market requires the toughest stock screening selection. 
+The top #1 stock is selected for a successful list of the top number 1 performing stock. 
 
 - Regular Updates: The stock list is updated every 5 minutes during most of the day when the Stock Market is open for trading to ensure you have the most current information.
   This has been really effective for keeping the most successful stocks at the top of the list of stocks to purchase. 
@@ -104,11 +104,15 @@ The top 2 stocks are selected for a successful list of the top 2 performing stoc
   
 - Easy Configuration: Customize your list of stock symbols in the "list-of-stock-symbols-to-scan.txt" file.
 
-- Data-Driven Decisions: The stock data analysis in this code involves collecting historical stock price data for a list of stock symbols, calculating various percentage change metrics over different time intervals, and selecting the top 2 stocks based on these metrics. Here's a breakdown of the stock data analysis process:
+- Data-Driven Decisions: The stock data analysis in this code involves collecting historical stock price data for a list of stock symbols,
+   calculating various percentage change metrics over different time intervals, and selecting the top 2 stocks based on these metrics. Here's a breakdown of the stock data analysis process:
 
-Data Retrieval: The code retrieves the historical stock price data for each stock symbol. It collects data for four different time periods: 1-year, 7 days, 14 days, and 1 month.
-Percentage Change Calculation: For each stock, it calculates the percentage change in stock price over these four time periods. This is done by comparing the opening and closing prices of the stock within each period.
-Ranking: The code then ranks the stocks based on their percentage changes over these time periods. It considers all four percentage changes (1-year, 7-day, 14-day, and 1 month) to assess stock performance.
+Data Retrieval: The code retrieves the historical stock price data for each stock symbol. 
+It collects data for four different time periods: 1-year, 7 days, 14 days, and 1 month.
+Percentage Change Calculation: For each stock, it calculates the percentage change in stock price over these four time periods. 
+This is done by comparing the opening and closing prices of the stock within each period.
+Ranking: The code then ranks the stocks based on their percentage changes over these time periods. 
+It considers all four percentage changes (1-year, 7-day, 14-day, and 1 month) to assess stock performance.
 Selection: The top #1 stock with the best-combined performance across all four time periods is selected. 
 
 Tough stock market conditions require selecting only the #1 best stock at a time to buy. 
@@ -117,9 +121,12 @@ has been taught by numerous millionaire and billionaire stock trading profession
 with a lifetime of stock trading experience. 
 The top number 1 stock to buy based on all criteria is what we have found. 
 This is considered the most successful stock based on the provided criteria.
+
 Output: Finally, the selected stock symbol is written to the "electricity-or-utility-stocks-to-buy-list.txt" file, 
 providing a stock that might be favorable to purchase: a stock that has demonstrated strong price percentage increases over multiple time intervals. 
-Overall, this code automates the analysis of historical stock price data to identify stocks that have shown consistent and significant growth in their prices over different time frames, making them potential candidates for investment in the electricity or utility sector.
+Overall, this code automates the analysis of historical stock price data to identify stocks 
+that have shown consistent and significant growth in their prices over different time frames, 
+making them potential candidates for investment in the electricity or utility sector.
 
 - Error Handling: The script handles errors gracefully and restarts after 5 minutes, ensuring uninterrupted performance.
 
