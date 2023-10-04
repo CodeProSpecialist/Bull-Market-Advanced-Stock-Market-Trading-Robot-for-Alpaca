@@ -3,6 +3,9 @@ import pytz
 import yfinance as yf
 from datetime import datetime, timedelta
 
+# Define the minimum percentage change required for a 1-year increase
+MIN_PERCENTAGE_CHANGE = 7.0  # Minimum 7% increase required for the entire year
+
 # Function to calculate the percentage change in stock price over the past 1 year
 def calculate_percentage_change(stock):
     # Retrieve historical data for the past 1 year
