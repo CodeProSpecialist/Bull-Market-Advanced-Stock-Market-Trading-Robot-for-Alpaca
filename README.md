@@ -117,8 +117,8 @@ with a lifetime of stock trading experience.
 The top stocks to buy based on all criteria is what we have found. 
 These are considered the most successful stocks based on the provided criteria.
 
-Output: Finally, the selected stock symbol is written to the "electricity-or-utility-stocks-to-buy-list.txt" file, 
-providing a stock list that might be favorable to purchase: stocks that has demonstrated strong price percentage increases over multiple time intervals. 
+Output: Finally, the selected stock symbols are written to the "electricity-or-utility-stocks-to-buy-list.txt" file, 
+providing a stock list that might be favorable to purchase: stocks that have a history of strong price percentage increases over multiple time intervals. 
 Overall, this code automates the analysis of historical stock price data to identify stocks 
 that have shown consistent and significant growth in their prices over different time frames, 
 making them potential candidates for investment in the electricity or utility sector.
