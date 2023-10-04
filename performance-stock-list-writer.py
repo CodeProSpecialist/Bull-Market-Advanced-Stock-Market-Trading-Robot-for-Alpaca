@@ -3,102 +3,108 @@ import pytz
 import yfinance as yf
 from datetime import datetime, timedelta
 
-# Function to calculate the percentage increase in stock price for the month 1 year ago
-def calculate_percentage_increase(stock):
-    # Calculate the date one year ago from today
-    one_year_ago = datetime.now() - timedelta(days=365)
+# Function to calculate the percentage change in stock price over the past 1 year
+def calculate_percentage_change(stock):
+    # Retrieve historical data for the past 1 year
+    history = stock.history(period="1y")
     
-    # Calculate the start and end date for the month one year ago
-    start_date = one_year_ago.replace(day=1, hour=0, minute=0, second=0)
-    end_date = one_year_ago.replace(day=one_year_ago.day, hour=23, minute=59, second=59)
-    
-    # Retrieve historical data for that month
-    history = stock.history(start=start_date, end=end_date)
-    
-    # Calculate the percentage increase for the month
+    # Calculate percentage change
     start_price = history['Open'][0]
     end_price = history['Close'][-1]
-    percentage_increase = ((end_price - start_price) / start_price) * 100
+    percentage_change = ((end_price - start_price) / start_price) * 100
     
-    return percentage_increase
+    return percentage_change
 
-# Function to select the top stocks to buy based on percentage increase criteria
-def select_top_stocks(stock_symbols):
-    selected_stocks = []
-
-    for symbol in stock_symbols:
-        stock = yf.Ticker(symbol)
-        print("")
-        print(f"Calculating data for {symbol}...")
-        print("")
-        time.sleep(2)  # Delay to avoid overloading the API (1 time per 2 seconds)
-        percentage_increase = calculate_percentage_increase(stock)
+# Function to calculate the percentage change in stock price for each month of the year
+def calculate_monthly_percentage_changes(stock):
+    # Retrieve historical data for the past 2 years to ensure all 12 months are covered
+    history = stock.history(period="2y")
+    
+    # Initialize a dictionary to store monthly percentage changes
+    monthly_changes = {}
+    
+    # Loop through each month and calculate percentage change
+    for month in range(1, 13):
+        start_date = f"2022-{month:02d}-01"  # Start date for the specified month
+        end_date = f"2023-{month:02d}-01"    # End date for the specified month
         
-        if percentage_increase >= MIN_PERCENTAGE_CHANGE:
-            selected_stocks.append((symbol, percentage_increase))
-
-    # Sort the selected stocks by percentage increase (largest at the top)
-    selected_stocks.sort(key=lambda x: x[1], reverse=True)
-
-    return selected_stocks
+        # Filter historical data for the specified month
+        monthly_data = history[start_date:end_date]
+        
+        # Calculate percentage change for the month
+        if not monthly_data.empty:
+            start_price = monthly_data['Open'][0]
+            end_price = monthly_data['Close'][-1]
+            monthly_percentage_change = ((end_price - start_price) / start_price) * 100
+        else:
+            # If there is no data for the month, set percentage change to 0
+            monthly_percentage_change = 0.0
+        
+        # Store the monthly percentage change in the dictionary
+        monthly_changes[month] = monthly_percentage_change
+    
+    return monthly_changes
 
 # Your main program loop
-# Initialize a dictionary to store stock data
-stocks_by_month = {}
-
-# Read the list of stock symbols from the input file
-with open("list-of-stock-symbols-to-scan.txt", "r") as input_file:
-    stock_symbols = []
-    for line in input_file:
-        symbol, month = line.strip().split(',')
-        stock_symbols.append(symbol)
-
-# Define the minimum percentage increase for a stock to be considered for the entire year
-MIN_PERCENTAGE_CHANGE = 7.0  # Minimum 7% increase required for the entire year
-
-# Define the start and end times for when the program should run
-start_time = datetime.now().replace(hour=8, minute=30, second=0, microsecond=0).time()
-end_time = datetime.now().replace(hour=15, minute=59, second=0, microsecond=0).time()
-
 while True:
     try:
         eastern = pytz.timezone('US/Eastern')
         now = datetime.now(eastern)
         
         if now.weekday() in [0, 1, 2, 3, 4]:
-            # Step 2: Store all yfinance data for each stock for 1 year history
+            # Read the list of stock symbols from the input file
+            with open("list-of-stock-symbols-to-scan.txt", "r") as input_file:
+                stock_symbols = [line.strip() for line in input_file if line.strip()]
+            
+            # Initialize a dictionary to store stock data
             stock_data = {}
+            
+            # Fetch historical data and calculate percentage changes for each stock
             for symbol in stock_symbols:
                 stock = yf.Ticker(symbol)
                 print(f"Fetching data for {symbol}...")
-                history = stock.history(period="1y")
-                stock_data[symbol] = [(date, calculate_percentage_increase(history), open_price, close_price) for date, open_price, close_price in zip(
-                    history.index, history['Open'], history['Close'])]
+                stock_data[symbol] = {
+                    'percentage_change_1_year': calculate_percentage_change(stock),
+                    'monthly_percentage_changes': calculate_monthly_percentage_changes(stock)
+                }
             
-            # Step 3: Sort stocks by highest price increase % for the current month, 1 year ago
-            selected_stocks = select_top_stocks(stock_symbols)
+            # Analyze the monthly percentage changes and select the top 28 stocks for the current month
+            current_month = now.month
+            current_year = now.year
 
-            # Step 4: Create a list of stocks from step 3 and sort them by largest price increase from the current past 7 days, past 14 days, and past 1 month
-            selected_stocks.sort(key=lambda x: (x[1], calculate_7_day_percentage_change(stock_data[x[0]]), calculate_14_day_percentage_change(stock_data[x[0]]), calculate_1_month_percentage_change(stock_data[x[0]])), reverse=True)
-
-            # Step 5: Print the final list of top 28 stocks to a text file
+            # Filter stocks based on historical performance for the current month, 1 year ago
+            filtered_stocks = []
+            for symbol, data in stock_data.items():
+                if (
+                    current_month in data['monthly_percentage_changes'] and
+                    data['monthly_percentage_changes'][current_month] > 0 and
+                    data['percentage_change_1_year'] >= MIN_PERCENTAGE_CHANGE
+                ):
+                    filtered_stocks.append((symbol, data['percentage_change_1_year']))
+            
+            # Sort the filtered stocks by percentage change for the current year
+            sorted_stocks = sorted(filtered_stocks, key=lambda x: x[1], reverse=True)
+            
+            # Select the top 28 stocks
+            top_stocks = sorted_stocks[:28]
+            
+            # Write the selected stock symbols to the output file
             with open("electricity-or-utility-stocks-to-buy-list.txt", "w") as output_file:
-                for i, (stock, percentage_increase) in enumerate(selected_stocks[:28]):
-                    output_file.write(f"{stock}\n")
-                    if i == 27:  # Stop after printing the top 28 stocks
-                        break
+                for symbol, _ in top_stocks:
+                    output_file.write(f"{symbol}\n")
 
             print("")
             print("Successful stocks list updated successfully.")
             print("")
 
+        # Calculate the next run time
         if now.time() > end_time:
             next_run = now + timedelta(days=1, minutes=30)
             next_run = next_run.replace(hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
         else:
             next_run = now + timedelta(minutes=5)
             next_run = next_run.replace(second=0, microsecond=0)
-
+        
         main_message = f"Next run will be soon after the time of {next_run.strftime('%I:%M %p')} (Eastern Time)."
         print(main_message)
         print("")
