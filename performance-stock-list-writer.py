@@ -48,6 +48,12 @@ def calculate_monthly_percentage_changes(stock):
     
     return monthly_changes
 
+
+# Define the start and end times for when the program should run
+start_time = datetime.now().replace(hour=8, minute=30, second=0, microsecond=0).time()
+end_time = datetime.now().replace(hour=15, minute=59, second=0, microsecond=0).time()
+
+
 # Your main program loop
 while True:
     try:
