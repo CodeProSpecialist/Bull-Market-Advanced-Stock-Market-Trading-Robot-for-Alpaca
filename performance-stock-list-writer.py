@@ -63,9 +63,11 @@ while True:
             for symbol in stock_symbols:
                 stock = yf.Ticker(symbol)
                 print(f"Fetching data for {symbol}...")
+                percentage_change_1_year = calculate_percentage_change(stock)
+                monthly_percentage_changes = calculate_monthly_percentage_changes(stock)
                 stock_data[symbol] = {
-                    'percentage_change_1_year': calculate_percentage_change(stock),
-                    'monthly_percentage_changes': calculate_monthly_percentage_changes(stock)
+                    'percentage_change_1_year': percentage_change_1_year,
+                    'monthly_percentage_changes': monthly_percentage_changes
                 }
             
             # Analyze the monthly percentage changes and select the top 28 stocks for the current month
