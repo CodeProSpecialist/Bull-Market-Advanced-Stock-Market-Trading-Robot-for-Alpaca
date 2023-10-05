@@ -563,7 +563,9 @@ def main():
             print("delete the trading_bot.db database file and start over again with an empty database. ")
             print("Placing trades without this Robot will also require ")
             print("deleting the trading_bot.db database file and starting over again with an empty database. ")
+            print("")
             print("Waiting 30 seconds before checking price data again........")
+            print("")
             time.sleep(30)  # keep this under the i in if
 
         except Exception as e:
