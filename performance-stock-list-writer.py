@@ -59,7 +59,7 @@ while True:
             # Fetch historical data and calculate percentage changes for each stock
             for symbol in stock_symbols:
                 stock = yf.Ticker(symbol)
-                print(f"Downloading the data for {symbol}...")
+                print(f"Downloading the historical data for {symbol}...")
                 percentage_change_1_year = calculate_percentage_change(stock)
                 monthly_percentage_changes = calculate_monthly_percentage_changes(stock)
                 stock_data[symbol] = {
