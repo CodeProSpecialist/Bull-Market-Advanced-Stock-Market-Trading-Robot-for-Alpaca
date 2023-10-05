@@ -367,8 +367,9 @@ def update_bought_stocks_from_api():
                 db_position.purchase_date = yesterday.strftime("%Y-%m-%d")  # Use the provided date format
         except NoResultFound:
             purchase_date = yesterday if POSITION_DATES_AS_YESTERDAY_OPTION and run_counter < 1 else datetime.today()
+            purchase_date_str = purchase_date.strftime("%Y-%m-%d")  # Convert datetime to string
             db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price,
-                                   purchase_date=purchase_date.strftime("%Y-%m-%d"))  # Use the provided date format
+                                   purchase_date=purchase_date_str)  # Use the provided date format
             session.add(db_position)
 
         bought_stocks[symbol] = (avg_entry_price, db_position.purchase_date)
