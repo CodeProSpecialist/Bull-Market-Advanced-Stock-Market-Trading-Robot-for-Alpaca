@@ -13,8 +13,7 @@
 
 ![image](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/a055ae45-bf3e-4dde-8084-11afcbe26cc1)
 
-![Stock-market-robot-picture-4](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/9d9137ef-aec9-426b-9cd7-cea07c738a09)
-
+![Stock-market-robot-picture-4](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/3228bec5-bc67-4909-bbc2-a21090eedce3)
 
 
  Are you ready to take your stock trading game to the next level? The Advanced Stock Market Trading Robot is here to help you navigate the complexities of the stock market and make informed trading decisions. This cutting-edge trading software is designed to excel in recession market conditions, focusing on electric utility and energy stocks. I will mention that every stock sector has its favorable "buy stocks" months. 
