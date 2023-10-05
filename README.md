@@ -13,10 +13,12 @@
 
 ![image](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/a055ae45-bf3e-4dde-8084-11afcbe26cc1)
 
-![Stock-market-robot-picture-4](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/94b32ccb-e9e1-445d-a267-3f3dabc5c760)
+![Stock-market-robot-picture-4](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/9d9137ef-aec9-426b-9cd7-cea07c738a09)
 
 
- Are you ready to take your stock trading game to the next level? The Advanced Stock Market Trading Robot is here to help you navigate the complexities of the stock market and make informed trading decisions. This cutting-edge trading software is designed to excel in recession market conditions, focusing exclusively on electric utility and energy stocks. 
+
+ Are you ready to take your stock trading game to the next level? The Advanced Stock Market Trading Robot is here to help you navigate the complexities of the stock market and make informed trading decisions. This cutting-edge trading software is designed to excel in recession market conditions, focusing on electric utility and energy stocks. I will mention that every stock sector has its favorable "buy stocks" months. 
+ For example: business stocks are the most favorable in October and November just before the Friday that follows Thanksgiving. Electricity stocks can do best May 21 through July 31. 
 
 Stock Robot
 
