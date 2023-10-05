@@ -3,9 +3,6 @@ import pytz
 import yfinance as yf
 from datetime import datetime, timedelta
 
-# Define the minimum percentage change required for a 1-year increase
-MIN_PERCENTAGE_CHANGE = 7.0  # Minimum 7% increase required for the entire year
-
 # Function to calculate the percentage change in stock price over the past 1 year
 def calculate_percentage_change(stock):
     # Retrieve historical data for the past 1 year
@@ -20,41 +17,32 @@ def calculate_percentage_change(stock):
 
 # Function to calculate the percentage change in stock price for each month of the year
 def calculate_monthly_percentage_changes(stock):
-    # Retrieve historical data for the past 2 years to ensure all 12 months are covered
-    history = stock.history(period="2y")
+    # Retrieve historical data for the past 1 year
+    history = stock.history(period="1y")
     
-    # Initialize a dictionary to store monthly percentage changes
-    monthly_changes = {}
+    # Create a dictionary to store percentage changes for each month
+    monthly_percentage_changes = {}
     
-    # Loop through each month and calculate percentage change
     for month in range(1, 13):
-        start_date = f"2022-{month:02d}-01"  # Start date for the specified month
-        end_date = f"2023-{month:02d}-01"    # End date for the specified month
+        # Filter data for the current month
+        monthly_data = history[history.index.month == month]
         
-        # Filter historical data for the specified month
-        monthly_data = history[start_date:end_date]
-        
-        # Calculate percentage change for the month
         if not monthly_data.empty:
             start_price = monthly_data['Open'][0]
             end_price = monthly_data['Close'][-1]
-            monthly_percentage_change = ((end_price - start_price) / start_price) * 100
-        else:
-            # If there is no data for the month, set percentage change to 0
-            monthly_percentage_change = 0.0
-        
-        # Store the monthly percentage change in the dictionary
-        monthly_changes[month] = monthly_percentage_change
+            percentage_change = ((end_price - start_price) / start_price) * 100
+            monthly_percentage_changes[month] = percentage_change
     
-    return monthly_changes
+    return monthly_percentage_changes
 
+# Define the minimum percentage change required for a 1-year increase
+MIN_PERCENTAGE_CHANGE = 7.0  # Minimum 7% increase required for the entire year
 
 # Define the start and end times for when the program should run
 start_time = datetime.now().replace(hour=8, minute=30, second=0, microsecond=0).time()
 end_time = datetime.now().replace(hour=15, minute=59, second=0, microsecond=0).time()
 
-
-# Your main program loop
+# Main program loop
 while True:
     try:
         eastern = pytz.timezone('US/Eastern')
@@ -78,7 +66,8 @@ while True:
                     'percentage_change_1_year': percentage_change_1_year,
                     'monthly_percentage_changes': monthly_percentage_changes
                 }
-            
+                time.sleep(2)  # Sleep for 2 seconds
+                
             # Analyze the monthly percentage changes and select the top 28 stocks for the current month
             current_month = now.month
             current_year = now.year
