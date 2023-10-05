@@ -215,7 +215,7 @@ def get_opening_price(symbol):
 
 def get_current_price(symbol):
     stock_data = yf.Ticker(symbol)
-    return round(stock_data.history(period="5d")["Close"].iloc[-1], 4)
+    return round(stock_data.history(period="1d")["Close"].iloc[-1], 4)
 
 
 def get_atr_high_price(symbol):
