@@ -559,6 +559,10 @@ def main():
 
             # keep the below time.sleep(60) to 60 seconds because yfinance api
             # will stop the stock data feed for the reason of exceeding the rate limit or from this program being too fast.
+            print("Do Not Stop this Robot or you will need to ")
+            print("delete the trading_bot.db database file and start over again with an empty database. ")
+            print("Placing trades without this Robot will also require ")
+            print("deleting the trading_bot.db database file and starting over again with an empty database. ")
             print("Waiting 30 seconds before checking price data again........")
             time.sleep(30)  # keep this under the i in if
 
