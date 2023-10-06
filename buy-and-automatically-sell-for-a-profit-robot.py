@@ -14,9 +14,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import SQLAlchemyError
-import warnings
+#import warnings
 
-warnings.filterwarnings('ignore')     # comment out this line to display more error messages.
+#warnings.filterwarnings('ignore')     # comment out this line to display more error messages.
 
 # Load environment variables for Alpaca API
 APIKEYID = os.getenv('APCA_API_KEY_ID')
