@@ -148,7 +148,7 @@ Invest with confidence in the electricity market. Get the "Performance Stock Lis
 ***** This program will only work if you have 
 at least 1 stock symbol in the electricity-or-utility-stocks-to-buy-list.txt 
 because of the functionality of the python code to analyze stocks to buy 
-at a future time. Otherwise, you will most likely see errors in the log-file-of-buy-and-sell-signals.txt. A new database file will need to be created if you started this robot without owning any stocks. Delete the database file named trading_bot.db before restarting the stockbot if the stockbot was running without any owned stock positions. 
+at a future time. Otherwise, you will most likely see errors in the file trading-bot-program-logging-messages.txt. A new database file will need to be created if you started this robot without owning any stocks. Delete the database file named trading_bot.db before restarting the stockbot if the stockbot was running without any owned stock positions. 
 Stop and Start the Stock Trading Robot after you have purchased at least 1 share of stock to create a new database file. I recommend linking your Alpaca Stock Trading Account with TradingView to purchase at least 1 stock position. Deciding to manually sell stocks more quickly before tomorrow can also easily be done on TradingView or on the Alpaca website for those occassional situations where your stock selling  needs to be done today instead of tomorrow. 
 
 ***** If you purchased or sold stocks through Alpaca's website or through other services, then the following 
