@@ -15,7 +15,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import SQLAlchemyError
-#import warnings     # comment out this line to utulize warnings.filterwarnings 
+#import warnings     # comment out this line to utilize warnings.filterwarnings
 
 #warnings.filterwarnings('ignore')     # comment out this line to display more error messages.
 
@@ -61,7 +61,7 @@ logging.basicConfig(filename='trading-bot-program-logging-messages.txt', level=l
 
 # Define the CSV file and fieldnames
 csv_filename = 'log-file-of-buy-and-sell-signals.csv'
-fieldnames = ['Timestamp', 'Buy or Sell', 'Quantity', 'Symbol', 'Price Per Share']
+fieldnames = ['Date', 'Buy or Sell', 'Quantity', 'Symbol', 'Price Per Share']
 
 # Open the CSV file for writing and set up a CSV writer
 with open(csv_filename, mode='w', newline='') as csv_file:
