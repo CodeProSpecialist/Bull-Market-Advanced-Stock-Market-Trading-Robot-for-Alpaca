@@ -151,7 +151,7 @@ def print_database_tables():
         # Print TradeHistory table
         print("\nTrade History In This Robot's Database:")
         print("\n")
-        print("Stock | Buy or Sell | Quantity | Avg. Price | Purchase Date ")
+        print("Stock | Buy or Sell | Quantity | Avg. Price | Date ")
         print("\n")
 
         for record in session.query(TradeHistory).all():
@@ -162,7 +162,7 @@ def print_database_tables():
         print("\n")
         print("Positions in the Database To Sell 1 or More Days After the Date Shown:")
         print("\n")
-        print("Stock | Quantity | Avg. Price | Purchase Date or The 1st Day This Robot Began Working ")
+        print("Stock | Quantity | Avg. Price | Date or The 1st Day This Robot Began Working ")
         print("\n")
         for record in session.query(Position).all():
             symbol, quantity, avg_price, purchase_date = record.symbol, record.quantity, record.avg_price, record.purchase_date
