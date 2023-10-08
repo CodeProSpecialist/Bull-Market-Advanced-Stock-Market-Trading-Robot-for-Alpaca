@@ -27,7 +27,7 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-global stocks_to_buy, today_date, today_datetime
+global stocks_to_buy, today_date, today_datetime, csv_writer, csv_filename 
 
 # the below will print the list of stocks to buy and their prices when True.
 PRINT_STOCKS_TO_BUY = False  # keep this as False for the robot to work faster.
