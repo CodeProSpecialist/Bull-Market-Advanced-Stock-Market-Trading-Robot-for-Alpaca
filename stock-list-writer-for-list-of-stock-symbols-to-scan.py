@@ -15,6 +15,18 @@ def calculate_largest_price_increase(stock_symbol, years_ago):
     largest_increase = -float('inf')
     best_month = None
 
+    print("")
+    print(" Stock List Writer Program for the list of stock symbols to scan ")
+    print("")
+    print("Reading the file s-and-p-500-large-list-of-stocks.txt ")
+    print("")
+    print("Looking for the best Historical Data prices for this Month in the S&P 500")
+    print("")
+    print("Searching through the entire S&P 500 for the past 2 years. ")
+    print("")
+    print("Please be patient. This could take more than 7 hours........")
+    print("")
+
     for month in range(1, 13):
         last_day_of_month = (target_time.replace(day=1, month=month) + timedelta(days=32)).replace(day=1) - timedelta(
             days=1)
