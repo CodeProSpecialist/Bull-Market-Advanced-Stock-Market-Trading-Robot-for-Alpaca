@@ -236,7 +236,7 @@ To immediatly select different stock symbols to buy, then edit the list of stock
 in the file named "electricity-or-utility-stocks-to-buy-list.txt" and also 
 in the files named "s-and-p-500-large-list-of-stocks.txt" and "list-of-stock-symbols-to-scan.txt". 
 ***** The first command for the python file "stock-list-writer-for-list-of-stock-symbols-to-scan.py" 
-will need about 1 hour to 2 hours to process the S&P 500 stock symbols. 
+will need about 2.5 to 3.5 hours to process the S&P 500 stock symbols. 
 All three python commands should continue working Monday through Friday 
 because they work together to keep up to date on the latest stock market data. *****
 The second command for the python file "performance-stock-list-writer.py" 
