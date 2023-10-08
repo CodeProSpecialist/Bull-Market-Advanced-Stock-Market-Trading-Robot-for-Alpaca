@@ -16,8 +16,10 @@ def calculate_largest_price_increase(stock_symbol):
     best_month = None
 
     for month in range(1, 13):
+        # Calculate the last day of the current month
+        last_day_of_month = (current_time.replace(day=1, month=month) + timedelta(days=32)).replace(day=1) - timedelta(days=1)
         start_date = f"{two_years_ago.year}-{month:02d}-01"
-        end_date = f"{current_time.year}-{month:02d}-31"
+        end_date = f"{last_day_of_month.year}-{last_day_of_month.month:02d}-{last_day_of_month.day:02d}"
         historical_data = stock.history(start=start_date, end=end_date)
 
         if not historical_data.empty:
@@ -47,20 +49,6 @@ with open(counter_file_path, "w") as counter_file:
 # Get the current date and time
 current_time = datetime.now()
 
-# Define the target time for the next run (4:15 PM Eastern time)
-target_time = current_time.replace(hour=16, minute=15, second=0, microsecond=0)
-
-# Calculate the time difference until the next run
-time_difference = target_time - current_time
-
-# Check if the target time is in the past, and if so, add one day to the target time
-if time_difference.total_seconds() < 0:
-    target_time += timedelta(days=1)
-    time_difference = target_time - current_time
-
-# Sleep for the calculated time difference
-time.sleep(time_difference.total_seconds())
-
 # Get the current month
 current_month = current_time.month
 
@@ -80,6 +68,20 @@ with open("list-of-stock-symbols-to-scan.txt", "w") as output_file:
         output_file.write(stock_symbol + '\n')
 
 # Print the next run time
-next_run_time = datetime.now() + timedelta(days=1)
+next_run_time = current_time + timedelta(days=1)
 next_run_time = next_run_time.replace(hour=16, minute=15, second=0, microsecond=0)
+
+# If this is the first run, there's no need to sleep
+if run_count > 1:
+    # Calculate the time difference until the next run
+    time_difference = next_run_time - current_time
+
+    # Check if the target time is in the past, and if so, add one day to the target time
+    if time_difference.total_seconds() < 0:
+        next_run_time += timedelta(days=1)
+        time_difference = next_run_time - current_time
+
+    # Sleep for the calculated time difference
+    time.sleep(time_difference.total_seconds())
+
 print(f"Next run time: {next_run_time}")
