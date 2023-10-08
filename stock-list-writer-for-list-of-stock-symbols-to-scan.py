@@ -7,6 +7,10 @@ import pytz  # Import pytz for timezone handling
 # Set the Eastern timezone as global for yfinance to access
 eastern_timezone = pytz.timezone('US/Eastern')
 
+# Function to format time as "Month-day-year, hh:mm:ss AM"
+def format_time(dt):
+    return dt.strftime("%B-%d-%Y, %I:%M:%S %p")
+
 # Read the list of stocks from the input file
 with open("s-and-p-500-large-list-of-stocks.txt", "r") as input_file:
     stocks = input_file.read().splitlines()
@@ -26,7 +30,7 @@ def calculate_largest_price_increase(stock_symbol):
         end_date = f"{last_day_of_month.year}-{last_day_of_month.month:02d}-{last_day_of_month.day:02d}"
 
         # Print the Eastern Time before downloading stock information
-        print(f"Eastern Time: {datetime.now(eastern_timezone)} - Downloading Stock Information for {stock_symbol}")
+        print(f"Eastern Time: {format_time(datetime.now(eastern_timezone))} - Downloading Stock Information for {stock_symbol}")
 
         historical_data = stock.history(start=start_date, end=end_date)
         time.sleep(1)  # Rate limit to 1 second per stock symbol
@@ -71,14 +75,15 @@ for stock in stocks:
     if best_month == current_month:
         stock_symbols_to_scan.append(stock.upper())
 
-# Write the stock symbols to scan to the output file
+# Write the stock symbols to scan to the output file with the next run time
 with open("list-of-stock-symbols-to-scan.txt", "w") as output_file:
     for stock_symbol in stock_symbols_to_scan:
         output_file.write(stock_symbol + '\n')
 
-# Print the next run time
-next_run_time = current_time + timedelta(days=1)
-next_run_time = next_run_time.replace(hour=16, minute=15, second=0, microsecond=0)
+    # Print the next run time and write it to the file
+    next_run_time = current_time + timedelta(days=1)
+    next_run_time = next_run_time.replace(hour=16, minute=15, second=0, microsecond=0)
+    output_file.write("Next run time: " + format_time(next_run_time) + '\n')
 
 # If this is the first run, there's no need to sleep
 if run_count > 1:
@@ -93,4 +98,4 @@ if run_count > 1:
     # Sleep for the calculated time difference
     time.sleep(time_difference.total_seconds())
 
-print(f"Next run time: {next_run_time}")
+print(f"Next run time: {format_time(next_run_time)}")
