@@ -53,7 +53,7 @@ The Advanced Stock Market Trading Robot is designed to work with stocks you alre
 
 4. Buy Criteria: It considers specific criteria before buying stocks, such as comparing the current price to a predefined buy price and ensuring the price is within an acceptable range.
 
-5. Error Handling: The function handles errors gracefully and logs information about each purchase, including the symbol, quantity, and purchase date. 
+5. Error Handling: The function handles errors gracefully and logs information about each purchase, including the symbol, quantity, purchase price per share, and purchase date. 
 
 6. Database Update: After buying stocks, the function updates the database with trade history and position information, ensuring accurate tracking of stock purchases.
 
@@ -67,7 +67,7 @@ sell_stocks Function:
 
 3. Sell Criteria: The function considers specific criteria before selling stocks, such as comparing the current price to a predefined sell price for profit and ensuring that stocks have been held for at least one day.
 
-4. Error Handling: Like the "buy_stocks" function, this function handles errors gracefully and logs information about each sale, including the symbol, quantity, and sale date. 
+4. Error Handling: Like the "buy_stocks" function, this function handles errors gracefully and logs information about each sale, including the symbol, quantity, price per share, and sale date. 
 
 5. Database Update: After selling stocks, the function updates the database with trade history and removes the sold stocks from the list of bought stocks.
 
