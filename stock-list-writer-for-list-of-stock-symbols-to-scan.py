@@ -40,6 +40,11 @@ def calculate_largest_price_increase(stock_symbol):
         start_date = f"{two_years_ago.year}-{month:02d}-01"
         end_date = f"{last_day_of_month.year}-{last_day_of_month.month:02d}-{last_day_of_month.day:02d}"
 
+        print("")
+        print("Stock List Writer for list of stock symbols to scan ")
+        print("")
+        print("Scanning the Stock List in the file s-and-p-500-large-list-of-stocks.txt ")
+        print("")
         # Print the Eastern Time before downloading stock information
         print(f"Eastern Time: {format_time(datetime.now(eastern_timezone))} - Downloading Stock Information for {stock_symbol}")
 
