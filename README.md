@@ -228,7 +228,7 @@ sh install.sh
 Do the following with a non-root user account: 
 After placing your alpaca keys at the bottom of /home/nameofyourhomefolderhere/.bashrc you simply run the command in a command terminal like:
 
-You will need 2 command line terminals open to fully operate the Advanced Stock Market Trading Robot
+You will need 3 command line terminals open to fully operate the Advanced Stock Market Trading Robot
 because one terminal window is the robot and the other terminal window is for 
 updating the list of stocks to buy with the most successful energy or electric utility company stocks. 
 To select different stocks to buy and allow up to 24 hours for the stocks list to update, edit the list of stocks 
@@ -237,11 +237,13 @@ To immediatly select different stock symbols to buy, then edit the list of stock
 in the file named "electricity-or-utility-stocks-to-buy-list.txt" and also 
 in the file named "list-of-stock-symbols-to-scan.txt". 
 
-python3 buy-and-automatically-sell-for-a-profit-robot.py 
-
-open a second command line terminal and run the following command: 
+python3 stock-list-writer-for-list-of-stock-symbols-to-scan.py
 
 python3 performance-stock-list-writer.py
+
+open an additional command line terminal and run the following command: 
+
+python3 buy-and-automatically-sell-for-a-profit-robot.py
 
 The performance-stock-list-writer.py python program will make sure that only 
 successful stocks are purchased by the Advanced Stock Market Trading Robot. 
