@@ -227,7 +227,7 @@ Open a command line terminal from this folder location and type:
 sh install.sh
 
 Do the following with a non-root user account: 
-After placing your alpaca keys at the bottom of /home/nameofyourhomefolderhere/.bashrc you simply run the command in a command terminal like:
+After placing your alpaca keys at the bottom of /home/nameofyourhomefolderhere/.bashrc you simply run the commands on the command line. 
 
 You will need three command line terminals open to fully operate the Advanced Stock Market Trading Robot
 because one terminal window is the robot and the other terminal windows are for 
