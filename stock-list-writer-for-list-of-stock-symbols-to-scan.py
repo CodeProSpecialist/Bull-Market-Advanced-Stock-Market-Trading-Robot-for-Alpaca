@@ -93,7 +93,7 @@ def main():
         if time_difference.total_seconds() < 0:
             next_run_time += timedelta(days=1)
             time_difference = next_run_time - current_time
-
+        print(f"Next run time: {next_run_time}")
         # Sleep for the calculated time difference
         time.sleep(time_difference.total_seconds())
 
