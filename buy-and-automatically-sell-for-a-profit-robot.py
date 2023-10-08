@@ -27,7 +27,7 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-global stocks_to_buy, today_date, today_datetime, csv_writer, csv_filename 
+global stocks_to_buy, today_date, today_datetime, csv_writer, csv_filename, fieldnames 
 
 # the below will print the list of stocks to buy and their prices when True.
 PRINT_STOCKS_TO_BUY = False  # keep this as False for the robot to work faster.
@@ -307,6 +307,8 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         if (cash_available >= total_cost_for_qty and current_price <= profit_buy_price_setting):
             api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
             print(f" {current_time_str} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
+            with open(csv_filename, mode='w', newline='') as csv_file:
+                csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
             csv_writer.writerow({'Timestamp': current_time_str, 'Buy or Sell': 'Buy', 'Quantity': qty_of_one_stock, 'Symbol': symbol})
             stocks_to_remove.append((symbol, current_price, today_date_str))  # Append tuple
             # the database requires the datetime date format from today_date
@@ -432,6 +434,8 @@ def sell_stocks(bought_stocks, buy_sell_lock):
                 qty = api.get_position(symbol).qty
                 api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
                 print(f" {current_time_str}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price. ")
+                with open(csv_filename, mode='w', newline='') as csv_file:
+                    csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                 csv_writer.writerow({'Timestamp': current_time_str, 'Buy or Sell': 'Sell', 'Quantity': qty, 'Symbol': symbol})
                 stocks_to_remove.append(symbol)  # Append symbols to remove
 
