@@ -309,7 +309,8 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             print(f" {current_time_str} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
             with open(csv_filename, mode='a', newline='') as csv_file:
                 csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-            csv_writer.writerow({'Timestamp': current_time_str, 'Buy or Sell': 'Buy', 'Quantity': qty_of_one_stock, 'Symbol': symbol})
+                csv_writer.writerow({'Timestamp': current_time_str, 'Buy or Sell': 'Buy', 'Quantity': qty_of_one_stock, 'Symbol': symbol})
+            
             stocks_to_remove.append((symbol, current_price, today_date_str))  # Append tuple
             # the database requires the datetime date format from today_date
             # this append tuple will provide the date=date and the purchase_date = date
@@ -436,7 +437,8 @@ def sell_stocks(bought_stocks, buy_sell_lock):
                 print(f" {current_time_str}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price. ")
                 with open(csv_filename, mode='a', newline='') as csv_file:
                     csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-                csv_writer.writerow({'Timestamp': current_time_str, 'Buy or Sell': 'Sell', 'Quantity': qty, 'Symbol': symbol})
+                    csv_writer.writerow({'Timestamp': current_time_str, 'Buy or Sell': 'Sell', 'Quantity': qty, 'Symbol': symbol})
+                
                 stocks_to_remove.append(symbol)  # Append symbols to remove
 
                 time.sleep(2)  # keep this under the s in stocks
