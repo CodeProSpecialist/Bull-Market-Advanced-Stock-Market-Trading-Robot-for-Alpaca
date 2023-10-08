@@ -242,7 +242,7 @@ will need about 7 to 10 hours to process the S&P 500 stock symbols.
 All three python commands should continue working Monday through Friday 
 because they work together to keep up to date on the latest stock market data. *****
 The second command for the python file "performance-stock-list-writer.py" 
-wil require some amount of waiting time as well, depending on how many 
+will require some amount of waiting time as well, depending on how many 
 stocks are in the list "list-of-stock-symbols-to-scan.txt". 
 Run the commands below:
 
