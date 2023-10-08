@@ -11,114 +11,118 @@ eastern_timezone = pytz.timezone('US/Eastern')
 def format_time(dt):
     return dt.strftime("%B-%d-%Y, %I:%M:%S %p")
 
-# Read the list of stocks from the input file
-with open("s-and-p-500-large-list-of-stocks.txt", "r") as input_file:
-    stocks = input_file.read().splitlines()
+# Function to read stock symbols from the input file
+def read_stock_symbols(file_path):
+    with open(file_path, "r") as input_file:
+        return input_file.read().splitlines()
 
-# Define a function to calculate the largest price increase for a stock symbol in the past 2 years for all 12 months
-def calculate_largest_price_increase(stock_symbol):
+# Function to calculate the best months for a stock symbol in the past years
+def calculate_best_months(stock_symbol, years_ago):
     stock = yf.Ticker(stock_symbol)
     current_time = datetime.now(eastern_timezone)  # Get current time in Eastern timezone
-    two_years_ago = current_time - timedelta(days=2*365)  # Calculate two years ago
-    largest_increase = -float('inf')
-    best_month = None
+    years_ago_time = current_time - timedelta(days=365*years_ago)  # Calculate years ago
+    best_months = {year: [] for year in range(current_time.year - years_ago, current_time.year + 1)}
 
     for month in range(1, 13):
         # Calculate the last day of the current month
-        last_day_of_month = (current_time.replace(day=1, month=month) + timedelta(days=32)).replace(day=1) - timedelta(days=1)
-        start_date = f"{two_years_ago.year}-{month:02d}-01"
+        last_day_of_month = (years_ago_time.replace(day=1, month=month) + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+        start_date = f"{years_ago_time.year}-{month:02d}-01"
         end_date = f"{last_day_of_month.year}-{last_day_of_month.month:02d}-{last_day_of_month.day:02d}"
 
-        # Check if it's within trading hours
-        if current_time.weekday() == 0:  # Monday
-            # Check if the current time is after 01:00
-            if current_time.hour > 1 or (current_time.hour == 1 and current_time.minute >= 0):
-                print(f"Eastern Time: {format_time(datetime.now(eastern_timezone))} - Downloading Stock Information for {stock_symbol}")
-                historical_data = stock.history(start=start_date, end=end_date)
-                time.sleep(1)  # Rate limit to 1 second per stock symbol
+        if is_trading_hours(current_time):
+            print(f"Eastern Time: {format_time(datetime.now(eastern_timezone))} - Downloading Stock Information for {stock_symbol}")
+            historical_data = stock.history(start=start_date, end=end_date)
+            time.sleep(1)  # Rate limit to 1 second per stock symbol
 
-                if not historical_data.empty:
-                    price_increase = (historical_data["Close"].iloc[-1] - historical_data["Close"].iloc[0]) / historical_data["Close"].iloc[0]
-                    if price_increase > largest_increase:
-                        largest_increase = price_increase
-                        best_month = month
-        elif current_time.weekday() >= 1 and current_time.weekday() <= 4:  # Tuesday to Friday
-            # Check if the current time is before 15:59
-            if current_time.hour < 15 or (current_time.hour == 15 and current_time.minute <= 59):
-                print(f"Eastern Time: {format_time(datetime.now(eastern_timezone))} - Downloading Stock Information for {stock_symbol}")
-                historical_data = stock.history(start=start_date, end=end_date)
-                time.sleep(1)  # Rate limit to 1 second per stock symbol
+            if not historical_data.empty:
+                price_increase = (historical_data["Close"].iloc[-1] - historical_data["Close"].iloc[0]) / historical_data["Close"].iloc[0]
+                best_months[years_ago_time.year].append((month, price_increase))
 
-                if not historical_data.empty:
-                    price_increase = (historical_data["Close"].iloc[-1] - historical_data["Close"].iloc[0]) / historical_data["Close"].iloc[0]
-                    if price_increase > largest_increase:
-                        largest_increase = price_increase
-                        best_month = month
+    # Sort the best months by price increase
+    for year, months in best_months.items():
+        best_months[year] = [month for month, price_increase in sorted(months, key=lambda x: x[1], reverse=True)[:2]]
 
-    return largest_increase, best_month
+    return best_months
 
-# Check if a counter file exists indicating how many times the script has run
-counter_file_path = "s-and-p-500-list-printer-run-counter.txt"
+# Function to check if it's within trading hours
+def is_trading_hours(current_time):
+    if current_time.weekday() == 0:  # Monday
+        # Check if the current time is after 01:00
+        if current_time.hour > 1 or (current_time.hour == 1 and current_time.minute >= 0):
+            return True
+    elif current_time.weekday() >= 1 and current_time.weekday() <= 4:  # Tuesday to Friday
+        # Check if the current time is before 15:59
+        if current_time.hour < 15 or (current_time.hour == 15 and current_time.minute <= 59):
+            return True
 
-if os.path.exists(counter_file_path):
-    with open(counter_file_path, "r") as counter_file:
-        run_count = int(counter_file.read())
-else:
-    run_count = 0
+    return False
 
-# Increment the run count
-run_count += 1
+# Function to select and write the best-performing stocks to the output file
+def select_and_write_best_stocks(stock_symbols, output_file_path):
+    current_time = datetime.now()
+    current_month = current_time.month
+    stock_symbols_to_scan = []
 
-# Write the updated run count to the counter file
-with open(counter_file_path, "w") as counter_file:
-    counter_file.write(str(run_count))
+    for stock_symbol in stock_symbols:
+        best_months_1_year_ago = calculate_best_months(stock_symbol, 1)
+        best_months_2_years_ago = calculate_best_months(stock_symbol, 2)
 
-# Get the current date and time
-current_time = datetime.now()
+        if current_month in best_months_1_year_ago[current_time.year] or current_month in best_months_2_years_ago[current_time.year]:
+            stock_symbols_to_scan.append(stock_symbol.upper())
 
-# Get the current month
-current_month = current_time.month
+    with open(output_file_path, "w") as output_file:
+        for stock_symbol in stock_symbols_to_scan:
+            output_file.write(stock_symbol + '\n')
 
-# Define a list to store the stock symbols to scan
-stock_symbols_to_scan = []
-
-# Iterate through each stock and evaluate if it should be included in the list
-for stock in stocks:
-    largest_increase, best_month = calculate_largest_price_increase(stock)
-
-    if best_month == current_month:
-        stock_symbols_to_scan.append(stock.upper())
-
-# Write the stock symbols to scan to the output file with the next run time
-with open("list-of-stock-symbols-to-scan.txt", "w") as output_file:
-    for stock_symbol in stock_symbols_to_scan:
-        output_file.write(stock_symbol + '\n')
-
-    # Print the next run time
-    next_run_time = current_time + timedelta(days=1)
-    next_run_time = next_run_time.replace(hour=16, minute=15, second=0, microsecond=0)
-
-    # If this is the first run, there's no need to sleep
-    if run_count > 1:
-        # Calculate the time difference until tomorrow at 1:00 AM
-        next_run_time = datetime.now(eastern_timezone)
+        # Print the next run time
+        next_run_time = current_time + timedelta(days=1)
         next_run_time = next_run_time.replace(hour=1, minute=0, second=0, microsecond=0)
-        next_run_time += timedelta(days=1)
-        time_difference = next_run_time - datetime.now(eastern_timezone)
-        
-        if time_difference.total_seconds() > 0:
+
+        # If this is the first run, there's no need to sleep
+        if run_count > 1:
+            # Calculate the time difference until the next run
+            time_difference = next_run_time - current_time
+
+            # Check if the target time is in the past, and if so, add one day to the target time
+            if time_difference.total_seconds() < 0:
+                next_run_time += timedelta(days=1)
+                time_difference = next_run_time - current_time
+
+            # Sleep for the calculated time difference
             time.sleep(time_difference.total_seconds())
 
         output_file.write("Next run time: " + format_time(next_run_time) + '\n')
 
-print(f"Next run time: {format_time(next_run_time)}")
+# Function to run the main program logic
+def run_program():
+    # Read the list of stock symbols
+    input_file_path = "s-and-p-500-large-list-of-stocks.txt"
+    stock_symbols = read_stock_symbols(input_file_path)
 
-try:
-    pass  # Your main program logic goes here
+    # Select and write the best-performing stocks
+    output_file_path = "list-of-stock-symbols-to-scan.txt"
+    select_and_write_best_stocks(stock_symbols, output_file_path)
 
-except Exception as e:
-    print(f"An error occurred: {e}")
-    print("Restarting the program...")
+# Function to check if it's the first run of the day
+def is_first_run_of_day():
+    current_time = datetime.now(eastern_timezone)
+    return current_time.hour == 1 and current_time.minute == 0 and current_time.second == 0
 
-    # Sleep for 5 minutes before restarting
-    time.sleep(300)  # 300 seconds = 5 minutes
+# Main program loop
+while True:
+    try:
+        run_count = 0  # Reset run count
+
+        # Check if it's the first run of the day
+        if is_first_run_of_day():
+            run_program()  # Run the program immediately on the first run
+        else:
+            # Sleep for 22 hours before starting again at 1:00 AM
+            time.sleep(22 * 60 * 60)  # 22 hours in seconds
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        print("Restarting the program...")
+
+        # Sleep for 5 minutes before restarting
+        time.sleep(300)  # 300 seconds = 5 minutes
