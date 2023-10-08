@@ -15,7 +15,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import SQLAlchemyError
-#import warnings
+#import warnings     # comment out this line to utulize warnings.filterwarnings 
 
 #warnings.filterwarnings('ignore')     # comment out this line to display more error messages.
 
@@ -57,7 +57,19 @@ api_time_format = '%Y-%m-%dT%H:%M:%S.%f-04:00'
 # the below variable was recommended by Artificial Intelligence
 buy_sell_lock = threading.Lock()
 
-logging.basicConfig(filename='log-file-of-buy-and-sell-signals.txt', level=logging.INFO)
+logging.basicConfig(filename='program-log.txt', level=logging.INFO)
+
+# Define the CSV file and fieldnames
+csv_filename = 'log-file-of-buy-and-sell-signals.csv'
+fieldnames = ['Timestamp', 'Buy or Sell', 'Quantity', 'Symbol']
+
+# Open the CSV file for writing and set up a CSV writer
+with open(csv_filename, mode='w', newline='') as csv_file:
+    csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+    
+    # Write the header row
+    csv_writer.writeheader()
+
 
 # Define the Database Models
 # Newer Data Base Model code below
