@@ -33,31 +33,15 @@ while True:
                 end_date = f"{last_day_of_month.year}-{last_day_of_month.month:02d}-{last_day_of_month.day:02d}"
 
                 try:
-                    # Check if it's within trading hours
-                    if current_time.weekday() == 0:  # Monday
-                        # Check if the current time is after 01:00
-                        if current_time.hour > 1 or (current_time.hour == 1 and current_time.minute >= 0):
-                            print(f"Eastern Time: {format_time(datetime.now(eastern_timezone))} - Downloading Stock Information for {stock_symbol}")
-                            historical_data = stock.history(start=start_date, end=end_date)
-                            time.sleep(1)  # Rate limit to 1 second per stock symbol
+                    print(f"Eastern Time: {format_time(datetime.now(eastern_timezone))} - Downloading Stock Information for {stock_symbol}")
+                    historical_data = stock.history(start=start_date, end=end_date)
+                    time.sleep(1)  # Rate limit to 1 second per stock symbol
 
-                            if not historical_data.empty:
-                                price_increase = (historical_data["Close"].iloc[-1] - historical_data["Close"].iloc[0]) / historical_data["Close"].iloc[0]
-                                if price_increase > largest_increase:
-                                    largest_increase = price_increase
-                                    best_month = month
-                    elif current_time.weekday() >= 1 and current_time.weekday() <= 4:  # Tuesday to Friday
-                        # Check if the current time is before 15:59
-                        if current_time.hour < 15 or (current_time.hour == 15 and current_time.minute <= 59):
-                            print(f"Eastern Time: {format_time(datetime.now(eastern_timezone))} - Downloading Stock Information for {stock_symbol}")
-                            historical_data = stock.history(start=start_date, end=end_date)
-                            time.sleep(1)  # Rate limit to 1 second per stock symbol
-
-                            if not historical_data.empty:
-                                price_increase = (historical_data["Close"].iloc[-1] - historical_data["Close"].iloc[0]) / historical_data["Close"].iloc[0]
-                                if price_increase > largest_increase:
-                                    largest_increase = price_increase
-                                    best_month = month
+                    if not historical_data.empty:
+                        price_increase = (historical_data["Close"].iloc[-1] - historical_data["Close"].iloc[0]) / historical_data["Close"].iloc[0]
+                        if price_increase > largest_increase:
+                            largest_increase = price_increase
+                            best_month = month
                 except Exception as e:
                     print(f"An error occurred: {e}")
                     print("Restarting the program...")
@@ -102,32 +86,7 @@ while True:
             for stock_symbol in stock_symbols_to_scan:
                 output_file.write(stock_symbol + '\n')
 
-            # Print the next run time
-            next_run_time = current_time + timedelta(days=1)
-            next_run_time = next_run_time.replace(hour=16, minute=15, second=0, microsecond=0)
-
-            # If this is the first run, there's no need to sleep
-            if run_count > 1:
-                # Calculate the time difference until the next run
-                time_difference = next_run_time - current_time
-
-                # Check if the target time is in the past, and if so, add one day to the target time
-                if time_difference.total_seconds() < 0:
-                    next_run_time += timedelta(days=1)
-                    time_difference = next_run_time - current_time
-
-                # Sleep for the calculated time difference
-                time.sleep(time_difference.total_seconds())
-
-            output_file.write("Next run time: " + format_time(next_run_time) + '\n')
-
-        print(f"Next run time: {format_time(next_run_time)}")
-
-        # Error handling: Restart the program in 5 minutes
-        try:
-            time.sleep(300)  # Sleep for 5 minutes
-        except KeyboardInterrupt:
-            break  # Allow the program to be stopped with Ctrl+C
+        print(f"Next run time: {format_time(datetime.now(eastern_timezone))}")
 
     except Exception as e:
         print(f"An error occurred: {e}")
