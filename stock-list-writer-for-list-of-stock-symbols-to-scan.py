@@ -1,6 +1,7 @@
 import yfinance as yf
 import time
 from datetime import datetime, timedelta
+import os
 
 # Read the list of stocks from the input file
 with open("s-and-p-500-large-list-of-stocks.txt", "r") as input_file:
@@ -27,6 +28,22 @@ def calculate_largest_price_increase(stock_symbol):
 
     return largest_increase, best_month
 
+# Check if a counter file exists indicating how many times the script has run
+counter_file_path = "s-and-p-500-list-printer-run-counter.txt"
+
+if os.path.exists(counter_file_path):
+    with open(counter_file_path, "r") as counter_file:
+        run_count = int(counter_file.read())
+else:
+    run_count = 0
+
+# Increment the run count
+run_count += 1
+
+# Write the updated run count to the counter file
+with open(counter_file_path, "w") as counter_file:
+    counter_file.write(str(run_count))
+
 # Get the current date and time
 current_time = datetime.now()
 
@@ -35,6 +52,11 @@ target_time = current_time.replace(hour=16, minute=15, second=0, microsecond=0)
 
 # Calculate the time difference until the next run
 time_difference = target_time - current_time
+
+# Check if the target time is in the past, and if so, add one day to the target time
+if time_difference.total_seconds() < 0:
+    target_time += timedelta(days=1)
+    time_difference = target_time - current_time
 
 # Sleep for the calculated time difference
 time.sleep(time_difference.total_seconds())
