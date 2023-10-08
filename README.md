@@ -96,7 +96,8 @@ conditions, we need to limit
 our buy list to the top 28 stocks. The tough market requires the toughest stock screening selection. 
 The top 28 stocks are selected for a successful list of the top performing stocks. 
 
-- Regular Updates: The stock list is updated every 5 minutes during most of the day when the Stock Market is open for trading to ensure you have the most current information.
+- Regular Updates: The "performance-stock-list-writer" stock list is updated every 5 minutes during most of the day
+- when the Stock Market is open for trading to ensure you have the most current information.
   This has been really effective for keeping the most successful stock at the top of the list of stock to purchase. 
 
 - Time-Specific Execution: The script runs during specific hours, allowing you to focus on other tasks without interruption.
