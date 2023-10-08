@@ -307,7 +307,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         if (cash_available >= total_cost_for_qty and current_price <= profit_buy_price_setting):
             api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
             print(f" {current_time_str} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
-            logging.info(f"{current_time_str} Buy {qty_of_one_stock} shares of {symbol}.")
+            csv_writer.writerow({'Timestamp': current_time_str, 'Buy or Sell': 'Buy', 'Quantity': qty_of_one_stock, 'Symbol': symbol})
             stocks_to_remove.append((symbol, current_price, today_date_str))  # Append tuple
             # the database requires the datetime date format from today_date
             # this append tuple will provide the date=date and the purchase_date = date
