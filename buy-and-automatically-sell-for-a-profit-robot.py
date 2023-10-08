@@ -57,7 +57,7 @@ api_time_format = '%Y-%m-%dT%H:%M:%S.%f-04:00'
 # the below variable was recommended by Artificial Intelligence
 buy_sell_lock = threading.Lock()
 
-logging.basicConfig(filename='program-log.txt', level=logging.INFO)
+logging.basicConfig(filename='trading-bot-program-logging-messages.txt', level=logging.INFO)
 
 # Define the CSV file and fieldnames
 csv_filename = 'log-file-of-buy-and-sell-signals.csv'
