@@ -25,7 +25,7 @@ Key Features:
 
   Lock and Load: With built-in thread locking mechanisms, you can buy and sell stocks in parallel without worrying about conflicts or errors. Your trades will execute smoothly.
 
-  Detailed Logging: Every trade and decision is meticulously logged, so you can review your trading history and learn from your past experiences.
+  Detailed Logging: Every trade and decision is logged in the .csv file "log-file-of-buy-and-sell-signals.csv", so you can review your trading history and learn from your past experiences.
 
 How It Works:
 
