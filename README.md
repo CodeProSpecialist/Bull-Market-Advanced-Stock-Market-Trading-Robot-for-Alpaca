@@ -1,3 +1,5 @@
+******** Upgrade to the newest code for this Robot. There were recent upgrades to this Robot to help it work better. Today is 10-8-2023. *****
+
 -----------------------------------------------------------------------------------------------
         Welcome to the Future of Trading with the Advanced Stock Market Trading Robot! 
 
