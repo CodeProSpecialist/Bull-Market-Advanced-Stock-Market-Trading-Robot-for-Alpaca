@@ -310,8 +310,8 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             with open(csv_filename, mode='a', newline='') as csv_file:
                 csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                 csv_writer.writerow({'Date': current_time_str, 'Buy or Sell': 'Buy', 'Quantity': qty_of_one_stock, 'Symbol': symbol, 'Price Per Share': current_price})
-            
-            stocks_to_remove.append((symbol, current_price, today_date_str))  # Append tuple
+            # keep the line below under the w in with open
+            stocks_to_remove.append((symbol, current_price, today_date_str))  # Append tuple.
             # the database requires the datetime date format from today_date
             # this append tuple will provide the date=date and the purchase_date = date
             # in the correct datetime format for the database. This is the date
@@ -439,7 +439,7 @@ def sell_stocks(bought_stocks, buy_sell_lock):
                     csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                     csv_writer.writerow({'Date': current_time_str, 'Buy or Sell': 'Sell', 'Quantity': qty, 'Symbol': symbol, 'Price Per Share': current_price})
                 
-                stocks_to_remove.append(symbol)  # Append symbols to remove
+                stocks_to_remove.append(symbol)    # Append symbols to remove. keep this under the w in with open
 
                 time.sleep(2)  # keep this under the s in stocks
 
