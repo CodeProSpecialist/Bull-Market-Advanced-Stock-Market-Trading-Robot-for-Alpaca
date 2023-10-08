@@ -21,8 +21,9 @@ def calculate_largest_price_increase(stock_symbol, years_ago):
         start_date = f"{target_time.year}-{month:02d}-01"
         end_date = f"{last_day_of_month.year}-{last_day_of_month.month:02d}-{last_day_of_month.day:02d}"
 
-        print(
-            f"Eastern Time: {datetime.now(eastern_timezone)} - Downloading Stock Information for {stock_symbol} ({years_ago} years ago)")
+        # Format the datetime as specified
+        formatted_date = current_time.strftime("%A, %B %d, %Y, %I:%M %p")
+        print(f"Eastern Time: {formatted_date} - Downloading Stock Information for {stock_symbol} ({years_ago} years ago)")
 
         historical_data = stock.history(start=start_date, end=end_date)
         time.sleep(1)
