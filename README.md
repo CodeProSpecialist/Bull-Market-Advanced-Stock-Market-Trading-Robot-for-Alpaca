@@ -113,7 +113,7 @@ Look no further! Our Python script, the "Performance Stock List Writer," is here
 ------------------------------------------------------------
 
 Key Features:
-- Automated Stock Analysis: Our script automatically analyzes electricity stocks to provide you with a list of top-performing stocks.
+- Automated Stock Analysis: Our script automatically analyzes stocks to provide you with a list of top-performing stocks.
 
 - During difficult stock market 
 conditions, we need to limit 
@@ -145,7 +145,7 @@ Output: Finally, the selected stock symbols are written to the "electricity-or-u
 providing a stock list that might be favorable to purchase: stocks that have a history of strong price percentage increases over multiple time intervals. 
 Overall, this code automates the analysis of historical stock price data to identify stocks 
 that have shown consistent and significant growth in their prices over different time frames, 
-making them potential candidates for investment in the electricity or utility sector.
+making them potential candidates for investment in the electricity or utility sector, or in any other stock market sector that has been calculated to be successful. 
 
 - Error Handling: The script handles errors gracefully and restarts after 5 minutes, ensuring uninterrupted performance.
 
