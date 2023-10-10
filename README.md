@@ -80,6 +80,30 @@ sell_stocks Function:
    These functions work together to automate the process of buying and selling stocks, making data-driven decisions based on predefined criteria, and ensuring accurate record-keeping in the database. This automation allows for efficient and timely trading in the stock market.
 
 ------------------------------------------------------------
+Stock List Writer for list of stock symbols to scan
+------------------------------------------------------------
+This Python code is a script that is designed for analyzing stock market data. Here's a breakdown of what it does:
+
+It imports several libraries:
+for downloading historical stock market data.
+time for handling time-related operations.
+datetime and timedelta from datetime for working with date and time.
+os for file operations.
+pytz for setting the Eastern timezone.
+It defines a function called calculate_largest_price_increase, which takes a stock symbol and a number of years ago as input. This function calculates the largest price increase for the given stock within a specific time period (1 or 2 years ago).
+The main function is where the main logic of the script resides:
+It reads a list of stock symbols from a file named "s-and-p-500-large-list-of-stocks.txt."
+It keeps track of how many times the script has run by maintaining a counter in a file.
+For each stock symbol, it calculates the best month for the largest price increase, both 1 year and 2 years ago.
+If the best month matches the current month, the stock symbol is added to a list.
+It writes the stock symbols that need further analysis to an output file named "list-of-stock-symbols-to-scan.txt."
+It calculates the next run time and sleeps until that time.
+The script runs continuously in a loop, calling the main function. If an error occurs, it restarts after a 5-minute delay.
+Overall, this script is designed to analyze historical stock data for a list of stock symbols and identify which stocks had the largest price increases in a specific month, either 1 or 2 years ago, depending on the current date. It then schedules the next run of the script to continue this analysis.
+
+------------------------------------------------------------
+
+------------------------------------------------------------
             Performance Stock List Writer 
 ------------------------------------------------------------
 
