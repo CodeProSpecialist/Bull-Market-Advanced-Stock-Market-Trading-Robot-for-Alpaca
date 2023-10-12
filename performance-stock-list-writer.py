@@ -20,9 +20,7 @@ def calculate_monthly_percentage_changes(stock, current_month, current_year):
     history = stock.history(period="1y")
     
     monthly_percentage_changes = {}
-
-    current_month = now.month
-
+    
     for month in range(current_month - 2, current_month + 1):
         if month <= 0:
             month += 12
@@ -52,8 +50,7 @@ while True:
     try:
         eastern = pytz.timezone('US/Eastern')
         now = datetime.now(eastern)
-        current_month = now.month
-
+        
         if run_count == 1 or (now.weekday() in [0, 1, 2, 3, 4] and start_time <= now.time() <= end_time):
             # Increment run count
             run_count += 1
@@ -68,12 +65,15 @@ while True:
             for symbol in stock_symbols:
                 stock = yf.Ticker(symbol)
                 print(f"Downloading the historical data for {symbol}...")
-                
+
+                # Fetch maximum available data for the stock
+                max_data = stock.history(period="1mo")
+
                 # Calculate percentage changes for different timeframes
-                percentage_change_1_day = calculate_percentage_change(stock, "1d")
-                percentage_change_1_week = calculate_percentage_change(stock, "1wk")
-                percentage_change_14_days = calculate_percentage_change(stock, "14d")
-                percentage_change_1_month = calculate_percentage_change(stock, "1mo")
+                percentage_change_1_day = calculate_percentage_change(max_data, "1d")
+                percentage_change_1_week = calculate_percentage_change(max_data, "5d")
+                percentage_change_14_days = calculate_percentage_change(max_data, "14d")
+                percentage_change_1_month = calculate_percentage_change(max_data, "1mo")
 
                 # Retrieve monthly percentage changes
                 monthly_percentage_changes = calculate_monthly_percentage_changes(stock, now.month, now.year)
