@@ -21,7 +21,7 @@ def calculate_monthly_percentage_changes(stock, current_month, current_year):
         # Filter data for the current month
         monthly_data = history[(history.index.month == month) & (history.index.year == year)]
         
-        if not monthly_data empty:
+        if not monthly_data.empty:
             start_price = monthly_data['Open'][0]
             end_price = monthly_data['Close'][-1]
             percentage_change = ((end_price - start_price) / start_price) * 100
@@ -33,13 +33,19 @@ def calculate_monthly_percentage_changes(stock, current_month, current_year):
 start_time = datetime.now().replace(hour=8, minute=30, second=0, microsecond=0).time()
 end_time = datetime.now().replace(hour=15, minute=59, second=0, microsecond=0).time()
 
+# Initialize run count
+run_count = 1
+
 # Main program loop
 while True:
     try:
         eastern = pytz.timezone('US/Eastern')
         now = datetime.now(eastern)
         
-        if now.weekday() in [0, 1, 2, 3, 4]:
+        if run_count == 1 or (now.weekday() in [0, 1, 2, 3, 4] and now.time() >= start_time and now.time() <= end_time):
+            # Increment run count
+            run_count += 1
+
             # Read the list of stock symbols from the input file
             with open("list-of-stock-symbols-to-scan.txt", "r") as input_file:
                 stock_symbols = [line.strip() for line in input_file if line.strip()]
