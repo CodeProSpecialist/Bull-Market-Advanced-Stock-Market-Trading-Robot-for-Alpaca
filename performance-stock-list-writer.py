@@ -4,21 +4,17 @@ import yfinance as yf
 from datetime import datetime, timedelta
 
 # Function to calculate percentage change for a given timeframe
-def calculate_percentage_change(stock, period):
-    history = stock.history(period=period)
-    
-    if history.empty:
+def calculate_percentage_change(stock_data, period):
+    if stock_data.empty:
         return 0  # Default value when data is unavailable
     
-    start_price = history['Open'][0]
-    end_price = history['Close'][-1]
+    start_price = stock_data['Open'][0]
+    end_price = stock_data['Close'][-1]
     percentage_change = ((end_price - start_price) / start_price) * 100
     return percentage_change
 
 # Function to calculate monthly percentage changes
-def calculate_monthly_percentage_changes(stock, current_month, current_year):
-    history = stock.history(period="1y")
-    
+def calculate_monthly_percentage_changes(stock_data, current_month, current_year):
     monthly_percentage_changes = {}
     
     for month in range(current_month - 2, current_month + 1):
@@ -28,7 +24,7 @@ def calculate_monthly_percentage_changes(stock, current_month, current_year):
         else:
             year = current_year
         
-        monthly_data = history[(history.index.month == month) & (history.index.year == year)]
+        monthly_data = stock_data[(stock_data.index.month == month) & (stock_data.index.year == year)]
         
         if not monthly_data.empty:
             start_price = monthly_data['Open'][0]
@@ -66,17 +62,17 @@ while True:
                 stock = yf.Ticker(symbol)
                 print(f"Downloading the historical data for {symbol}...")
 
-                # Fetch maximum available data for the stock
-                max_data = stock.history(period="1mo")
+                # Download maximum available data for the stock
+                stock_data = stock.history(period="1mo")
 
                 # Calculate percentage changes for different timeframes
-                percentage_change_1_day = calculate_percentage_change(max_data, "1d")
-                percentage_change_1_week = calculate_percentage_change(max_data, "5d")
-                percentage_change_14_days = calculate_percentage_change(max_data, "14d")
-                percentage_change_1_month = calculate_percentage_change(max_data, "1mo")
+                percentage_change_1_day = calculate_percentage_change(stock_data, "1d")
+                percentage_change_1_week = calculate_percentage_change(stock_data, "5d")
+                percentage_change_14_days = calculate_percentage_change(stock_data, "14d")
+                percentage_change_1_month = calculate_percentage_change(stock_data, "1mo")
 
                 # Retrieve monthly percentage changes
-                monthly_percentage_changes = calculate_monthly_percentage_changes(stock, now.month, now.year)
+                monthly_percentage_changes = calculate_monthly_percentage_changes(stock_data, now.month, now.year)
 
                 # Check if the stock meets the filtering criteria
                 if (
