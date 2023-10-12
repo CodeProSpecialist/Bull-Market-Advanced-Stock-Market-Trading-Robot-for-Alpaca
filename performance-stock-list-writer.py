@@ -58,39 +58,53 @@ while True:
                 stock = yf.Ticker(symbol)
                 print(f"Downloading the historical data for {symbol}...")
                 
-                # Retrieve historical data for the past 1 day, 2 days, 1 week, and 1 month
+                # Fetch historical data for the past 1 day
                 history_1_day = stock.history(period="1d")
-                history_2_days = stock.history(period="2d")
+                
+                # Calculate percentage change for the past 1 day (or use default value if data is unavailable)
+                if not history_1_day.empty:
+                    start_price_1_day = history_1_day['Open'][0]
+                    end_price_1_day = history_1_day['Close'][-1]
+                    percentage_change_1_day = ((end_price_1_day - start_price_1_day) / start_price_1_day) * 100
+                else:
+                    percentage_change_1_day = 0  # Default value when data is unavailable
+
+                # You can repeat similar checks and calculations for other timeframes (1 week, 14 days, 1 month)
+
+                # Fetch historical data for the past 1 week
                 history_1_week = stock.history(period="1wk")
+                if not history_1_week.empty:
+                    start_price_1_week = history_1_week['Open'][0]
+                    end_price_1_week = history_1_week['Close'][-1]
+                    percentage_change_1_week = ((end_price_1_week - start_price_1_week) / start_price_1_week) * 100
+                else:
+                    percentage_change_1_week = 0
+
+                # Fetch historical data for the past 14 days
+                history_14_days = stock.history(period="14d")
+                if not history_14_days.empty:
+                    start_price_14_days = history_14_days['Open'][0]
+                    end_price_14_days = history_14_days['Close'][-1]
+                    percentage_change_14_days = ((end_price_14_days - start_price_14_days) / start_price_14_days) * 100
+                else:
+                    percentage_change_14_days = 0
+
+                # Fetch historical data for the past 1 month
                 history_1_month = stock.history(period="1mo")
-                
-                # Calculate percentage change for the past 1 day
-                start_price_1_day = history_1_day['Open'][0]
-                end_price_1_day = history_1_day['Close'][-1]
-                percentage_change_1_day = ((end_price_1_day - start_price_1_day) / start_price_1_day) * 100
-                
-                # Calculate percentage change for the past 2 days
-                start_price_2_days = history_2_days['Open'][0]
-                end_price_2_days = history_2_days['Close'][-1]
-                percentage_change_2_days = ((end_price_2_days - start_price_2_days) / start_price_2_days) * 100
-                
-                # Calculate percentage change for the past 1 week
-                start_price_1_week = history_1_week['Open'][0]
-                end_price_1_week = history_1_week['Close'][-1]
-                percentage_change_1_week = ((end_price_1_week - start_price_1_week) / start_price_1_week) * 100
-                
-                # Calculate percentage change for the past 1 month
-                start_price_1_month = history_1_month['Open'][0]
-                end_price_1_month = history_1_month['Close'][-1]
-                percentage_change_1_month = ((end_price_1_month - start_price_1_month) / start_price_1_month) * 100
-                
+                if not history_1_month.empty:
+                    start_price_1_month = history_1_month['Open'][0]
+                    end_price_1_month = history_1_month['Close'][-1]
+                    percentage_change_1_month = ((end_price_1_month - start_price_1_month) / start_price_1_month) * 100
+                else:
+                    percentage_change_1_month = 0
+
                 # Retrieve monthly percentage changes
                 monthly_percentage_changes = calculate_monthly_percentage_changes(stock, now.month, now.year)
                 
                 stock_data[symbol] = {
                     'percentage_change_1_day': percentage_change_1_day,
-                    'percentage_change_2_days': percentage_change_2_days,
                     'percentage_change_1_week': percentage_change_1_week,
+                    'percentage_change_14_days': percentage_change_14_days,
                     'percentage_change_1_month': percentage_change_1_month,
                     'monthly_percentage_changes': monthly_percentage_changes
                 }
@@ -109,10 +123,10 @@ while True:
                     data['monthly_percentage_changes'][current_month] > 0 and
                     data['monthly_percentage_changes'][current_month - 1] > 0 and
                     data['monthly_percentage_changes'][current_month - 2] > 0 and
-                    data['percentage_change_1_day'] > 0 and
-                    data['percentage_change_2_days'] > 0 and
-                    data['percentage_change_1_week'] > 0 and
-                    data['percentage_change_1_month'] > 0
+                    data['percentage_change_1_day'] >= 1 and
+                    data['percentage_change_1_week'] >= 1 and
+                    data['percentage_change_14_days'] >= 1 and
+                    data['percentage_change_1_month'] >= 1
                 ):
                     filtered_stocks.append((symbol, data['percentage_change_1_day']))
             
