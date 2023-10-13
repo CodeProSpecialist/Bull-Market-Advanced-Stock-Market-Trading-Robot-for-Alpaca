@@ -26,7 +26,7 @@ def calculate_monthly_percentage_changes(stock_data, current_month, current_year
         
         monthly_data = stock_data[(stock_data.index.month == month) & (stock_data.index.year == year)]
         
-        if not monthly_data.empty:
+        if not monthly_data empty:
             start_price = monthly_data['Open'][0]
             end_price = monthly_data['Close'][-1]
             percentage_change = ((end_price - start_price) / start_price) * 100
@@ -40,6 +40,15 @@ end_time = datetime.now().replace(hour=15, minute=59, second=0, microsecond=0).t
 
 # Initialize run count
 run_count = 1
+
+# Get the current date
+current_date = datetime.now()
+
+# Extract the current month from the date
+current_month = current_date.month
+
+# Extract the current year from the date
+current_year = current_date.year
 
 # Main program loop
 while True:
@@ -72,7 +81,7 @@ while True:
                 percentage_change_1_month = calculate_percentage_change(stock_data, "1mo")
 
                 # Retrieve monthly percentage changes
-                monthly_percentage_changes = calculate_monthly_percentage_changes(stock_data, now.month, now.year)
+                monthly_percentage_changes = calculate_monthly_percentage_changes(stock_data, current_month, current_year)
 
                 # Check if the stock meets the filtering criteria
                 if (
