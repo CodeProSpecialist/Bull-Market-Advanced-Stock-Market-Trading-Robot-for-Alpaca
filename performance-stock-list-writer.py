@@ -1,5 +1,3 @@
-import os
-import sys
 import time
 import pytz
 import yfinance as yf
