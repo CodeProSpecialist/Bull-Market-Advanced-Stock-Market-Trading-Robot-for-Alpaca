@@ -26,7 +26,7 @@ def calculate_monthly_percentage_changes(stock_data, current_month, current_year
         
         monthly_data = stock_data[(stock_data.index.month == month) & (stock_data.index.year == year)]
         
-        if not monthly_data empty:
+        if not monthly_data.empty:
             start_price = monthly_data['Open'][0]
             end_price = monthly_data['Close'][-1]
             percentage_change = ((end_price - start_price) / start_price) * 100
