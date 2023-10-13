@@ -1,4 +1,4 @@
-******** Upgrade to the newest code for this Robot. There were recent upgrades to this Robot to help it work better. This Python 3 code is stable and working on 10-9-2023. ********
+******** Upgrade to the newest code for this Robot. There were recent upgrades to this Robot to help it work better. This Python 3 code is stable and working on 10-13-2023. ********
 
 -----------------------------------------------------------------------------------------------
         Welcome to the Future of Trading with the Advanced Stock Market Trading Robot! 
