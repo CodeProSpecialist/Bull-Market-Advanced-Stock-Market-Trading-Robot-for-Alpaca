@@ -70,7 +70,7 @@ while True:
                 ):
                     filtered_stocks.append(symbol)
 
-                time.sleep(2)  # Sleep for 2 seconds
+                time.sleep(2)   # Sleep for 2 seconds
 
             # Write the selected stock symbols to the output file
             with open("electricity-or-utility-stocks-to-buy-list.txt", "w") as output_file:
