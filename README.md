@@ -1,4 +1,4 @@
-******** Upgrade to the newest code for this Robot. There were recent upgrades to this Robot to help it work better. This Python 3 code is stable and working on 10-9-2023. ********
+******** Upgrade to the newest code for this Robot. There were recent upgrades to this Robot to help it work better. This Python 3 code is stable and working on 10-13-2023. ********
 
 -----------------------------------------------------------------------------------------------
         Welcome to the Future of Trading with the Advanced Stock Market Trading Robot! 
@@ -80,6 +80,30 @@ sell_stocks Function:
    These functions work together to automate the process of buying and selling stocks, making data-driven decisions based on predefined criteria, and ensuring accurate record-keeping in the database. This automation allows for efficient and timely trading in the stock market.
 
 ------------------------------------------------------------
+Stock List Writer for list of stock symbols to scan
+------------------------------------------------------------
+This Python code is a script that is designed for analyzing stock market data. Here's a breakdown of what it does:
+
+It imports several libraries:
+for downloading historical stock market data.
+time for handling time-related operations.
+datetime and timedelta from datetime for working with date and time.
+os for file operations.
+pytz for setting the Eastern timezone.
+It defines a function called calculate_largest_price_increase, which takes a stock symbol and a number of years ago as input. This function calculates the largest price increase for the given stock within a specific time period (1 or 2 years ago).
+The main function is where the main logic of the script resides:
+It reads a list of stock symbols from a file named "s-and-p-500-large-list-of-stocks.txt."
+It keeps track of how many times the script has run by maintaining a counter in a file.
+For each stock symbol, it calculates the best month for the largest price increase, both 1 year and 2 years ago.
+If the best month matches the current month, the stock symbol is added to a list.
+It writes the stock symbols that need further analysis to an output file named "list-of-stock-symbols-to-scan.txt."
+It calculates the next run time and sleeps until that time.
+The script runs continuously in a loop, calling the main function. If an error occurs, it restarts after a 5-minute delay.
+Overall, this script is designed to analyze historical stock data for a list of stock symbols and identify which stocks had the largest price increases in a specific month, either 1 or 2 years ago, depending on the current date. It then schedules the next run of the script to continue this analysis.
+
+------------------------------------------------------------
+
+------------------------------------------------------------
             Performance Stock List Writer 
 ------------------------------------------------------------
 
@@ -89,7 +113,7 @@ Look no further! Our Python script, the "Performance Stock List Writer," is here
 ------------------------------------------------------------
 
 Key Features:
-- Automated Stock Analysis: Our script automatically analyzes electricity stocks to provide you with a list of top-performing stocks.
+- Automated Stock Analysis: Our script automatically analyzes stocks to provide you with a list of top-performing stocks.
 
 - During difficult stock market 
 conditions, we need to limit 
@@ -121,7 +145,7 @@ Output: Finally, the selected stock symbols are written to the "electricity-or-u
 providing a stock list that might be favorable to purchase: stocks that have a history of strong price percentage increases over multiple time intervals. 
 Overall, this code automates the analysis of historical stock price data to identify stocks 
 that have shown consistent and significant growth in their prices over different time frames, 
-making them potential candidates for investment in the electricity or utility sector.
+making them potential candidates for investment in the electricity or utility sector, or in any other stock market sector that has been calculated to be successful. 
 
 - Error Handling: The script handles errors gracefully and restarts after 5 minutes, ensuring uninterrupted performance.
 
