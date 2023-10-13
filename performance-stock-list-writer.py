@@ -13,27 +13,6 @@ def calculate_percentage_change(stock_data, period):
     percentage_change = ((end_price - start_price) / start_price) * 100
     return percentage_change
 
-# Function to calculate monthly percentage changes
-def calculate_monthly_percentage_changes(stock_data, current_month, current_year):
-    monthly_percentage_changes = {}
-    
-    for month in range(current_month - 2, current_month + 1):
-        if month <= 0:
-            month += 12
-            year = current_year - 1
-        else:
-            year = current_year
-        
-        monthly_data = stock_data[(stock_data.index.month == month) & (stock_data.index.year == year)]
-        
-        if not monthly_data.empty:
-            start_price = monthly_data['Open'][0]
-            end_price = monthly_data['Close'][-1]
-            percentage_change = ((end_price - start_price) / start_price) * 100
-            monthly_percentage_changes[month] = percentage_change
-    
-    return monthly_percentage_changes
-
 # Define the start and end times for when the program should run
 start_time = datetime.now().replace(hour=8, minute=30, second=0, microsecond=0).time()
 end_time = datetime.now().replace(hour=15, minute=59, second=0, microsecond=0).time()
@@ -72,43 +51,24 @@ while True:
                 print(f"Downloading the historical data for {symbol}...")
 
                 # Download maximum available data for the stock
-                stock_data = stock.history(period="1mo")
+                stock_data = stock.history(period="7d")
 
                 # Calculate percentage changes for different timeframes
-                percentage_change_1_day = calculate_percentage_change(stock_data, "1d")
-                percentage_change_1_week = calculate_percentage_change(stock_data, "5d")
-                percentage_change_14_days = calculate_percentage_change(stock_data, "14d")
-                percentage_change_1_month = calculate_percentage_change(stock_data, "1mo")
-
-                # Retrieve monthly percentage changes
-                monthly_percentage_changes = calculate_monthly_percentage_changes(stock_data, current_month, current_year)
+                percentage_change_2_days = calculate_percentage_change(stock_data, "2d")
+                percentage_change_7_days = calculate_percentage_change(stock_data, "7d")
 
                 # Check if the stock meets the filtering criteria
                 if (
-                    current_month in monthly_percentage_changes
-                    and current_month - 1 in monthly_percentage_changes
-                    and current_month - 2 in monthly_percentage_changes
-                    and monthly_percentage_changes[current_month] > 0
-                    and monthly_percentage_changes[current_month - 1] > 0
-                    and monthly_percentage_changes[current_month - 2] > 0
-                    and percentage_change_1_day >= 1
-                    and percentage_change_1_week >= 1
-                    and percentage_change_14_days >= 1
-                    and percentage_change_1_month >= 1
+                    percentage_change_2_days >= 0.25
+                    and percentage_change_7_days >= 0.25
                 ):
-                    filtered_stocks.append((symbol, percentage_change_1_day))
+                    filtered_stocks.append(symbol)
                 
                 time.sleep(2)  # Sleep for 2 seconds
 
-            # Sort the filtered stocks by percentage change for the current day
-            sorted_stocks = sorted(filtered_stocks, key=lambda x: x[1], reverse=True)
-
-            # Select the top 28 stocks
-            top_stocks = sorted_stocks[:28]
-
             # Write the selected stock symbols to the output file
             with open("electricity-or-utility-stocks-to-buy-list.txt", "w") as output_file:
-                for symbol, _ in top_stocks:
+                for symbol in filtered_stocks:
                     output_file.write(f"{symbol}\n")
 
             print("")
