@@ -63,14 +63,14 @@ while True:
 
                 # Check if the stock meets the filtering criteria
                 if (
-                        percentage_change_30_days >= 9.0
-                        and percentage_change_14_days >= 8.0
-                        and percentage_change_7_days >= 4.0
-                        and percentage_change_1_day >= 1.0
+                        percentage_change_30_days >= 7.0
+                        and percentage_change_14_days >= 5.0
+                        and percentage_change_7_days >= 2.0
+                        and percentage_change_1_day >= 0.5
                 ):
                     filtered_stocks.append(symbol)
 
-                time.sleep(2)   # Sleep for 2 seconds
+                time.sleep(2)  # Sleep for 2 seconds
 
             # Write the selected stock symbols to the output file
             with open("electricity-or-utility-stocks-to-buy-list.txt", "w") as output_file:
