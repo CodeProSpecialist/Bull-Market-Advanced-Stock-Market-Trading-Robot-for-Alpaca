@@ -93,6 +93,7 @@ pytz for setting the Eastern timezone.
 It defines a function called calculate_largest_price_increase, which takes a stock symbol and a number of years ago as input. This function calculates the largest price increase for the given stock within a specific time period (1 or 2 years ago).
 The main function is where the main logic of the script resides:
 It reads a list of stock symbols from a file named "s-and-p-500-large-list-of-stocks.txt."
+******** The S&P 500 also contains the 30 Stocks that are included in the Dow Jones Industrial Index. ********
 It keeps track of how many times the script has run by maintaining a counter in a file.
 For each stock symbol, it calculates the best month for the largest price increase, both 1 year and 2 years ago.
 If the best month matches the current month, the stock symbol is added to a list.
