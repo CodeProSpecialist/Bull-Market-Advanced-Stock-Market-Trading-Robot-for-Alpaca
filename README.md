@@ -139,7 +139,8 @@ Tough stock market conditions require selecting only the best stocks at a time t
 Tough stock market conditions require the toughest stock selection criteria as has been taught by numerous millionaire and billionaire stock trading professional experts 
 with a lifetime of stock trading experience. 
 The top stocks to buy based on all criteria is what we have found. 
-These are considered the most successful stocks based on the provided criteria.
+These are considered the most successful stocks based on the provided criteria. 
+If the S&P 500 is decreasing in price really negatively, then many smart investors will take the day off or avoid the S&P 500: having wisdom to only buy shares of GOLD that day. 
 
 Output: Finally, the selected stock symbols are written to the "electricity-or-utility-stocks-to-buy-list.txt" file, 
 providing a stock list that might be favorable to purchase: stocks that have a history of strong price percentage increases over multiple time intervals. 
