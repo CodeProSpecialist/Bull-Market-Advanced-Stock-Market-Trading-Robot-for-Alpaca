@@ -290,19 +290,20 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         total_cost_for_qty = current_price * qty_of_one_stock
 
         # Define the factor to subtract as a decimal
-        factor_to_subtract = 0.98  # -2% decrease as a decimal is the number 0.98
+        factor_to_subtract = 0.9875  # -1.25% decrease as a decimal is the number 0.98
 
-        # - 2% of the buying price will help buy stocks when they are getting ready
-        # to increase in price after a price decrease of -2%
+        # -1.25% of the buying price will help buy stocks when they are getting ready
+        # to increase in price after a price decrease of -1.25%
         # because the stock market is close to a recession in 2023. 
-        # profit buy price setting: 2% subtracted from the opening price
+        # profit buy price setting: opening price - 1.25%
         profit_buy_price_setting = opening_price * factor_to_subtract
 
         # Never calculate ATR for a buy price or sell price because it is too slow. 1 second per stock.
         # Checking that we have enough money for the total_cost_for_qty.
         # Checking if the current price is equal to or less than the atr low price to buy stock.
-        # It is also important to check that the current price is less than the opening price by 0.8%
-        # before buying the stock. This check is with the profit_buy_price_setting.
+        # It is also important to check that the current price is less than the opening price by a
+        # specific, and strict percentage before buying the stock.
+        # This check is with the profit_buy_price_setting.
 
         status_printer_buy_stocks()
 
