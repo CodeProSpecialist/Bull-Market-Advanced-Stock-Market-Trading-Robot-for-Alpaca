@@ -7,6 +7,11 @@
         Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, Version 2  
 -----------------------------------------------------------------------------------------------
 
+Important to remember: No stock list of stocks to buy will be written if the stocks are determined to be in a current status of losing money. 
+This is a feature to protect you and anyone else from buying stocks at the wrong times. These are obvious wrong times to buy stock, and 
+you should always remember: 
+    Remember that all trading involves risks. The ability to successfully implement these strategies depends on both market conditions and individual skills and knowledge. As such, trading should only be done with funds that you can afford to lose. Always do thorough research before making investment decisions, and consider consulting with a financial advisor. This is use at your own risk software. This software does not include any warranty or guarantees other than the useful tasks that may or may not work as intended for the software application end user. The software developer shall not be held liable for any financial losses or damages that occur as a result of using this software for any reason to the fullest extent of the law. Using this software is your agreement to these terms. This software is designed to be helpful and useful to the end user.
+
 ![Screenshot-1](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/31c4654b-85e9-4742-be90-1702c608b228)
 
 ![Stock-market-robot-picture-4](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Bot-Version-2-for-Alpaca/assets/111866070/3228bec5-bc67-4909-bbc2-a21090eedce3)
