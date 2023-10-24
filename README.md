@@ -12,7 +12,7 @@ During a recession, investing in a larger, diversified portfolio of stocks is ge
 The SPDR stocks cover a broad range of stocks to minimize loss and to minimize risk during a recession. One SPDR stock is SPY and it covers the entire S&P 500. DIA covers the entire Dow Jones Industrial. QQQ and QQQM cover the NASDAQ 100. 
 
 Important to remember: No stock list of stocks to buy will be written by the "performance stock list writer" python script if the stocks are determined to be in a current status of losing money. 
-This is a feature to protect you and anyone else from buying stocks at the wrong times. These are obvious wrong times to buy stock, and 
+This is a feature to protect you and anyone else from buying stocks at the wrong times. The specific situations described would be obvious wrong times to buy stock, and 
 you should always remember: 
     Remember that all trading involves risks. The ability to successfully implement these strategies depends on both market conditions and individual skills and knowledge. As such, trading should only be done with funds that you can afford to lose. Always do thorough research before making investment decisions, and consider consulting with a financial advisor. This is use at your own risk software. This software does not include any warranty or guarantees other than the useful tasks that may or may not work as intended for the software application end user. The software developer shall not be held liable for any financial losses or damages that occur as a result of using this software for any reason to the fullest extent of the law. Using this software is your agreement to these terms. This software is designed to be helpful and useful to the end user.
 
