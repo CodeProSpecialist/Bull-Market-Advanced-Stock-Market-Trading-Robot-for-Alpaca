@@ -1,1 +1,5 @@
 SPY
+DIA
+QQQM
+QQQ
+GOLD
