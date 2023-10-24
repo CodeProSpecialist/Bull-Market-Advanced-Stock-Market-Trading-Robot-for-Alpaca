@@ -7,6 +7,10 @@
         Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, Version 2  
 -----------------------------------------------------------------------------------------------
 
+The Large List of S&P 500 stocks has been shortened to ride out the current stock market recession conditions. Here is the explanation: 
+During a recession, investing in a larger, diversified portfolio of stocks is generally considered a safer strategy than investing in individual stocks. Diversification can help spread risk and reduce the impact of any one stock's poor performance. It's important to choose a mix of stocks across different sectors and industries to further minimize risk. However, it's also crucial to conduct thorough research or consult a financial advisor to select stocks that are relatively stable and have a history of weathering economic downturns. This strategy can provide a more balanced approach to navigate turbulent market conditions. 
+The SPDR stocks cover a broad range of stocks to minimize loss and to minimize risk during a recession. One SPDR stock is SPY and it covers the entire S&P 500. DIA covers the entire Dow Jones Industrial. QQQ and QQQM cover the NASDAQ 100. 
+
 Important to remember: No stock list of stocks to buy will be written by the "performance stock list writer" python script if the stocks are determined to be in a current status of losing money. 
 This is a feature to protect you and anyone else from buying stocks at the wrong times. These are obvious wrong times to buy stock, and 
 you should always remember: 
