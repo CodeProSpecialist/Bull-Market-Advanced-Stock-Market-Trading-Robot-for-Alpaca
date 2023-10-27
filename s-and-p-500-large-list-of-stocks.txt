@@ -5,3 +5,4 @@ QQQ
 GLD
 UGL
 TWM
+PSQ
