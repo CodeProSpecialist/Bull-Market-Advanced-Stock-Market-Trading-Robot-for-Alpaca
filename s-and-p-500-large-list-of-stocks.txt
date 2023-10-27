@@ -3,4 +3,5 @@ DIA
 QQQM
 QQQ
 GLD
+UGL
 TWM
