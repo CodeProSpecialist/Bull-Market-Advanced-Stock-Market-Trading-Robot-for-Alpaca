@@ -7,9 +7,8 @@
         Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, Version 2  
 -----------------------------------------------------------------------------------------------
 
-The Large List of S&P 500 stocks has been shortened to ride out the current stock market recession conditions. Here is the explanation: 
+The Large List of S&P 500 stocks has been shortened to ride out the current stock market recession conditions. I have included my most successful stocks in the list of stocks to scan.  Here is the explanation: 
 During a recession, investing in a larger, diversified portfolio of stocks is generally considered a safer strategy than investing in individual stocks. Diversification can help spread risk and reduce the impact of any one stock's poor performance. It's important to choose a mix of stocks across different sectors and industries to further minimize risk. However, it's also crucial to conduct thorough research or consult a financial advisor to select stocks that are relatively stable and have a history of weathering economic downturns. This strategy can provide a more balanced approach to navigate turbulent market conditions. 
-The SPDR stocks cover a broad range of stocks to minimize loss and to minimize risk during a recession. One SPDR stock is SPY and it covers the entire S&P 500. DIA covers the entire Dow Jones Industrial. QQQ and QQQM cover the NASDAQ 100. 
 
 Important to remember: No stock list of stocks to buy will be written by the "performance stock list writer" python script if the stocks are determined to be in a current status of losing money. 
 This is a feature to protect you and anyone else from buying stocks at the wrong times. The specific situations described would be obvious wrong times to buy stock, and 
@@ -101,7 +100,7 @@ pytz for setting the Eastern timezone.
 It defines a function called calculate_largest_price_increase, which takes a stock symbol and a number of years ago as input. This function calculates the largest price increase for the given stock within a specific time period (1 or 2 years ago).
 The main function is where the main logic of the script resides:
 It reads a list of stock symbols from a file named "s-and-p-500-large-list-of-stocks.txt."
-******** The S&P 500 also contains the 30 Stocks that are included in the Dow Jones Industrial Index. ********
+******** The Large List of S&P 500 stocks has been shortened to ride out the current stock market recession conditions. I have included my most successful stocks in the list of stocks to scan. ********
 It keeps track of how many times the script has run by maintaining a counter in a file.
 For each stock symbol, it calculates the best month for the largest price increase, both 1 year and 2 years ago.
 If the best month matches the current month, the stock symbol is added to a list.
@@ -150,6 +149,7 @@ with a lifetime of stock trading experience.
 The top stocks to buy based on all criteria is what we have found. 
 These are considered the most successful stocks based on the provided criteria. 
 If the S&P 500 is decreasing in price really negatively, then many smart investors will take the day off or avoid the S&P 500: having wisdom to only buy shares of gold that day with the GLD stock symbol. 
+The Large List of S&P 500 stocks has been shortened to ride out the current stock market recession conditions. I have included my most successful stocks in the list of stocks to scan. 
 
 Output: Finally, the selected stock symbols are written to the "electricity-or-utility-stocks-to-buy-list.txt" file, 
 providing a stock list that might be favorable to purchase: stocks that have a history of strong price percentage increases over multiple time intervals. 
