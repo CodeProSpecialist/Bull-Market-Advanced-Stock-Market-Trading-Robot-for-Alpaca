@@ -7,3 +7,4 @@ PSQ
 SDOW
 SQQQ
 SH
+WTID
