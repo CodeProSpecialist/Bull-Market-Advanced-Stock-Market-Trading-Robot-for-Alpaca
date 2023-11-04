@@ -66,6 +66,7 @@ if __name__ == "__main__":
 
         print("")
         print("Writing the list of stocks: ")
+        print("")
         # Write the top increase stocks to the output file and display on the screen
         write_top_stocks_to_file(output_filename, top_increase_stocks)
         for line in open(output_filename, 'r'):
