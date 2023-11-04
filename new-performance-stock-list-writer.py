@@ -57,6 +57,7 @@ if __name__ == "__main__":
         print("")
         print(f" Eastern Time: {formatted_time} ")
         print("")
+
         stocks_to_scan = read_stock_symbols(input_filename)
         top_increase_stocks = get_top_increase_stocks(stocks_to_scan)
 
