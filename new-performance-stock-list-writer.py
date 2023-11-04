@@ -21,6 +21,18 @@ def get_top_increase_stocks(symbols):
     return dict(sorted(top_stocks.items(), key=lambda item: item[1], reverse=True))
 
 
+# Function to print the top increase stocks to the terminal with current price
+def print_top_stocks(top_stocks):
+    rank = 1
+    for symbol, price_increase in top_stocks.items():
+        stock = yf.Ticker(symbol)
+        current_price = stock.history(period='1d')['Close'].iloc[0]
+        percent_change = price_increase * 100
+        change_symbol = '+' if percent_change > 0 else '-'
+        print(f"{rank}. {symbol}: ${current_price:.2f}, {change_symbol}{abs(percent_change):.2f}%")
+        rank += 1
+
+
 # Function to write the top increase stocks to an output file
 def write_top_stocks_to_file(filename, top_stocks):
     with open(filename, 'w') as file:
@@ -46,6 +58,9 @@ if __name__ == "__main__":
 
         stocks_to_scan = read_stock_symbols(input_filename)
         top_increase_stocks = get_top_increase_stocks(stocks_to_scan)
+
+        # Print the top increase stocks to the terminal
+        print_top_stocks(top_increase_stocks)
 
         # Write the top increase stocks to the output file and display on the screen
         write_top_stocks_to_file(output_filename, top_increase_stocks)
