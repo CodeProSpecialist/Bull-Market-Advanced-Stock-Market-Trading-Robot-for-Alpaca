@@ -20,15 +20,15 @@ def get_top_increase_stocks(symbols):
             top_stocks[symbol] = price_increase
     return dict(sorted(top_stocks.items(), key=lambda item: item[1], reverse=True))
 
+
 # Function to write the top increase stocks to an output file
 def write_top_stocks_to_file(filename, top_stocks):
     with open(filename, 'w') as file:
-        rank = 1
         for symbol, price_increase in top_stocks.items():
             percent_change = price_increase * 100
-            change_symbol = '+' if percent_change > 0 else '-'
-            file.write(f"{rank}. {symbol}: {change_symbol}{abs(percent_change):.2f}%\n")
-            rank += 1
+            if percent_change > 0:
+                file.write(f"{symbol}\n")
+
 
 if __name__ == "__main__":
     input_filename = "list-of-stock-symbols-to-scan.txt"
