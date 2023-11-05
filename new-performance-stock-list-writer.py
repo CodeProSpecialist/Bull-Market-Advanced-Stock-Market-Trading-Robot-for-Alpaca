@@ -26,7 +26,7 @@ def print_top_stocks(top_stocks):
     rank = 1
     for symbol, price_increase in top_stocks.items():
         stock = yf.Ticker(symbol)
-        current_price = stock.history(period='2d')['Close'].iloc[0]
+        current_price = stock.history(period='1d')['Close'].iloc[0]
         percent_change = price_increase * 100
         change_symbol = '+' if percent_change > 0 else '-'
         print(f"{rank}. {symbol}: ${current_price:.2f}, {change_symbol}{abs(percent_change):.2f}%")
