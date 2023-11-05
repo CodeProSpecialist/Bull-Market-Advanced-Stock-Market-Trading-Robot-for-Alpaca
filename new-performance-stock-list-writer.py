@@ -18,6 +18,7 @@ def get_top_increase_stocks(symbols):
         if len(hist_data) == 5:
             price_increase = (hist_data['Close'][-1] - hist_data['Close'][0]) / hist_data['Close'][0]
             top_stocks[symbol] = price_increase
+    time.sleep(1)
     return dict(sorted(top_stocks.items(), key=lambda item: item[1], reverse=True))
 
 
@@ -31,7 +32,7 @@ def print_top_stocks(top_stocks):
         change_symbol = '+' if percent_change > 0 else '-'
         print(f"{rank}. {symbol}: ${current_price:.2f}, {change_symbol}{abs(percent_change):.2f}%")
         rank += 1
-
+        time.sleep(1)
 
 # Function to write the top increase stocks to an output file
 def write_top_stocks_to_file(filename, top_stocks):
