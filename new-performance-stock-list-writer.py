@@ -14,7 +14,7 @@ def get_top_increase_stocks(symbols):
     top_stocks = {}
     for symbol in symbols:
         stock = yf.Ticker(symbol)
-        hist_data = stock.history(period='5d')
+        hist_data = stock.history(period='14d')
         if len(hist_data) == 5:
             price_increase = (hist_data['Close'][-1] - hist_data['Close'][0]) / hist_data['Close'][0]
             top_stocks[symbol] = price_increase
@@ -26,7 +26,7 @@ def print_top_stocks(top_stocks):
     rank = 1
     for symbol, price_increase in top_stocks.items():
         stock = yf.Ticker(symbol)
-        current_price = stock.history(period='1d')['Close'].iloc[0]
+        current_price = stock.history(period='2d')['Close'].iloc[0]
         percent_change = price_increase * 100
         change_symbol = '+' if percent_change > 0 else '-'
         print(f"{rank}. {symbol}: ${current_price:.2f}, {change_symbol}{abs(percent_change):.2f}%")
