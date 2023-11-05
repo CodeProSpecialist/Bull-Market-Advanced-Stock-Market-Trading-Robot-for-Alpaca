@@ -15,7 +15,7 @@ def get_top_increase_stocks(symbols):
     for symbol in symbols:
         stock = yf.Ticker(symbol)
         hist_data = stock.history(period='14d')
-        if len(hist_data) == 5:
+        if len(hist_data) == 14:
             price_increase = (hist_data['Close'][-1] - hist_data['Close'][0]) / hist_data['Close'][0]
             top_stocks[symbol] = price_increase
     time.sleep(1)
