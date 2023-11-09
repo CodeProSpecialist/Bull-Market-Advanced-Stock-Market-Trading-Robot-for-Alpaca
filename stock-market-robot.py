@@ -350,15 +350,15 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     original_start_time = start_time
 
     # below is the debugging end_time of 1 minute to look for errors.
-    #end_time = start_time + 1 * 60  # 102 minutes in seconds
+    #end_time = start_time + 1 * 60  # number of minutes multiplied by 60 seconds 
 
     # Calculate the end_time based on the start_time
     # we need to select a time out of the 6.5 hour stock market trading day
     # to evaluate stock prices before buying stocks
     # with a few hours of time proven price increases.
-    end_time = start_time + 150 * 60  # 150 minutes in seconds for 2 hours and 30 minutes
+    end_time = start_time + 180 * 60  # 180 minutes multiplied by 60 seconds per minute ( 180 is for 3 hours total )
 
-    # Schedule the function to run every second for 102 minutes
+    # Schedule the function to run every second 
     for symbol in stocks_to_buy:
         schedule.every(1).seconds.do(track_price_changes, symbol, price_changes)
 
