@@ -164,15 +164,7 @@ Get Started Today:
 2. Configure your list of stock symbols.
 3. Let the script do the work, providing you with a list of top electricity stocks to consider.
 
-Invest with confidence in the electricity market. Get the "Performance Stock List Writer" now!
-
-------------------------------------------------------------
-
- Next run will be soon after the time of [Next Run Time] (Eastern Time).
-
- Stocks list updated successfully.
-
-------------------------------------------------------------
+Invest with confidence in the stock market. Get the "Performance Stock List Writer" now!
 
 
 ***************************************************************************************************************
