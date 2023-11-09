@@ -40,7 +40,7 @@ How It Works:
 
     Set Up: Ensure you have your Alpaca API credentials (API Key ID and API Secret Key) ready. These will be used to interact with the market.
 
-   Run the Robot: Start the robot using the "buy-and-automatically-sell-for-a-profit-robot.py" script. It will automatically buy and sell stocks based on your criteria.
+   Run the Robot: Start the robot using the "stock-market-robot.py " script. It will automatically buy and sell stocks based on your criteria.
 
    Monitoring: The robot will continuously monitor the market, buying stocks meeting your criteria and selling when the conditions are right.
 
@@ -123,8 +123,8 @@ Key Features:
 
 - During difficult stock market 
 conditions, we need to limit 
-our buy list to the top 28 stocks. The tough market requires the toughest stock screening selection. 
-The top 28 stocks are selected for a successful list of the top performing stocks. 
+our buy list to the top stocks. The tough market requires the toughest stock screening selection. 
+The top stocks are selected for a successful list of the top performing stocks. 
 
 - Regular Updates: The "performance-stock-list-writer" stock list is updated every 5 minutes during most of the day
 - when the Stock Market is open for trading to ensure you have the most current information.
@@ -146,7 +146,7 @@ Tough stock market conditions require the toughest stock selection criteria as h
 with a lifetime of stock trading experience. 
 The top stocks to buy based on all criteria is what we have found. 
 These are considered the most successful stocks based on the provided criteria. 
-If the S&P 500 is decreasing in price really negatively, then many smart investors will take the day off or avoid the S&P 500: having wisdom to only buy shares of gold that day with the GLD stock symbol. 
+If the S&P 500 is decreasing in price really negatively, then many smart investors will take the day off or avoid the S&P 500.  
 The Large List of S&P 500 stocks has been shortened to ride out the current stock market recession conditions. I have included my most successful stocks in the list of stocks to scan. 
 
 Output: Finally, the selected stock symbols are written to the "electricity-or-utility-stocks-to-buy-list.txt" file, 
