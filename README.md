@@ -4,7 +4,7 @@
 
                     Why Trade Manually When You Can Automate It? 
 
-        Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, Version 2  
+        Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, Version 3   
 -----------------------------------------------------------------------------------------------
 
 The Large List of S&P 500 stocks has been shortened to ride out the current stock market recession conditions. I have included my most successful stocks in the list of stocks to scan.  Here is the explanation: 
