@@ -84,7 +84,7 @@ This software is not affiliated with or endorsed by TradingView or Alpaca Securi
 It aims to be a valuable tool for stock market trading, but all trading involves risks. 
 Use it responsibly and consider seeking advice from financial professionals.
 
-Ready to elevate your trading game? Download the 2023 Edition of the Advanced Stock Market Trading Robot, Version 2, and get started today!
+Ready to elevate your trading game? Download the Advanced Stock Market Trading Robot, and get started today!
 
 Important: Don't forget to regularly update your list of stocks to buy and keep an eye on the market conditions. Happy trading!
 
