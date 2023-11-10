@@ -337,7 +337,8 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     global start_time, end_time, original_start_time  # Access the global end_time variable
 
     # Define the start_time variable
-    start_time = time.time()
+    # Define the start_time variable
+    start_time = time.mktime(datetime.now(pytz.timezone('US/Eastern')).replace(hour=12, minute=30, second=0, microsecond=0).timetuple())
 
     cash_available = calculate_cash_on_hand()
     total_symbols = calculate_total_symbols(stocks_to_buy)
@@ -356,7 +357,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # we need to select a time out of the 6.5 hour stock market trading day
     # to evaluate stock prices before buying stocks
     # with a few hours of time proven price increases.
-    end_time = start_time + 180 * 60  # 180 minutes multiplied by 60 seconds per minute ( 180 is for 3 hours total )
+    end_time = start_time + 10 * 60  # 10 minutes multiplied by 60 seconds per minute ( 10 minutes total )
 
     # Schedule the function to run every second 
     for symbol in stocks_to_buy:
