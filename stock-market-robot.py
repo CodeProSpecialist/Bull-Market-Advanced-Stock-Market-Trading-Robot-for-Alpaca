@@ -356,7 +356,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # Calculate the end_time based on the start_time
     # we need to select a time out of the 6.5 hour stock market trading day
     # to evaluate stock prices before buying stocks
-    # with a few hours of time proven price increases.
+    # after a few hours of time proven market activity, we can buy after 12:30pm.
     end_time = start_time + 10 * 60  # 10 minutes multiplied by 60 seconds per minute ( 10 minutes total )
 
     # Schedule the function to run every second 
