@@ -466,6 +466,9 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     schedule_thread = threading.Thread(target=run_schedule)
     schedule_thread.start()
 
+    # Schedule the second thread to repeat every 10 minutes
+    schedule.every(10).minutes.do(run_second_thread, bought_stocks, stocks_to_buy, buy_sell_lock)
+
     try:
         while not end_time_reached():
             for symbol in stocks_to_buy:
