@@ -331,7 +331,21 @@ def run_schedule():
 
 
 def end_time_reached():
-    return time.time() >= end_time
+    now = datetime.now(pytz.timezone('US/Eastern'))
+    current_time = now.time()
+    current_timestamp = time.mktime(now.timetuple())
+
+    # Regular market closing time at 15:00 Eastern Time
+    regular_market_closing_time = time.mktime(datetime.strptime("15:00:00", "%H:%M:%S").timetuple())
+
+    # Time interval to stop trading before market closing (25 minutes)
+    stop_interval = 25 * 60  # 25 minutes multiplied by 60 seconds per minute
+
+    # Check if the current time is within the stop interval before market closing time
+    if regular_market_closing_time - current_timestamp <= stop_interval:
+        return True
+    else:
+        return current_timestamp >= end_time
 
 
 def run_second_thread(bought_stocks, stocks_to_buy, buy_sell_lock):
