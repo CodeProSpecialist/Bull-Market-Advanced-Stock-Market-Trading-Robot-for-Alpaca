@@ -366,7 +366,12 @@ def run_second_thread(bought_stocks, stocks_to_buy, buy_sell_lock):
     original_start_time = start_time
 
     # Calculate the end_time based on the start_time
-    end_time = start_time + 15 * 60  # 15 minutes multiplied by 60 seconds per minute (15 minutes total)
+    if datetime.now(pytz.timezone('US/Eastern')).time() >= datetime.strptime("14:35:00", "%H:%M:%S").time():
+        # If the current time is 25 minutes before 15:00 or later, set end_time to 15 minutes after start_time
+        end_time = start_time + (15 * 60)
+    else:
+        # Otherwise, set end_time to 25 minutes before 15:00
+        end_time = start_time + (15 * 60) - (25 * 60)
 
     # Schedule the function to run every second
     for symbol in stocks_to_buy:
@@ -450,7 +455,9 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     global start_time, end_time, original_start_time  # Access the global end_time variable
 
     # Define the start_time variable
-    # Define the start_time variable
+    # we need to select a time out of the 6.5 hour stock market trading day
+    # to evaluate stock prices before buying stocks
+    # after a few hours of time proven market activity, we can buy after 12:30pm.
     start_time = time.mktime(datetime.now(pytz.timezone('US/Eastern')).replace(hour=12, minute=30, second=0, microsecond=0).timetuple())
 
     cash_available = calculate_cash_on_hand()
@@ -467,10 +474,12 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     #end_time = start_time + 1 * 60  # number of minutes multiplied by 60 seconds 
 
     # Calculate the end_time based on the start_time
-    # we need to select a time out of the 6.5 hour stock market trading day
-    # to evaluate stock prices before buying stocks
-    # after a few hours of time proven market activity, we can buy after 12:30pm.
-    end_time = start_time + 10 * 60  # 10 minutes multiplied by 60 seconds per minute ( 10 minutes total )
+    if datetime.now(pytz.timezone('US/Eastern')).time() >= datetime.strptime("14:35:00", "%H:%M:%S").time():
+        # If the current time is 25 minutes before 15:00 or later, set end_time to 15 minutes after start_time
+        end_time = start_time + (15 * 60)
+    else:
+        # Otherwise, set end_time to 25 minutes before 15:00
+        end_time = start_time + (15 * 60) - (25 * 60)
 
     # Schedule the function to run every second 
     for symbol in stocks_to_buy:
