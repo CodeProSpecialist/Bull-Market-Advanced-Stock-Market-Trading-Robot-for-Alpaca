@@ -343,7 +343,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=12, minute=30, second=0, microsecond=0)
 
     # Check if the current time is before the start trading time
-    if datetime.now() < start_trading_time:
+    if datetime.now(pytz.timezone('US/Eastern')) < start_trading_time:
         return  # Exit the function if the current time is before 12:30 Eastern Time
 
     # Define the start_time variable
@@ -372,7 +372,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     target_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=15, minute=30, second=0, microsecond=0)
 
     # Check if the current time is before the target time
-    if datetime.now() > target_time:
+    if datetime.now(pytz.timezone('US/Eastern')) > target_time:
         return  # Exit the buy_stocks function if the current time is after 15:30 Eastern Time
 
     # Schedule the function to run every second
