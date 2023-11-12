@@ -382,6 +382,10 @@ def run_second_thread(bought_stocks, stocks_to_buy, buy_sell_lock):
     schedule_thread.start()
 
     try:
+        # Ensure the second thread starts after 13:00
+        while datetime.now(pytz.timezone('US/Eastern')).time() < datetime.strptime("13:00:00", "%H:%M:%S").time():
+            time.sleep(60)  # Sleep for a minute before checking again
+
         while not end_time_reached():
             for symbol in stocks_to_buy:
                 extracted_date_from_today_date = datetime.today().date()
