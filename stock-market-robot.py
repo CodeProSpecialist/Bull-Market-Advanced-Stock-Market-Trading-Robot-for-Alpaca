@@ -688,7 +688,7 @@ def main():
     bought_stocks = load_positions_from_database()
     buy_sell_lock = threading.Lock()
 
-    while True:  # keep this under the m in main
+    while True:   # keep this under the m in main
         try:
             stop_if_stock_market_is_closed()    # comment this line to debug the Python code
             now = datetime.now(pytz.timezone('US/Eastern'))
