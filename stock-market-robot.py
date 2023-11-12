@@ -337,7 +337,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     global start_time, end_time, original_start_time  # Access the global end_time variable
 
     # debugging code below to run the robot at different times
-    #start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=6, minute=26, second=0, microsecond=0)
+    #start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=5, minute=30, second=0, microsecond=0)
 
     # Define the target time as 12:30 Eastern Time
     start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=12, minute=30, second=0, microsecond=0)
@@ -372,7 +372,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     target_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=15, minute=30, second=0, microsecond=0)
 
     # Check if the current time is before the target time
-    if datetime.now(pytz.timezone('US/Eastern')) > target_time:
+    if datetime.now(pytz.timezone('US/Eastern')) < target_time:
         return  # Exit the buy_stocks function if the current time is after 15:30 Eastern Time
 
     # Schedule the function to run every second
