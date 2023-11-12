@@ -56,8 +56,6 @@ stock_data = {}
 # Dictionary to store previous prices for symbols
 previous_prices = {}
 
-# Define global variables
-start_time = time.time()  # Set start_time to the current time
 end_time = 0  # Initialize end_time as a global variable
 
 # Define the API datetime format
@@ -331,28 +329,14 @@ def run_schedule():
 
 
 def end_time_reached():
-    now = datetime.now(pytz.timezone('US/Eastern'))
-    current_time = now.time()
-    current_timestamp = time.mktime(now.timetuple())
-
-    # Regular market closing time at 15:00 Eastern Time
-    regular_market_closing_time = time.mktime(datetime.strptime("15:00:00", "%H:%M:%S").timetuple())
-
-    # Time interval to stop trading before market closing (25 minutes)
-    stop_interval = 25 * 60  # 25 minutes multiplied by 60 seconds per minute
-
-    # Check if the current time is within the stop interval before market closing time
-    if regular_market_closing_time - current_timestamp <= stop_interval:
-        return True
-    else:
-        return current_timestamp >= end_time
+    return time.time() >= end_time
 
 
-def run_second_thread(bought_stocks, stocks_to_buy, buy_sell_lock):
+def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     stocks_to_remove = []
     global start_time, end_time, original_start_time  # Access the global end_time variable
 
-    # Set start_time to the current time
+    # Define the start_time variable
     start_time = time.time()
 
     cash_available = calculate_cash_on_hand()
@@ -365,13 +349,14 @@ def run_second_thread(bought_stocks, stocks_to_buy, buy_sell_lock):
     # Store the original start_time for error handling
     original_start_time = start_time
 
+    # below is the debugging end_time of 1 minute to look for errors.
+    #end_time = start_time + 1 * 60  # number of minutes multiplied by 60 seconds
+
     # Calculate the end_time based on the start_time
-    if datetime.now(pytz.timezone('US/Eastern')).time() >= datetime.strptime("14:35:00", "%H:%M:%S").time():
-        # If the current time is 25 minutes before 15:00 or later, set end_time to 15 minutes after start_time
-        end_time = start_time + (15 * 60)
-    else:
-        # Otherwise, set end_time to 25 minutes before 15:00
-        end_time = start_time + (15 * 60) - (25 * 60)
+    # we need to select a time out of the 6.5 hour stock market trading day
+    # to evaluate stock prices before buying stocks
+    # with a few hours of time proven price increases.
+    end_time = start_time + 180 * 60  # 180 minutes multiplied by 60 seconds per minute ( 180 is for 3 hours total )
 
     # Schedule the function to run every second
     for symbol in stocks_to_buy:
@@ -380,124 +365,6 @@ def run_second_thread(bought_stocks, stocks_to_buy, buy_sell_lock):
     # Start the background thread to run the schedule
     schedule_thread = threading.Thread(target=run_schedule)
     schedule_thread.start()
-
-    try:
-        # Ensure the second thread starts after 13:00
-        while datetime.now(pytz.timezone('US/Eastern')).time() < datetime.strptime("13:00:00", "%H:%M:%S").time():
-            time.sleep(60)  # Sleep for a minute before checking again
-
-        while not end_time_reached():
-            for symbol in stocks_to_buy:
-                extracted_date_from_today_date = datetime.today().date()
-                today_date_str = extracted_date_from_today_date.strftime("%Y-%m-d")
-
-                current_price = get_current_price(symbol)
-
-                # Use the calculated allocation for all stocks
-                qty_of_one_stock = int(allocation_per_symbol / current_price)
-
-                now = datetime.now(pytz.timezone('US/Eastern'))
-                current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
-
-                total_cost_for_qty = current_price * qty_of_one_stock
-
-                status_printer_buy_stocks()
-
-                if end_time_reached() and cash_available >= total_cost_for_qty and price_changes[symbol]['increased'] >= 5 and price_changes[symbol]['increased'] > price_changes[symbol]['decreased']:
-                    api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
-                    print(f" {current_time_str} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
-                    with open(csv_filename, mode='a', newline='') as csv_file:
-                        csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-                        csv_writer.writerow({'Date': current_time_str, 'Buy': 'Buy', 'Quantity': qty_of_one_stock, 'Symbol': symbol, 'Price Per Share': current_price})
-                    # keep the line below under the w in with open
-                    stocks_to_remove.append((symbol, current_price, today_date_str))  # Append tuple.
-                    # the database requires the datetime date format from today_date
-                    # this append tuple will provide the date=date and the purchase_date = date
-                    # in the correct datetime format for the database. This is the date
-                    # in the below "with buy_sell_lock:" code block.
-
-                    time.sleep(2)  # keep this under the s in stocks
-
-                time.sleep(2)  # keep this under the i in "if end_time_reached". this stops after checking each stock price
-
-            # I might not need the extra sleep command below
-            # keep the below time.sleep(1) below the f in "for symbol"
-            time.sleep(
-                2)  # wait 1.7 to 3 seconds to not move too fast for the stock price data rate limit.
-
-    except Exception as e:  # keep this under the t in "try:"
-        # Handle the exception (e.g., log the error)
-        print(f"An error occurred: {str(e)}")  # keep this under the p in except
-        # Restart the schedule_thread with the original start_time to prevent progress loss
-        start_time = original_start_time  # keep this under the p in print
-        end_time = start_time + 15 * 60
-        schedule_thread = threading.Thread(target=run_schedule)
-        schedule_thread.start()
-
-    try:  # keep this under the b in "buy_stocks"
-        with buy_sell_lock:
-            for symbol, price, date in stocks_to_remove:
-                bought_stocks[symbol] = (round(price, 4), date)
-                stocks_to_buy.remove(symbol)
-                remove_symbol_from_trade_list(symbol)
-                trade_history = TradeHistory(symbol=symbol, action='buy', quantity=qty_of_one_stock, price=price,
-                                             date=date)  # the database requires the string date format
-                session.add(trade_history)
-                db_position = Position(symbol=symbol, quantity=qty_of_one_stock, avg_price=price,
-                                       purchase_date=date)  # the database requires the string date format
-                session.add(db_position)
-
-            session.commit()
-            refresh_after_buy()
-    except SQLAlchemyError as e:  # keep this under the t in "try"
-        session.rollback()  # Roll back the transaction on error
-        # Handle the error or log it
-
-
-def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
-    stocks_to_remove = []
-    global start_time, end_time, original_start_time  # Access the global end_time variable
-
-    # Define the start_time variable
-    # we need to select a time out of the 6.5 hour stock market trading day
-    # to evaluate stock prices before buying stocks
-    # after a few hours of time proven market activity, we can buy after 12:30pm.
-    start_time = time.mktime(datetime.now(pytz.timezone('US/Eastern')).replace(hour=12, minute=30, second=0, microsecond=0).timetuple())
-
-    cash_available = calculate_cash_on_hand()
-    total_symbols = calculate_total_symbols(stocks_to_buy)
-    allocation_per_symbol = allocate_cash_equally(cash_available, total_symbols)
-
-    # Define a dictionary to keep track of price changes for each symbol
-    price_changes = {symbol: {'increased': 0, 'decreased': 0} for symbol in stocks_to_buy}
-
-    # Store the original start_time for error handling
-    original_start_time = start_time
-
-    # below is the debugging end_time of 1 minute to look for errors.
-    #end_time = start_time + 1 * 60  # number of minutes multiplied by 60 seconds 
-
-    # Calculate the end_time based on the start_time
-    if datetime.now(pytz.timezone('US/Eastern')).time() >= datetime.strptime("14:35:00", "%H:%M:%S").time():
-        # If the current time is 25 minutes before 15:00 or later, set end_time to 15 minutes after start_time
-        end_time = start_time + (15 * 60)
-    else:
-        # Otherwise, set end_time to 25 minutes before 15:00
-        end_time = start_time + (15 * 60) - (25 * 60)
-
-    # Schedule the function to run every second 
-    for symbol in stocks_to_buy:
-        schedule.every(1).seconds.do(track_price_changes, symbol, price_changes)
-
-    # Start the background thread to run the schedule
-    schedule_thread = threading.Thread(target=run_schedule)
-    schedule_thread.start()
-
-    # Wait for the first schedule_thread to finish before starting the second thread
-    schedule_thread.join()
-
-    # Schedule the second thread to repeat every 10 minutes
-    schedule.every(20).minutes.do(run_second_thread, bought_stocks, stocks_to_buy, buy_sell_lock)
 
     try:
         while not end_time_reached():
@@ -543,7 +410,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         print(f"An error occurred: {str(e)}")     # keep this under the p in except
         # Restart the schedule_thread with the original start_time to prevent progress loss
         start_time = original_start_time     # keep this under the p in print
-        end_time = start_time + 15 * 60
+        end_time = start_time + 102 * 60
         schedule_thread = threading.Thread(target=run_schedule)
         schedule_thread.start()
 
@@ -715,7 +582,7 @@ def main():
     bought_stocks = load_positions_from_database()
     buy_sell_lock = threading.Lock()
 
-    while True:   # keep this under the m in main
+    while True:  # keep this under the m in main
         try:
             stop_if_stock_market_is_closed()    # comment this line to debug the Python code
             now = datetime.now(pytz.timezone('US/Eastern'))
