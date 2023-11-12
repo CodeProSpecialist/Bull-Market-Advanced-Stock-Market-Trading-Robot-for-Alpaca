@@ -336,6 +336,13 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     stocks_to_remove = []
     global start_time, end_time, original_start_time  # Access the global end_time variable
 
+    # Define the target time as 12:30 Eastern Time
+    start_trading_time = datetime.now().replace(hour=12, minute=30, second=0, microsecond=0)
+
+    # Check if the current time is before the start trading time
+    if datetime.now() < start_trading_time:
+        return  # Exit the function if the current time is before 12:30 Eastern Time
+
     # Define the start_time variable
     start_time = time.time()
 
@@ -355,8 +362,15 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # Calculate the end_time based on the start_time
     # we need to select a time out of the 6.5 hour stock market trading day
     # to evaluate stock prices before buying stocks
-    # with a few hours of time proven price increases.
-    end_time = start_time + 180 * 60  # 180 minutes multiplied by 60 seconds per minute ( 180 is for 3 hours total )
+    # no buying stocks until after 12:30pm Eastern time
+    end_time = start_time + 25 * 60  # 25 minutes multiplied by 60 seconds per minute
+
+    # Define the target time as 15:30 Eastern Time
+    target_time = datetime.now().replace(hour=15, minute=30, second=0, microsecond=0)
+
+    # Check if the current time is before the target time
+    if datetime.now() > target_time:
+        return  # Exit the buy_stocks function if the current time is after 15:30 Eastern Time
 
     # Schedule the function to run every second
     for symbol in stocks_to_buy:
