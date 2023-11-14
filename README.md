@@ -9,7 +9,66 @@
 
 This new version of the robot is extra careful to help your stock market investments be successful by watching stock prices after the time of 9:30am Eastern time to buy stocks after the stock market has began trading for the current trading day for a wise buying decision to be made.  ( 9:30am Eastern Time is a common time when stock prices begin moving ) before buying stocks. The stocks will not be purchased if they are found to decrease in price more than they have increased in price. This means that you have less chance of losing your investment cash when the market conditions are negative. 
 
-The Large List of S&P 500 stocks has been shortened to ride out the current stock market recession conditions. There are also times when investing in Gold or Utility stocks will work better than investing in the S&P 500, The Nasdaq, or the Dow Jones Industrial groups of stocks. In fact, during the last half of 2023, it has been a disaster to hold any overnight positions in the S&P 500, the Dow Jones Industrial, or Nasdaq: all I can recommend is to keep buying Gold. Buy Gold from November 2023 until November 2024 because the US Stock Market is a catastrophic, slowly diminishing problem that consistently loses money day after day. No matter what the Money News Reports are, I keep seeing the USA Stock Market lose money every single day.  I have included my most successful stocks in the list of stocks to scan.  Here is the explanation: 
+The Large List of S&P 500 stocks has been shortened to ride out the current stock market recession conditions. There are also times when investing in Gold or Utility stocks will work better than investing in the S&P 500, The Nasdaq, or the Dow Jones Industrial groups of stocks. In fact, during the last half of 2023, it has been a disaster to hold any overnight positions in the S&P 500, the Dow Jones Industrial, or Nasdaq: all I can recommend is to keep buying Gold. Buy Gold from November 2023 until November 2024 because the US Stock Market is a catastrophic, slowly diminishing problem that consistently loses money day after day. No matter what the Money News Reports are, I keep seeing the USA Stock Market lose money every single day. What you see is what is really happening because the news tells dishonest exciting stories of fiction. I have included my most successful stocks in the list of stocks to scan.  Here is the explanation: 
+
+From a news article that was written by Tony Daltorio:
+     Some investors have a growing alertness to the new world order. This new world order includes mistrust in banks, high and stubborn inflation, and a growing global divide on reserve currencies.
+
+The rush to gold (GCQ23) 
+GLD
+ by certain investors is being mirrored by many of the world's central banks. Last year, central banks bought 1,079 metric tons of bullion. . . that's the most since records began in 1950!
+
+As a result, gold recently hovered close to its all-time high of $2,072 per troy ounce. Although it did back off recently as the investor rush into anything AI-related put it on the back burner.
+
+For thousands of years, gold has been a safe haven in times of turbulence, and that is no less true today.
+
+Think about it – the pandemic, the war in Ukraine, geopolitical tensions, inflation fears, mounting global debt, rising interest rates, and perhaps a U.S. banking crisis have all prompted investors to re-evaluate safe-haven assets. Gold has been the beneficiary.
+
+Let's take a closer look at central banks' huge move into gold.
+
+Central Banks' Move Into Gold
+
+The latest annual poll of 83 of the world's central banks, which manage a combined $7 trillion in foreign exchange assets, was noteworthy to say the least.
+
+It found that more than two-thirds of respondents thought their peers would increase their gold holdings in 2023. That follows on from 2022 when the amount of gold bought by central banks rose by 152% year on year in 2022 to 1,136 metric tons, according to the World Gold Council (WGC).
+
+Their figures show many of the purchases made over the past year were made by central banks in countries that are not aligned with the U.S. As Sebastien de Montessus, CEO of Endeavour Mining 
+EDVMF
+, said recently: “Gold has become progressively geopolitical.”
+
+The People’s Bank of China bought 62 tons of gold in November and December 2022, lifting its total bullion reserves above 2,000 tons for the first time. Turkey’s official gold reserves rose by 148 tons to 542 tons over 2022. States in the Middle East and Central Asia were also listed by the WGC as “active buyers” of gold last year.
+
+The buying surge has continued into 2023. Central banks accumulated gold at the fastest pace on record in the first two months of 2023, according to a report by the World Gold Council. In January and February, central banks collectively bought a net 125 tons of the metal, the highest amount for the year-to-date period since central banks became net buyers in 2010.
+
+However, this trend has been going on for a while. . . . .
+
+Since the 2008 global financial crisis, there has been a clear push by some central banks to diversify reserve currencies: the U.S. dollar’s share of global foreign exchange reserves has slid from more than 70% in 2000 to less than 60% today. That shift has been led by Russia, China, Turkey and India.
+
+This central bank buying is a primary reason why gold has been on the rise, accounting for a record 33% of monthly global demand for gold.
+
+Gold Outlook
+
+The revival in gold’s fortunes has investors wondering whether the world is on the verge of a new gilded period of outperformance for gold. Some forecasters think gold could rise towards its real (inflation-adjusted) record high of nearly $3,300 per troy ounce in today’s dollars.
+
+The previous high was set in 1980 when oil-driven inflation and turmoil in the Middle East capped a nine-year bull run unleashed by U.S. president Richard Nixon cutting the tie between the U.S. dollar and gold.
+
+If today’s stagflation, geopolitical tensions and de-dollarization trends persist, then indeed gold bullion will keep shining.
+
+And don't forget that gold is an asset with a 5,000-year history of providing wealth.
+
+When I was a financial advisor, I always reminded my clients of that, telling them to keep a few percent of their assets in gold.
+
+I told them to look at gold as an insurance policy, similar to health, auto and home insurance. It will protect your assets in the event of a financial markets catastrophe.
+
+The easiest way to buy such an 'insurance policy' is to purchase an exchange traded fund (ETF).
+
+I prefer ETFs that are actually backed by physical gold bullion, such as the abrdn Physical Gold Shares ETF 
+SGOL . 
+
+It is designed to track the spot price of gold bullion by holding gold bars in a secure vault in Switzerland that is audited twice a year. The company also posts the serial numbers of the bars, giving investors further security over the status of their investment.
+
+I believe SGOL is a buy anywhere below $19 a share.
+
 During a recession, investing in a larger, diversified portfolio of stocks is generally considered a safer strategy than investing in individual stocks. Diversification can help spread risk and reduce the impact of any one stock's poor performance. It's important to choose a mix of stocks across different sectors and industries to further minimize risk. However, it's also crucial to conduct thorough research or consult a financial advisor to select stocks that are relatively stable and have a history of weathering economic downturns. This strategy can provide a more balanced approach to navigate turbulent market conditions. 
 
 Important to remember: No stock list of stocks to buy will be written by the "performance stock list writer" python script if the stocks are determined to be in a current status of losing money. 
