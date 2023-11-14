@@ -339,7 +339,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # debugging code below to run the robot at different times
     #start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=5, minute=30, second=0, microsecond=0)
 
-    # Define the target time as 12:30 Eastern Time
+    # Define the target time as 10:35am Eastern Time
     start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=10, minute=35, second=0, microsecond=0)
 
     # print("datetime.now as compared to start_trading_time: ",datetime.now(pytz.timezone('US/Eastern')))     # uncomment this line to debug the code
@@ -347,7 +347,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
     # Check if the current time is before the start trading time
     if datetime.now(pytz.timezone('US/Eastern')) < start_trading_time:
-        return  # Exit the function if the current time is before 12:30 Eastern Time
+        return  # Exit the function if the current time is before 10:35 Eastern Time
 
     # Define the start_time variable
     start_time = time.time()
@@ -368,7 +368,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # Calculate the end_time based on the start_time
     # we need to select a time out of the 6.5 hour stock market trading day
     # to evaluate stock prices before buying stocks
-    # no buying stocks until after 12:30pm Eastern time
+    # no buying stocks until after 10:35am Eastern time
     end_time = start_time + 25 * 60  # 25 minutes multiplied by 60 seconds per minute
 
     # Define the target time as 15:30 Eastern Time
