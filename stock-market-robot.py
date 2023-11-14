@@ -282,8 +282,8 @@ def calculate_total_symbols(stocks_to_buy):
 
 
 def allocate_cash_equally(cash_available, total_symbols):
-    # Make the total quantity of stocks_to_buy as close to $200 as possible and buy no more than $200 per stock symbol
-    max_allocation_per_symbol = 200     # how much cash to spend per stock purchase
+    # Make the total quantity of stocks_to_buy as close to $400 as possible and buy no more than $400 per stock symbol
+    max_allocation_per_symbol = 400     # how much cash to spend per stock purchase
     allocation_per_symbol = min(max_allocation_per_symbol, cash_available) / total_symbols
     return allocation_per_symbol
 
