@@ -18,7 +18,7 @@ The rush to gold (GCQ23)
 GLD
  by certain investors is being mirrored by many of the world's central banks. Last year, central banks bought 1,079 metric tons of bullion. . . that's the most since records began in 1950!
 
-As a result, gold recently hovered close to its all-time high of $2,072 per troy ounce. Although it did back off recently as the investor rush into anything AI-related put it on the back burner.
+As a result, gold recently hovered close to its all-time high of $2,072 per troy ounce. Although it did back off recently as the investors rushed into anything AI-related and put it ( Gold ) on the back burner. ( I will add that the mainstream media keeps distracting investors away from buying Gold because the mainstream media wants you to lose all your stock money and be poor. This is because money is a form of power on this Earth. Love the dishonest media news or hate the dishonest media news. This is reality in 2023 and in the future. The New World Order wants you to be poor and to obey the dishonest stock market news from the mainstream media. ) 
 
 For thousands of years, gold has been a safe haven in times of turbulence, and that is no less true today.
 
