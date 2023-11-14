@@ -340,7 +340,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     #start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=5, minute=30, second=0, microsecond=0)
 
     # Define the target time as 12:30 Eastern Time
-    start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=12, minute=30, second=0, microsecond=0)
+    start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=10, minute=35, second=0, microsecond=0)
 
     # print("datetime.now as compared to start_trading_time: ",datetime.now(pytz.timezone('US/Eastern')))     # uncomment this line to debug the code
     # print("start_trading_time to start buying stocks: ",start_trading_time)      # uncomment this line to debug the code
