@@ -369,7 +369,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # we need to select a time out of the 6.5 hour stock market trading day
     # to evaluate stock prices before buying stocks
     # buying stocks after 9:30am Eastern time
-    end_time = start_time + 18 * 60  # 18 minutes multiplied by 60 seconds per minute
+    end_time = start_time + 19 * 60  # 18 minutes multiplied by 60 seconds per minute
 
     # Define the target time as 15:30 Eastern Time
     target_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=15, minute=30, second=0, microsecond=0)
@@ -413,7 +413,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
                 status_printer_buy_stocks()
 
-                if end_time_reached() and cash_available >= total_cost_for_qty and price_changes[symbol]['increased'] >= 5 and price_changes[symbol]['increased'] > price_changes[symbol]['decreased']:
+                if end_time_reached() and cash_available >= total_cost_for_qty and price_changes[symbol]['increased'] >= 3 and price_changes[symbol]['increased'] > price_changes[symbol]['decreased']:
                     api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
                     print(f" {current_time_str} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
                     with open(csv_filename, mode='a', newline='') as csv_file:
