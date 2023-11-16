@@ -346,7 +346,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # debugging code below to run the robot at different times
     # start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=5, minute=30, second=0, microsecond=0)
 
-    # Define the target time as 9:30am Eastern Time
+    # Define the target time as 9:30am Eastern Time to begin looking for stocks to buy
     start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=9, minute=30, second=0, microsecond=0)
 
     # print("datetime.now as compared to start_trading_time: ",datetime.now(pytz.timezone('US/Eastern')))     # uncomment this line to debug the code
@@ -362,7 +362,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # Store the original start_time for error handling
     original_start_time = start_time
 
-    # below is the debugging end_time of 15 seconds to look for errors.
+    # below is the debugging end_time of 60 seconds to look for errors.
     #end_time = start_time + 60  # 60 seconds
 
     # Calculate the end_time based on the start_time
@@ -371,7 +371,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # buying stocks after 9:30am Eastern time
     end_time = start_time + 10 * 60  # 10 minutes multiplied by 60 seconds per minute
 
-    # Define the target time as 15:30 Eastern Time
+    # Define the target time as 15:30 Eastern Time ( to stop the buy_stocks function )
     target_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=15, minute=30, second=0, microsecond=0)
 
     # print("datetime.now as compared to target_time: ",datetime.now(pytz.timezone('US/Eastern')))     # uncomment this line to debug the code
