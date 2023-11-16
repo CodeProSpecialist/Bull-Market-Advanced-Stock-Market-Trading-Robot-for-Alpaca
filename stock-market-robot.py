@@ -306,20 +306,26 @@ def update_previous_price(symbol, current_price):
     previous_prices[symbol] = current_price
 
 
-def track_price_changes(symbol, price_changes):
+def track_price_changes(symbol):
     current_price = get_current_price(symbol)
     previous_price = get_previous_price(symbol)
+
+    # Initialize the price_changes dictionary outside the loop
+    # Define a dictionary to keep track of price changes for each symbol
+    price_changes = {symbol: {'increased': 0, 'decreased': 0} for symbol in stocks_to_buy}
 
     if current_price > previous_price:
         price_changes[symbol]['increased'] += 1
         print(f"{symbol} price just increased | current price: {current_price}")
+        time.sleep(2)
     elif current_price < previous_price:
         price_changes[symbol]['decreased'] += 1
         print(f"{symbol} price just decreased | current price: {current_price}")
+        time.sleep(2)
     else:
         print(f"{symbol} price has not changed | current price: {current_price}")
-
-    time.sleep(2.5)  # Wait 2 - 3 seconds per price check
+        time.sleep(2)
+    time.sleep(1)  # Wait 1 - 3 seconds per price check
 
 
 def run_schedule():
@@ -362,7 +368,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     original_start_time = start_time
 
     # below is the debugging end_time of 15 seconds to look for errors.
-    #end_time = start_time + 15  # 15 seconds
+    #end_time = start_time + 30  # 15 seconds
 
     # Calculate the end_time based on the start_time
     # we need to select a time out of the 6.5 hour stock market trading day
@@ -388,30 +394,11 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         print(" Continuing with the Buy Stocks function. ")
         print("")
 
-    # Schedule the function to run every second
-    for symbol in stocks_to_buy:
-        cash_available = calculate_cash_on_hand()
-        total_symbols = calculate_total_symbols(stocks_to_buy)
-        allocation_per_symbol = allocate_cash_equally(cash_available, total_symbols)
-
-        current_price = get_current_price(symbol)
-
-        # Use the calculated allocation for all stocks
-        qty_of_one_stock = int(allocation_per_symbol / current_price)
-
-        total_cost_for_qty = current_price * qty_of_one_stock
-
-        # Define a dictionary to keep track of price changes for each symbol
-        price_changes = {symbol: {'increased': 0, 'decreased': 0}}
-
-        schedule.every(1).seconds.do(track_price_changes, symbol, price_changes)
-
-    # Start the background thread to run the schedule
-    schedule_thread = threading.Thread(target=run_schedule)
-    schedule_thread.start()
-
     try:
         while not end_time_reached():
+            # Initialize the price_changes dictionary outside the loop
+            # Define a dictionary to keep track of price changes for each symbol
+            price_changes = {symbol: {'increased': 0, 'decreased': 0} for symbol in stocks_to_buy}
             # Print total price increases per stock symbol
             for symbol in stocks_to_buy:
                 cash_available = calculate_cash_on_hand()
@@ -423,10 +410,20 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 # Use the calculated allocation for all stocks
                 qty_of_one_stock = int(allocation_per_symbol / current_price)
 
-                total_cost_for_qty = current_price * qty_of_one_stock
+                schedule.every(1).seconds.do(track_price_changes, symbol)
 
-                # Define a dictionary to keep track of price changes for each symbol
-                price_changes = {symbol: {'increased': 0, 'decreased': 0}}
+                # keep the following schedule_thread lines under the "b" in buy_stocks
+                # Start the background thread to run the schedule
+                schedule_thread = threading.Thread(target=run_schedule)
+                schedule_thread.start()
+
+                # Update the dictionary to keep track of price changes for each symbol
+                # Assuming track_price_changes returns 'increase' or 'decrease'
+                change_type = track_price_changes(symbol)
+                if change_type == 'increase':
+                    price_changes[symbol]['increased'] += 1
+                elif change_type == 'decrease':
+                    price_changes[symbol]['decreased'] += 1
 
                 print("")
                 print(f"Total Price Increases for {symbol}: {price_changes[symbol]['increased']}")
@@ -451,8 +448,6 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
                 total_cost_for_qty = current_price * qty_of_one_stock
 
-                # Define a dictionary to keep track of price changes for each symbol
-                price_changes = {symbol: {'increased': 0, 'decreased': 0}}
                 # Print some debugging information
                 print("")
                 status_printer_buy_stocks()
