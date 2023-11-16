@@ -362,14 +362,14 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # Store the original start_time for error handling
     original_start_time = start_time
 
-    # below is the debugging end_time of 1 minute to look for errors.
-    #end_time = start_time + 1 * 60  # number of minutes multiplied by 60 seconds
+    # below is the debugging end_time of 15 seconds to look for errors.
+    #end_time = start_time + 15  # 15 seconds
 
     # Calculate the end_time based on the start_time
     # we need to select a time out of the 6.5 hour stock market trading day
     # to evaluate stock prices before buying stocks
     # buying stocks after 9:30am Eastern time
-    end_time = start_time + 15 * 60  # 15 minutes multiplied by 60 seconds per minute
+    end_time = start_time + 5 * 60     # 5 minutes multiplied by 60 seconds per minute
 
     # Define the target time as 15:30 Eastern Time
     target_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=15, minute=30, second=0, microsecond=0)
@@ -380,7 +380,9 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # Check if the current time is before the target time
     # Exit the buy_stocks function if the current time is after 15:30 Eastern Time
     if datetime.now(pytz.timezone('US/Eastern')) > target_time:
+        print("")
         print("Returning and Exiting from the Buy Stocks function.")
+        print("")
         return
     else:
         print("")
@@ -397,25 +399,74 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
     try:
         while not end_time_reached():
+            extracted_date_from_today_date = datetime.today().date()
+            today_date_str = extracted_date_from_today_date.strftime("%Y-%m-d")
+
+            current_price = get_current_price(symbol)
+
+            # Use the calculated allocation for all stocks
+            qty_of_one_stock = int(allocation_per_symbol / current_price)
+
+            now = datetime.now(pytz.timezone('US/Eastern'))
+            current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
+
+            total_cost_for_qty = current_price * qty_of_one_stock
+
+            # Print total price increases per stock symbol
             for symbol in stocks_to_buy:
-                extracted_date_from_today_date = datetime.today().date()
-                today_date_str = extracted_date_from_today_date.strftime("%Y-%m-d")
+                print("")
+                print(f"Total Price Increases for {symbol}: {price_changes[symbol]['increased']}")
+                print(f"Total Price Decreases for {symbol}: {price_changes[symbol]['decreased']}")
+                print("")
 
-                current_price = get_current_price(symbol)
+            # Print overall total price increases and decreases after reaching end_time_reached()
+            if end_time_reached():
+                for symbol in stocks_to_buy:
+                    total_increases = price_changes[symbol]['increased']
+                    total_decreases = price_changes[symbol]['decreased']
+                    print("")
+                    print(f"Total Price Increases for {symbol}: {total_increases}")
+                    print(f"Total Price Decreases for {symbol}: {total_decreases}")
+                    print("")
 
-                # Use the calculated allocation for all stocks
-                qty_of_one_stock = int(allocation_per_symbol / current_price)
+                overall_total_increases = sum(price_changes[symbol]['increased'] for symbol in stocks_to_buy)
+                overall_total_decreases = sum(price_changes[symbol]['decreased'] for symbol in stocks_to_buy)
+                print("")
+                print(f"Overall Total Price Increases: {overall_total_increases}")
+                print(f"Overall Total Price Decreases: {overall_total_decreases}")
+                print("")
 
-                now = datetime.now(pytz.timezone('US/Eastern'))
-                current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
+            for symbol in stocks_to_buy:
 
-                total_cost_for_qty = current_price * qty_of_one_stock
 
-                status_printer_buy_stocks()
+                # Print some debugging information
+                print("")
+                print(f"Symbol: {symbol}")
+                print(f"Current Price: {current_price}")
+                print(f"Qty of One Stock: {qty_of_one_stock}")
+                print(f"Total Cost for Qty: {total_cost_for_qty}")
+                print("")
+                print(f"Cash Available: {cash_available}")
+                print("")
+                print(f"Increased: {price_changes[symbol]['increased']}")
+                print(f"Decreased: {price_changes[symbol]['decreased']}")
+                print("")
+                print(f"End Time Reached: {end_time_reached()}")
 
-                if end_time_reached() and cash_available >= total_cost_for_qty and price_changes[symbol]['increased'] >= 2 and price_changes[symbol]['increased'] > price_changes[symbol]['decreased']:
+                if (
+                        end_time_reached()
+                        and cash_available >= total_cost_for_qty
+                        and price_changes[symbol]['increased'] >= 1
+                        and price_changes[symbol]['increased'] > price_changes[symbol]['decreased']
+                ):
+                    print("")
+                    print(f" ******** Buying stocks for {symbol}... ************************************************************* ")
+                    print("")
                     api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
+
+                    print("")
                     print(f" {current_time_str} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
+                    print("")
                     with open(csv_filename, mode='a', newline='') as csv_file:
                         csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                         csv_writer.writerow({'Date': current_time_str, 'Buy': 'Buy', 'Quantity': qty_of_one_stock, 'Symbol': symbol, 'Price Per Share': current_price})
@@ -426,6 +477,10 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                     # in the correct datetime format for the database. This is the date
                     # in the below "with buy_sell_lock:" code block.
 
+                else:
+                    print("")
+                    print("Not buying stocks after calculating total price increases and total price decreases per stock")
+                    print("")
                     time.sleep(2)  # keep this under the s in stocks
 
                 time.sleep(2)  # keep this under the i in "if end_time_reached". this stops after checking each stock price
