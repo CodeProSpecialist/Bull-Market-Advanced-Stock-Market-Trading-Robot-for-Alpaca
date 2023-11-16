@@ -457,7 +457,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 if (
                         end_time_reached()
                         and cash_available >= total_cost_for_qty
-                        and price_changes[symbol]['increased'] >= 2
+                        and price_changes[symbol]['increased'] >= 4
                         and price_changes[symbol]['increased'] > price_changes[symbol]['decreased']
                 ):
                     print("")
