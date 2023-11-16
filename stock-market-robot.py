@@ -334,7 +334,7 @@ def end_time_reached():
 
 def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     stocks_to_remove = []
-    global start_time, end_time, original_start_time, symbol  # Access the global end_time variable
+    global start_time, end_time, original_start_time    # Access the global end_time variable
 
     extracted_date_from_today_date = datetime.today().date()
     today_date_str = extracted_date_from_today_date.strftime("%Y-%m-d")
@@ -358,25 +358,11 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # Define the start_time variable
     start_time = time.time()
 
-    cash_available = calculate_cash_on_hand()
-    total_symbols = calculate_total_symbols(stocks_to_buy)
-    allocation_per_symbol = allocate_cash_equally(cash_available, total_symbols)
-
-    current_price = get_current_price(symbol)
-
-    # Use the calculated allocation for all stocks
-    qty_of_one_stock = int(allocation_per_symbol / current_price)
-
-    total_cost_for_qty = current_price * qty_of_one_stock
-
-    # Define a dictionary to keep track of price changes for each symbol
-    price_changes = {symbol: {'increased': 0, 'decreased': 0} for symbol in stocks_to_buy}
-
     # Store the original start_time for error handling
     original_start_time = start_time
 
     # below is the debugging end_time of 15 seconds to look for errors.
-    # end_time = start_time + 15  # 15 seconds
+    #end_time = start_time + 15  # 15 seconds
 
     # Calculate the end_time based on the start_time
     # we need to select a time out of the 6.5 hour stock market trading day
@@ -404,6 +390,20 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
     # Schedule the function to run every second
     for symbol in stocks_to_buy:
+        cash_available = calculate_cash_on_hand()
+        total_symbols = calculate_total_symbols(stocks_to_buy)
+        allocation_per_symbol = allocate_cash_equally(cash_available, total_symbols)
+
+        current_price = get_current_price(symbol)
+
+        # Use the calculated allocation for all stocks
+        qty_of_one_stock = int(allocation_per_symbol / current_price)
+
+        total_cost_for_qty = current_price * qty_of_one_stock
+
+        # Define a dictionary to keep track of price changes for each symbol
+        price_changes = {symbol: {'increased': 0, 'decreased': 0}}
+
         schedule.every(1).seconds.do(track_price_changes, symbol, price_changes)
 
     # Start the background thread to run the schedule
@@ -414,6 +414,20 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         while not end_time_reached():
             # Print total price increases per stock symbol
             for symbol in stocks_to_buy:
+                cash_available = calculate_cash_on_hand()
+                total_symbols = calculate_total_symbols(stocks_to_buy)
+                allocation_per_symbol = allocate_cash_equally(cash_available, total_symbols)
+
+                current_price = get_current_price(symbol)
+
+                # Use the calculated allocation for all stocks
+                qty_of_one_stock = int(allocation_per_symbol / current_price)
+
+                total_cost_for_qty = current_price * qty_of_one_stock
+
+                # Define a dictionary to keep track of price changes for each symbol
+                price_changes = {symbol: {'increased': 0, 'decreased': 0}}
+
                 print("")
                 print(f"Total Price Increases for {symbol}: {price_changes[symbol]['increased']}")
                 print(f"Total Price Decreases for {symbol}: {price_changes[symbol]['decreased']}")
@@ -426,6 +440,19 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         # Print overall total price increases and decreases after reaching end_time_reached()
         if end_time_reached():
             for symbol in stocks_to_buy:
+                cash_available = calculate_cash_on_hand()
+                total_symbols = calculate_total_symbols(stocks_to_buy)
+                allocation_per_symbol = allocate_cash_equally(cash_available, total_symbols)
+
+                current_price = get_current_price(symbol)
+
+                # Use the calculated allocation for all stocks
+                qty_of_one_stock = int(allocation_per_symbol / current_price)
+
+                total_cost_for_qty = current_price * qty_of_one_stock
+
+                # Define a dictionary to keep track of price changes for each symbol
+                price_changes = {symbol: {'increased': 0, 'decreased': 0}}
                 # Print some debugging information
                 print("")
                 status_printer_buy_stocks()
