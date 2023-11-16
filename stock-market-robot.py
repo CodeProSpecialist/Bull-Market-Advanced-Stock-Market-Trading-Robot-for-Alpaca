@@ -363,13 +363,13 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     original_start_time = start_time
 
     # below is the debugging end_time of 15 seconds to look for errors.
-    #end_time = start_time + 30  # 15 seconds
+    #end_time = start_time + 60  # 60 seconds
 
     # Calculate the end_time based on the start_time
     # we need to select a time out of the 6.5 hour stock market trading day
     # to evaluate stock prices before buying stocks
     # buying stocks after 9:30am Eastern time
-    end_time = start_time + 5 * 60  # 5 minutes multiplied by 60 seconds per minute
+    end_time = start_time + 10 * 60  # 10 minutes multiplied by 60 seconds per minute
 
     # Define the target time as 15:30 Eastern Time
     target_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=15, minute=30, second=0, microsecond=0)
