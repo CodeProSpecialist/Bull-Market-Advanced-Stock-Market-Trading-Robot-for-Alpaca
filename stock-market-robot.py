@@ -419,6 +419,10 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 print(f"Total Price Decreases for {symbol}: {price_changes[symbol]['decreased']}")
                 print("")
 
+                # I might not need the extra sleep command below
+                # keep the below time.sleep(1) below the s in "for symbol"
+                time.sleep(2)  # wait 1.7 to 3 seconds to not move too fast for the stock price data rate limit.
+
             # Print overall total price increases and decreases after reaching end_time_reached()
             if end_time_reached():
                 for symbol in stocks_to_buy:
