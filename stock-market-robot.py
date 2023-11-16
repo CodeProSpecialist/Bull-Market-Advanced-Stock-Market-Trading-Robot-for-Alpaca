@@ -428,6 +428,8 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 for symbol in stocks_to_buy:
                     # Print some debugging information
                     print("")
+                    status_printer_buy_stocks()
+                    print("")
                     print(f"Symbol: {symbol}")
                     print(f"Current Price: {current_price}")
                     print(f"Qty of One Stock: {qty_of_one_stock}")
