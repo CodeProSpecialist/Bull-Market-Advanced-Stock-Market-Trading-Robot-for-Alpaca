@@ -46,7 +46,7 @@ def write_top_stocks_to_file(filename, top_stocks):
     with open(filename, 'w') as file:
         for symbol, price_increase in top_stocks.items():
             percent_change = price_increase * 100
-            if percent_change > 5:
+            if percent_change > 0.7:
                 file.write(f"{symbol}\n")
 
 if __name__ == "__main__":
