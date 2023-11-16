@@ -436,22 +436,21 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 print(f"Overall Total Price Decreases: {overall_total_decreases}")
                 print("")
 
-            for symbol in stocks_to_buy:
-
-
-                # Print some debugging information
-                print("")
-                print(f"Symbol: {symbol}")
-                print(f"Current Price: {current_price}")
-                print(f"Qty of One Stock: {qty_of_one_stock}")
-                print(f"Total Cost for Qty: {total_cost_for_qty}")
-                print("")
-                print(f"Cash Available: {cash_available}")
-                print("")
-                print(f"Increased: {price_changes[symbol]['increased']}")
-                print(f"Decreased: {price_changes[symbol]['decreased']}")
-                print("")
-                print(f"End Time Reached: {end_time_reached()}")
+            if end_time_reached():
+                for symbol in stocks_to_buy:
+                    # Print some debugging information
+                    print("")
+                    print(f"Symbol: {symbol}")
+                    print(f"Current Price: {current_price}")
+                    print(f"Qty of One Stock: {qty_of_one_stock}")
+                    print(f"Total Cost for Qty: {total_cost_for_qty}")
+                    print("")
+                    print(f"Cash Available: {cash_available}")
+                    print("")
+                    print(f"Increased: {price_changes[symbol]['increased']}")
+                    print(f"Decreased: {price_changes[symbol]['decreased']}")
+                    print("")
+                    print(f"End Time Reached: {end_time_reached()}")
 
                 # THE BELOW PYTHON CODE SUCCESSFULLY PASSED TESTS TO PURCHASE STOCKS
                 # AND IT WORKS CORRECTLY WHEN THE PRICE INCREASES ENOUGH TIMES.
