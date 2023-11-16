@@ -453,10 +453,12 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 print("")
                 print(f"End Time Reached: {end_time_reached()}")
 
+                # THE BELOW PYTHON CODE SUCCESSFULLY PASSED TESTS TO PURCHASE STOCKS
+                # AND IT WORKS CORRECTLY WHEN THE PRICE INCREASES ENOUGH TIMES.
                 if (
                         end_time_reached()
                         and cash_available >= total_cost_for_qty
-                        and price_changes[symbol]['increased'] >= 1
+                        and price_changes[symbol]['increased'] >= 2
                         and price_changes[symbol]['increased'] > price_changes[symbol]['decreased']
                 ):
                     print("")
