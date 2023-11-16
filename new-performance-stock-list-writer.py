@@ -9,7 +9,7 @@ def read_stock_symbols(filename):
         symbols = [line.strip() for line in file]
     return symbols
 
-# Function to get the top price increase stocks for the past 5 days
+# Function to get the top price increase stocks for the past 2 days
 def get_top_increase_stocks(symbols):
     top_stocks = {}
     for symbol in symbols:
