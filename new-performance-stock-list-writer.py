@@ -1,6 +1,6 @@
 import time
 import yfinance as yf
-from datetime import datetime
+from datetime import datetime, time as dt_time
 import pytz  # You'll need to install pytz if you haven't already
 
 
@@ -11,7 +11,7 @@ def read_stock_symbols(filename):
     return symbols
 
 
-# Function to get the top price increase stocks for the past 1 day
+# Function to get the top price increase stocks for the current day
 def get_top_increase_stocks(symbols):
     top_stocks = {}
     for symbol in symbols:
@@ -22,7 +22,9 @@ def get_top_increase_stocks(symbols):
             hist_data = stock.history(period='1d')
 
             if not hist_data.empty:
-                price_increase = (hist_data['Close'].iloc[-1] - hist_data['Close'].iloc[0]) / hist_data['Close'].iloc[0]
+                opening_price = hist_data['Open'].iloc[0]
+                closing_price = hist_data['Close'].iloc[-1]
+                price_increase = (closing_price - opening_price) / opening_price
                 top_stocks[symbol] = price_increase
         except Exception as e:
             print(f"Error retrieving data for {symbol}: {e}")
@@ -38,10 +40,11 @@ def print_top_stocks(top_stocks):
         try:
             stock = yf.Ticker(symbol)
             # Fetch current price for today
-            current_price = stock.history(period='1d')['Close'].iloc[0]
+            current_price = stock.history(period='1d')['Close'].iloc[-1]
             percent_change = price_increase * 100
             change_symbol = '+' if percent_change > 0 else '-'
-            print(f"{rank}. {symbol}: ${current_price:.2f}, {change_symbol}{abs(percent_change):.2f}%")
+            print(
+                f"{rank}. {symbol}: ${current_price:.2f}, Open: ${stock.history(period='1d')['Open'].iloc[0]:.2f}, {change_symbol}{abs(percent_change):.2f}%")
             rank += 1
             time.sleep(1)
         except Exception as e:
@@ -67,25 +70,36 @@ if __name__ == "__main__":
     while True:
         try:
             # Get the current date and time in Eastern Time
-            print("")
-            print(f" Eastern Time: {datetime.now(et).strftime('%I:%M:%S %p | %m-%d-%Y')} ")
-            print("")
+            current_time = datetime.now(et)
+            current_hour = current_time.hour
+            current_minute = current_time.minute
 
-            stocks_to_scan = read_stock_symbols(input_filename)
-            top_increase_stocks = get_top_increase_stocks(stocks_to_scan)
+            # Check if it's within market hours
+            if (
+                    (current_hour == 9 and current_minute >= 0) or
+                    (9 < current_hour < 16) or
+                    (current_hour == 16 and current_minute == 0)
+            ):
+                # Print only 30 minutes before market opens
+                if not (current_hour == 9 and current_minute < 30):
+                    print("")
+                    print(f" Eastern Time: {current_time.strftime('%I:%M:%S %p | %m-%d-%Y')} ")
+                    print("")
 
-            # Print the top increase stocks to the terminal
-            print_top_stocks(top_increase_stocks)
+                    stocks_to_scan = read_stock_symbols(input_filename)
+                    top_increase_stocks = get_top_increase_stocks(stocks_to_scan)
 
-            print("")
-            print("Writing the list of stocks: ")
-            print("")
-            # Write the top increase stocks to the output file and display on the screen
-            write_top_stocks_to_file(output_filename, top_increase_stocks)
-            for line in open(output_filename, 'r'):
-                print(line, end='')
+                    # Print the top increase stocks to the terminal
+                    print_top_stocks(top_increase_stocks)
 
-            print("")
+                    print("")
+                    print("Writing the list of stocks: ")
+                    print("")
+                    # Write the top increase stocks to the output file and display on the screen
+                    write_top_stocks_to_file(output_filename, top_increase_stocks)
+                    for line in open(output_filename, 'r'):
+                        print(line, end='')
+
             # Sleep for 30 seconds before the next update
             time.sleep(30)
         except Exception as e:
