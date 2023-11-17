@@ -1,15 +1,13 @@
 import time
 import yfinance as yf
-from datetime import datetime, time as dt_time
+from datetime import datetime, time as dt_time, timedelta
 import pytz  # You'll need to install pytz if you haven't already
-
 
 # Function to read the list of stock symbols from a file
 def read_stock_symbols(filename):
     with open(filename, 'r') as file:
         symbols = [line.strip() for line in file]
     return symbols
-
 
 # Function to get the top price increase stocks for the current day
 def get_top_increase_stocks(symbols):
@@ -32,7 +30,6 @@ def get_top_increase_stocks(symbols):
         time.sleep(1)
     return dict(sorted(top_stocks.items(), key=lambda item: item[1], reverse=True))
 
-
 # Function to print the top increase stocks to the terminal with current price
 def print_top_stocks(top_stocks):
     rank = 1
@@ -50,7 +47,6 @@ def print_top_stocks(top_stocks):
         except Exception as e:
             print(f"Error printing data for {symbol}: {e}")
 
-
 # Function to write the top increase stocks to an output file
 def write_top_stocks_to_file(filename, top_stocks):
     with open(filename, 'w') as file:
@@ -59,6 +55,34 @@ def write_top_stocks_to_file(filename, top_stocks):
             if percent_change > 0.7:
                 file.write(f"{symbol}\n")
 
+# Function to calculate the next run time
+def calculate_next_run_time():
+    # Get the current date and time in Eastern Time
+    current_time = datetime.now(et)
+    current_hour = current_time.hour
+    current_minute = current_time.minute
+    current_weekday = current_time.weekday()
+
+    # Calculate the next run time based on the current time
+    if (
+            0 <= current_weekday <= 4 and
+            (current_hour == 9 and current_minute >= 0) or
+            (9 < current_hour < 16) or
+            (current_hour == 16 and current_minute == 0)
+    ):
+        # If currently within market hours, calculate next run time for the next update
+        next_run_time = current_time + timedelta(minutes=(30 - current_minute % 30))
+    else:
+        # If outside market hours, calculate next run time for the next market opening
+        next_run_time = current_time.replace(hour=9, minute=0, second=0, microsecond=0)
+        if current_weekday == 4:  # If it's Friday, set the next run time to Monday
+            next_run_time += timedelta(days=3)
+        elif current_weekday == 5:  # If it's Saturday, set the next run time to Monday
+            next_run_time += timedelta(days=2)
+        else:  # If it's Sunday, set the next run time to Monday
+            next_run_time += timedelta(days=1)
+
+    return next_run_time
 
 if __name__ == "__main__":
     input_filename = "list-of-stock-symbols-to-scan.txt"
@@ -99,6 +123,11 @@ if __name__ == "__main__":
                 write_top_stocks_to_file(output_filename, top_increase_stocks)
                 for line in open(output_filename, 'r'):
                     print(line, end='')
+
+            else:
+                # If outside market hours, display the next run time
+                next_run_time = calculate_next_run_time()
+                print(f"Next run time: {next_run_time.strftime('%I:%M:%S %p | %m-%d-%Y')} (Eastern Time)")
 
             # Sleep for 30 seconds before the next update
             time.sleep(30)
