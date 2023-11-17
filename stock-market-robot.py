@@ -479,30 +479,35 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 # THE BELOW PYTHON CODE SUCCESSFULLY PASSED TESTS TO PURCHASE STOCKS
                 # AND IT WORKS CORRECTLY WHEN THE PRICE INCREASES ENOUGH TIMES.
                 if (cash_available >= total_cost_for_qty and price_changes[symbol]['increased'] >= 5 and price_changes[symbol]['increased'] > price_changes[symbol]['decreased']):
-                    print("")
-                    print(
-                        f" ******** Buying stocks for {symbol}... "
-                        f"************************************************************* ")
-                    print("")
-                    api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market',
-                                     time_in_force='day')
+                    if qty_of_one_stock > 0:  # Add this condition to check if qty_of_one_stock is greater than 0
+                        print("")
+                        print(
+                            f" ******** Buying stocks for {symbol}... "
+                            f"************************************************************* ")
+                        print("")
+                        api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market',
+                                         time_in_force='day')
 
-                    print("")
-                    print(f" {current_time_str} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
-                    print("")
-                    with open(csv_filename, mode='a', newline='') as csv_file:
-                        csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-                        csv_writer.writerow(
-                            {'Date': current_time_str, 'Buy': 'Buy', 'Quantity': qty_of_one_stock, 'Symbol': symbol,
-                             'Price Per Share': current_price})
-                    # keep the line below under the w in with open
-                    stocks_to_remove.append((symbol, current_price, today_date_str))  # Append tuple.
-                    # the database requires the datetime date format from today_date
-                    # this append tuple will provide the date=date and the purchase_date = date
-                    # in the correct datetime format for the database. This is the date
-                    # in the below "with buy_sell_lock:" code block.
-
-                    # keep the else under the "if" that is above the else
+                        print("")
+                        print(f" {current_time_str} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}")
+                        print("")
+                        with open(csv_filename, mode='a', newline='') as csv_file:
+                            csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+                            csv_writer.writerow(
+                                {'Date': current_time_str, 'Buy': 'Buy', 'Quantity': qty_of_one_stock, 'Symbol': symbol,
+                                 'Price Per Share': current_price})
+                        # keep the line below under the w in with open
+                        stocks_to_remove.append((symbol, current_price, today_date_str))  # Append tuple.
+                        # the database requires the datetime date format from today_date
+                        # this append tuple will provide the date=date and the purchase_date = date
+                        # in the correct datetime format for the database. This is the date
+                        # in the below "with buy_sell_lock:" code block.
+                    else:
+                        print("")
+                        print("Price increases are favorable to buy stocks. Quantity of One Stock is 0. Not buying "
+                              "stocks right now. Perhaps we need more cash before buying. ")
+                        print("")
+                    # keep the below else under the "if" that is above the else
                 else:
                     print("")
                     print(
