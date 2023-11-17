@@ -7,7 +7,7 @@
         Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, Version 3   
 -----------------------------------------------------------------------------------------------
 
-***** Upgrade to the newest version of this Python Robot today because some errors were recently fixed on 11-16-2023. *****
+***** Upgrade to the newest version of this Python Robot today because some Python code updates were finished and some errors were recently fixed on 11-17-2023. *****
 
 This new version of the robot is extra careful to help your stock market investments be successful by watching stock prices after the time of 9:30am Eastern time to buy stocks after the stock market has began trading for the current trading day for a wise buying decision to be made ( 9:30am Eastern Time is a common time when stock prices begin moving ) before buying stocks. The stocks will not be purchased if they are found to decrease in price more than they have increased in price. This means that you have less chance of losing your investment cash when the market conditions are negative. 
 
