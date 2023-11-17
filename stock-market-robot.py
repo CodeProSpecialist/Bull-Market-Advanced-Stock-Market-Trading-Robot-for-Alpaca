@@ -502,6 +502,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                         # this append tuple will provide the date=date and the purchase_date = date
                         # in the correct datetime format for the database. This is the date
                         # in the below "with buy_sell_lock:" code block.
+                    # the below else needs to be under the "I" in if qty_of_one_stock
                     else:
                         print("")
                         print("Price increases are favorable to buy stocks. Quantity of One Stock is 0. Not buying "
