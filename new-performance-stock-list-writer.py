@@ -73,32 +73,32 @@ if __name__ == "__main__":
             current_time = datetime.now(et)
             current_hour = current_time.hour
             current_minute = current_time.minute
+            current_weekday = current_time.weekday()
 
-            # Check if it's within market hours
+            # Check if it's a weekday (Monday to Friday) and within market hours
             if (
+                    0 <= current_weekday <= 4 and
                     (current_hour == 9 and current_minute >= 0) or
                     (9 < current_hour < 16) or
                     (current_hour == 16 and current_minute == 0)
             ):
-                # Print only 30 minutes before market opens
-                if not (current_hour == 9 and current_minute < 30):
-                    print("")
-                    print(f" Eastern Time: {current_time.strftime('%I:%M:%S %p | %m-%d-%Y')} ")
-                    print("")
+                print("")
+                print(f" Eastern Time: {current_time.strftime('%I:%M:%S %p | %m-%d-%Y')} ")
+                print("")
 
-                    stocks_to_scan = read_stock_symbols(input_filename)
-                    top_increase_stocks = get_top_increase_stocks(stocks_to_scan)
+                stocks_to_scan = read_stock_symbols(input_filename)
+                top_increase_stocks = get_top_increase_stocks(stocks_to_scan)
 
-                    # Print the top increase stocks to the terminal
-                    print_top_stocks(top_increase_stocks)
+                # Print the top increase stocks to the terminal
+                print_top_stocks(top_increase_stocks)
 
-                    print("")
-                    print("Writing the list of stocks: ")
-                    print("")
-                    # Write the top increase stocks to the output file and display on the screen
-                    write_top_stocks_to_file(output_filename, top_increase_stocks)
-                    for line in open(output_filename, 'r'):
-                        print(line, end='')
+                print("")
+                print("Writing the list of stocks: ")
+                print("")
+                # Write the top increase stocks to the output file and display on the screen
+                write_top_stocks_to_file(output_filename, top_increase_stocks)
+                for line in open(output_filename, 'r'):
+                    print(line, end='')
 
             # Sleep for 30 seconds before the next update
             time.sleep(30)
