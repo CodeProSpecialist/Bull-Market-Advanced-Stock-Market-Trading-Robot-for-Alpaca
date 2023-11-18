@@ -369,7 +369,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # we need to select a time out of the 6.5 hour stock market trading day
     # to evaluate stock prices before buying stocks
     # buying stocks after 9:30am Eastern time
-    end_time = start_time + 10 * 60  # 10 minutes multiplied by 60 seconds per minute
+    end_time = start_time + 15 * 60  # 15 minutes multiplied by 60 seconds per minute
 
     # Define the target time as 15:30 Eastern Time ( to stop the buy_stocks function )
     target_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=15, minute=30, second=0, microsecond=0)
@@ -478,7 +478,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
                 # THE BELOW PYTHON CODE SUCCESSFULLY PASSED TESTS TO PURCHASE STOCKS
                 # AND IT WORKS CORRECTLY WHEN THE PRICE INCREASES ENOUGH TIMES.
-                if (cash_available >= total_cost_for_qty and price_changes[symbol]['increased'] >= 5 and price_changes[symbol]['increased'] > price_changes[symbol]['decreased']):
+                if (cash_available >= total_cost_for_qty and price_changes[symbol]['increased'] >= 10 and price_changes[symbol]['increased'] > price_changes[symbol]['decreased']):
                     if qty_of_one_stock > 0:  # Add this condition to check if qty_of_one_stock is greater than 0
                         print("")
                         print(
