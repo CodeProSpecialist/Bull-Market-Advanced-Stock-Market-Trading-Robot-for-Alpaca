@@ -269,6 +269,38 @@ def status_printer_sell_stocks():
     print()  # keep this under the s in status_printer_sell_stocks()
 
 
+# Function to calculate MACD, RSI, and Volume
+def calculate_technical_indicators(symbol, lookback_days=90):
+    stock_data = yf.Ticker(symbol)
+    historical_data = stock_data.history(period=f'{lookback_days}d')
+
+    # Calculate MACD
+    short_window = 12
+    long_window = 26
+    signal_window = 9
+    historical_data['macd'], historical_data['signal'], _ = talib.MACD(historical_data['Close'],
+                                                                       fastperiod=short_window,
+                                                                       slowperiod=long_window,
+                                                                       signalperiod=signal_window)
+
+    # Calculate RSI
+    rsi_period = 14
+    historical_data['rsi'] = talib.RSI(historical_data['Close'], timeperiod=rsi_period)
+
+    # Calculate Volume
+    historical_data['volume'] = historical_data['Volume']
+
+    return historical_data
+
+
+# Function to print technical indicators
+def print_technical_indicators(symbol, historical_data):
+    print("")
+    print(f"\nTechnical Indicators for {symbol}:\n")
+    print(historical_data[['Close', 'macd', 'signal', 'rsi', 'volume']].tail())
+    print("")
+
+
 def calculate_cash_on_hand():
     # Calculate the total cash on hand
     cash_available = round(float(api.get_account().cash), 2)
@@ -311,9 +343,15 @@ def run_schedule():
         schedule.run_pending()
         time.sleep(1)
 
+
 def track_price_changes(symbol):
     current_price = get_current_price(symbol)
     previous_price = get_previous_price(symbol)
+
+    print("")
+    # Print the values of the technical indicators
+    print_technical_indicators(symbol, calculate_technical_indicators(symbol))
+    print("")
 
     if current_price > previous_price:
         price_changes[symbol]['increased'] += 1
@@ -335,7 +373,7 @@ def end_time_reached():
 
 def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     stocks_to_remove = []
-    global start_time, end_time, original_start_time, price_changes  # Access the global end_time variable
+    global start_time, end_time, original_start_time, price_changes, symbol   # Access the global end_time variable
 
     extracted_date_from_today_date = datetime.today().date()
     today_date_str = extracted_date_from_today_date.strftime("%Y-%m-d")
@@ -369,7 +407,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # we need to select a time out of the 6.5 hour stock market trading day
     # to evaluate stock prices before buying stocks
     # buying stocks after 9:30am Eastern time
-    end_time = start_time + 10 * 60  # 15 minutes multiplied by 60 seconds per minute
+    end_time = start_time + 10 * 60  # 10 minutes multiplied by 60 seconds per minute
 
     # Define the target time as 15:30 Eastern Time ( to stop the buy_stocks function )
     target_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=15, minute=30, second=0, microsecond=0)
@@ -476,16 +514,35 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 print(f"Overall Total Price Decreases: {overall_total_decreases}")
                 print("")
 
+                historical_data = calculate_technical_indicators(symbol, lookback_days=90)
+                macd_value = historical_data['macd'].iloc[-1]
+                rsi_value = historical_data['rsi'].iloc[-1]
+                volume_value = historical_data['volume'].iloc[-1]
+
+                print(f"MACD: {macd_value}")
+                print(f"RSI: {rsi_value}")
+                print(f"Volume: {volume_value}")
+                print("")
+
+                # Add conditions based on your chosen values for MACD, RSI, and Volume
+                favorable_macd_condition = (historical_data['macd'].iloc[-1] > historical_data['signal'].iloc[-1])
+                favorable_rsi_condition = (historical_data['rsi'].iloc[-1] < 70)  # You can adjust the RSI threshold
+                favorable_volume_condition = (historical_data['volume'].iloc[-1] > historical_data['volume'].mean())
 
                 # THE BELOW PYTHON CODE SUCCESSFULLY PASSED TESTS TO PURCHASE STOCKS
                 # AND IT WORKS CORRECTLY WHEN THE PRICE INCREASES ENOUGH TIMES.
                 # The most successful settings are to buy if price increases 7 times within 10 minutes.
-                if (cash_available >= total_cost_for_qty and price_changes[symbol]['increased'] >= 7 and price_changes[symbol]['increased'] > price_changes[symbol]['decreased']):
+                if (cash_available >= total_cost_for_qty and
+                        price_changes[symbol]['increased'] >= 7 and
+                        price_changes[symbol]['increased'] > price_changes[symbol]['decreased'] and
+                        favorable_macd_condition and favorable_rsi_condition and favorable_volume_condition):
                     if qty_of_one_stock > 0:  # Add this condition to check if qty_of_one_stock is greater than 0
                         print("")
                         print(
                             f" ******** Buying stocks for {symbol}... "
                             f"************************************************************* ")
+                        print("")
+                        print_technical_indicators(symbol, calculate_technical_indicators(symbol))
                         print("")
                         api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market',
                                          time_in_force='day')
@@ -513,8 +570,9 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                     # keep the below else under the "if" that is above the else
                 else:
                     print("")
-                    print(
-                        "Not buying stocks after calculating total price increases and total price decreases per stock")
+                    print("\nNot buying stocks based on the technical indicators: MACD, RSI, VOLUME, or based on price decreases. ")
+                    print("")
+                    print_technical_indicators(symbol, calculate_technical_indicators(symbol))
                     print("")
 
                 time.sleep(2)    # keep this under the "if" in "if cash available"
