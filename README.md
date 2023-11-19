@@ -18,6 +18,52 @@ The Large List of S&P 500 stocks has been shortened to ride out the current stoc
 
 During a recession, investing in a larger, diversified portfolio of stocks is generally considered a safer strategy than investing in individual stocks. Diversification can help spread risk and reduce the impact of any one stock's poor performance. It's important to choose a mix of stocks across different sectors and industries to further minimize risk. However, it's also crucial to conduct thorough research or consult a financial advisor to select stocks that are relatively stable and have a history of weathering economic downturns. This strategy can provide a more balanced approach to navigate turbulent market conditions. 
 
+-------------------------------------------------------------------------------------------------
+ Revolutionize Your Trading Game with the Advanced Stock Market Trading Robot 2023 Edition!  
+
+Are you ready to take your stock market trading to the next level?
+Introducing the cutting-edge Advanced Stock Market Trading Robot, 
+Version 3 – a powerful Python code designed to dominate the markets, 
+now with even more features and precision than ever before!
+
+ Unleash the Power of Technical Analysis:
+
+    Seamlessly calculate MACD, RSI, and Volume with lightning speed.
+    Analyze historical data to make informed and strategic trading decisions.
+    Stay ahead of the market trends with real-time updates.
+
+ Intelligent Trading Logic:
+
+    Buy and sell stocks with unparalleled precision based on advanced indicators.
+    Dynamic allocation of cash ensures optimal investment strategies.
+    React to market conditions intelligently, maximizing your gains in any situation.
+
+ Concurrent Buying and Selling:
+
+    Revolutionize your trading strategy with concurrent buying and selling threads.
+    Stay agile in the fast-paced world of stock trading, maximizing opportunities.
+
+ Secure and Reliable:
+
+    Exceptional error handling ensures the stability of your trading operations.
+    Safeguard your assets with secure interactions with the Alpaca API.
+
+ Built-in Database:
+
+    Keep a record of every trade in a robust database.
+    Analyze your trading history and fine-tune your strategy for ultimate success.
+
+ Real-Time Action, Real-Time Results:
+
+    React instantly to market changes with real-time data processing.
+    Witness your portfolio grow as the bot executes trades with careful precision. 
+    
+ Get Started Today! Unleash the Future of Trading with the Advanced Stock Market Trading Robot. 
+
+ Don't just trade. Dominate. 
+
+-------------------------------------------------------------------------------------------------
+
 Important to remember: No stock list of stocks to buy will be written by the "performance stock list writer" python script if the stocks are determined to be in a current status of losing money. 
 This is a feature to protect you and anyone else from buying stocks at the wrong times. The specific situations described would be obvious wrong times to buy stock, and 
 you should always remember: 
