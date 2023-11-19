@@ -62,15 +62,18 @@ now with even more features and precision than ever before!
 
  Don't just trade. Dominate. 
 
+![Screen-1](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Robot-for-Alpaca/assets/111866070/9d4094d2-9a48-4936-8361-6a6fd9f74e33)
+
+![Screen-2](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Robot-for-Alpaca/assets/111866070/ee96a72e-9fa9-481b-88d1-b87fba547abc)
+
+![Screen-3](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Robot-for-Alpaca/assets/111866070/716cdfb3-237a-401d-8055-1c018357a19f)
+
 -------------------------------------------------------------------------------------------------
 
 Important to remember: No stock list of stocks to buy will be written by the "performance stock list writer" python script if the stocks are determined to be in a current status of losing money. 
 This is a feature to protect you and anyone else from buying stocks at the wrong times. The specific situations described would be obvious wrong times to buy stock, and 
 you should always remember: 
     Remember that all trading involves risks. The ability to successfully implement these strategies depends on both market conditions and individual skills and knowledge. As such, trading should only be done with funds that you can afford to lose. Always do thorough research before making investment decisions, and consider consulting with a financial advisor. This is use at your own risk software. This software does not include any warranty or guarantees other than the useful tasks that may or may not work as intended for the software application end user. The software developer shall not be held liable for any financial losses or damages that occur as a result of using this software for any reason to the fullest extent of the law. Using this software is your agreement to these terms. This software is designed to be helpful and useful to the end user.
-
-![Advanced-trading-bot-version-3](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Robot-for-Alpaca/assets/111866070/00a3cc77-fdb4-449c-9306-65d4a71a9724)
-
 
  Are you ready to take your stock trading game to the next level? The Advanced Stock Market Trading Robot is here to help you navigate the complexities of the stock market and make informed trading decisions. This cutting-edge trading software is designed to maximize profits in recession market conditions, focusing on electric utility and energy stocks. I will mention that every stock sector has its favorable "buy stocks" months. 
  For example: business stocks are the most favorable in October and November just before the Friday that follows Thanksgiving. Electricity stocks can do best May 21 through July 31. 
