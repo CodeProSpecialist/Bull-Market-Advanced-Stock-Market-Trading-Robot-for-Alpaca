@@ -405,9 +405,11 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
     # Calculate the end_time based on the start_time
     # we need to select a time out of the 6.5 hour stock market trading day
-    # to evaluate stock prices before buying stocks
-    # buying stocks after 9:30am Eastern time
-    end_time = start_time + 10 * 60  # 10 minutes multiplied by 60 seconds per minute
+    # to evaluate stock prices before buying stocks.
+    # The most successful settings are to buy if price increases 3 times within 3 minutes
+    # when using MACD, RSI, and VOLUME conditions to buy stocks at the correct times.
+    # ( buying stocks after 9:30am Eastern time )
+    end_time = start_time + 3 * 60  # 3 minutes multiplied by 60 seconds per minute
 
     # Define the target time as 15:30 Eastern Time ( to stop the buy_stocks function )
     target_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=15, minute=30, second=0, microsecond=0)
@@ -529,11 +531,12 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 favorable_rsi_condition = (historical_data['rsi'].iloc[-1] < 70)  # You can adjust the RSI threshold
                 favorable_volume_condition = (historical_data['volume'].iloc[-1] > historical_data['volume'].mean())
 
-                # THE BELOW PYTHON CODE SUCCESSFULLY PASSED TESTS TO PURCHASE STOCKS
+                # THE BELOW PYTHON CODE WILL PURCHASE STOCKS
                 # AND IT WORKS CORRECTLY WHEN THE PRICE INCREASES ENOUGH TIMES.
-                # The most successful settings are to buy if price increases 7 times within 10 minutes.
+                # The most successful settings are to buy if price increases 3 times within 3 minutes
+                # when using MACD, RSI, and VOLUME conditions to buy stocks at the correct times.
                 if (cash_available >= total_cost_for_qty and
-                        price_changes[symbol]['increased'] >= 7 and
+                        price_changes[symbol]['increased'] >= 3 and
                         price_changes[symbol]['increased'] > price_changes[symbol]['decreased'] and
                         favorable_macd_condition and favorable_rsi_condition and favorable_volume_condition):
                     if qty_of_one_stock > 0:  # Add this condition to check if qty_of_one_stock is greater than 0
