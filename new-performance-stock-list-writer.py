@@ -102,10 +102,9 @@ if __name__ == "__main__":
             # Check if it's a weekday (Monday to Friday) and within market hours
             if (
                     0 <= current_weekday <= 4 and
-                    (current_hour == 9 and current_minute >= 0) or
-                    (9 < current_hour < 16) or
-                    (current_hour == 16 and current_minute == 0)
-            ):
+                    ((current_hour == 9 and current_minute >= 0) or
+                     (9 < current_hour < 16) or
+                     (current_hour == 16 and current_minute == 0))):
                 print("")
                 print(f" Eastern Time: {current_time.strftime('%I:%M:%S %p | %m-%d-%Y')} ")
                 print("")
