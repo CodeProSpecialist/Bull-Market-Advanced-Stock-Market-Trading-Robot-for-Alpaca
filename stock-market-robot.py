@@ -527,9 +527,11 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 print("")
 
                 # Add conditions based on your chosen values for MACD, RSI, and Volume
-                favorable_macd_condition = (historical_data['signal'].iloc[-1] > 0.5)
-                favorable_rsi_condition = (historical_data['rsi'].iloc[-1] < 70)  # You can adjust the RSI threshold
-                favorable_volume_condition = (historical_data['volume'].iloc[-1] > historical_data['volume'].mean())
+                # Add conditions based on your specified values for MACD, RSI, and Volume
+                favorable_macd_condition = (historical_data['signal'].iloc[-1] > 0.15)  # MACD signal is greater than 0.15
+                favorable_rsi_condition = (historical_data['rsi'].iloc[-1] > 70)  # RSI is greater than 70
+                # Favorable volume is greater than 15% less than the mean or more volume than 85% average volume.
+                favorable_volume_condition = (historical_data['volume'].iloc[-1] > 0.85 * historical_data['volume'].mean())
 
                 # THE BELOW PYTHON CODE WILL PURCHASE STOCKS
                 # AND IT WORKS CORRECTLY WHEN THE PRICE INCREASES ENOUGH TIMES.
