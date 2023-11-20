@@ -527,7 +527,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 print("")
 
                 # Add conditions based on your chosen values for MACD, RSI, and Volume
-                favorable_macd_condition = (historical_data['macd'].iloc[-1] > historical_data['signal'].iloc[-1])
+                favorable_macd_condition = (historical_data['signal'].iloc[-1] > 0.5)
                 favorable_rsi_condition = (historical_data['rsi'].iloc[-1] < 70)  # You can adjust the RSI threshold
                 favorable_volume_condition = (historical_data['volume'].iloc[-1] > historical_data['volume'].mean())
 
