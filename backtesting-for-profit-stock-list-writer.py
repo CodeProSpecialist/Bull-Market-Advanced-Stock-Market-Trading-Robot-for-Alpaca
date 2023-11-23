@@ -1,11 +1,10 @@
 import yfinance as yf
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 import time
-from datetime import datetime
 import pytz
 
 # Function to check if a stock has increased in value by 10%
-def has_increased_by_10_percent(symbol, start_value, end_value):
+def has_increased_by_10_percent(start_value, end_value):
     return (end_value - start_value) / start_value >= 0.1
 
 # Function to get the current date and time in Eastern Time (ET)
@@ -37,46 +36,51 @@ while True:
 
         # Perform backtesting for each stock symbol
         for symbol in stock_symbols:
-            # Fetch historical data using yfinance
-            data = yf.download(symbol, start=start_date, end=end_date)
+            try:
+                # Fetch historical data using yfinance
+                data = yf.download(symbol, start=start_date, end=end_date)
 
-            # Calculate the cash allocation per stock
-            cash_per_stock = 300
+                # Calculate the cash allocation per stock
+                cash_per_stock = 300
 
-            # Calculate the start value of each stock by multiplying the cash allocation by the opening price on the start date
-            start_value = data.loc[start_date]['Open'] * cash_per_stock
+                # Calculate the start value of each stock by multiplying the cash allocation by the opening price on the start date
+                start_value = data.loc[start_date]['Open'] * cash_per_stock
 
-            # Calculate the end value of each stock by multiplying the cash allocation by the closing price on the end date
-            end_value = data.loc[end_date]['Close'] * cash_per_stock
+                # Calculate the end value of each stock by multiplying the cash allocation by the closing price on the end date
+                end_value = data.loc[end_date]['Close'] * cash_per_stock
 
-            # Calculate the total price change in dollars
-            total_price_change = end_value - start_value
+                # Calculate the total price change in dollars
+                total_price_change = end_value - start_value
 
-            # Calculate the total percentage of price change
-            percentage_change = ((end_value - start_value) / start_value) * 100
+                # Calculate the total percentage of price change
+                percentage_change = (total_price_change / start_value) * 100
 
-            # Print the backtesting details to inform the user
-            print(f"Backtesting Dates: {start_date} to {end_date}")
-            print(f"Stock Symbol: {symbol}")
-            print(f"Start Price Value: {start_value}")
-            print(f"End Price Value: {end_value}")
-            print(f"Total Price Change: {total_price_change:.2f} dollars")
-            print(f"Percentage Change: {percentage_change:.2f}%")
-            print("")
-
-            # Check if the stock has increased in value by 10%
-            if has_increased_by_10_percent(symbol, start_value, end_value):
-                # Print a message to inform the user before writing the stock symbol to the output file
-                print("Stock symbol with 10% or greater profit:")
-                print(symbol)
+                # Print the backtesting details to inform the user
+                print(f"Backtesting Dates: {start_date} to {end_date}")
+                print(f"Stock Symbol: {symbol}")
+                print(f"Start Price Value: {start_value}")
+                print(f"End Price Value: {end_value}")
+                print(f"Total Price Change: {total_price_change:.2f} dollars")
+                print(f"Percentage Change: {percentage_change:.2f}%")
                 print("")
 
-                # Append the stock symbol to the output file
-                with open("electricity-or-utility-stocks-to-buy-list.txt", "a") as output_file:
-                    output_file.write(symbol + "\n")
+                # Check if the stock has increased in value by 10%
+                if has_increased_by_10_percent(start_value, end_value):
+                    # Print a message to inform the user before writing the stock symbol to the output file
+                    print("Stock symbol with 10% or greater profit:")
+                    print(symbol)
+                    print("")
 
-            # Introduce a 2-second delay before moving on to the next stock symbol
-            time.sleep(2)
+                    # Append the stock symbol to the output file
+                    with open("electricity-or-utility-stocks-to-buy-list.txt", "a") as output_file:
+                        output_file.write(symbol + "\n")
+
+                # Introduce a 2-second delay before moving on to the next stock symbol
+                time.sleep(2)
+
+            except Exception as stock_error:
+                print(f"An error occurred for stock {symbol}: {stock_error}")
+                print("Moving on to the next stock...\n")
 
         # Print a message to inform the user that the 10% or greater profit stocks are being written to the list of stocks to buy
         print("The following stocks with 10% or greater profit are being written to the list of stocks to buy:")
