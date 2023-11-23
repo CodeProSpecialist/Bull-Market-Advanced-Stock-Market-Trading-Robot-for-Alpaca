@@ -106,6 +106,9 @@ while True:
             print(f"Adjusted End Date: {end_date}")
             print("")
 
+            # Break out of the loop after adjusting the dates
+            break
+
         # Read the list of stock symbols from the text file
         with open("list-of-stock-symbols-to-scan.txt", "r") as file:
             stock_symbols = file.read().splitlines()
