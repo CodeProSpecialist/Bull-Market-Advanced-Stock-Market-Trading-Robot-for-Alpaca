@@ -101,8 +101,8 @@ while True:
             # Display the updated date header
             print(f"Today's data in Eastern Time (ET): {get_current_time()}")
 
-            # Break the program after adjusting the start_date and end_date
-            break
+            # continue the program to the next section after adjusting the start_date and end_date
+            continue
         else:
             # Read the list of stock symbols from the text file
             with open("list-of-stock-symbols-to-scan.txt", "r") as file:
