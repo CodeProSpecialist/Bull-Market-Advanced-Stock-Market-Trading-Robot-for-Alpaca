@@ -16,9 +16,16 @@ def is_market_holiday():
     # Generate the list of holidays for the current year
     holidays = []
     for month in range(1, 13):
-        for day in calendar.monthcalendar(current_year, month):
-            if day[month - 1] != 0:
-                holidays.append((month, day[month - 1]))
+        month_cal = calendar.monthcalendar(current_year, month)
+        # Check if the month has at least two weeks
+        if len(month_cal) >= 2:
+            # Get the last week of the month
+            last_week = month_cal[-1]
+            # Check if the last week has days belonging to the next month
+            if last_week[0] != 0:
+                holidays.append((month, last_week[0]))
+            if last_week[1] != 0:
+                holidays.append((month, last_week[1]))
 
     # Additional dates for early closures
     early_closure_dates = [
