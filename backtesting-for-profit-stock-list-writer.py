@@ -83,7 +83,7 @@ start_date = end_date - timedelta(days=14)  # Set start date to 14 days ago
 
 while True:
     try:
-        # Display the date header that was accidentally removed
+        # Display the date header
         print(f"Today's data in Eastern Time (ET): {get_current_time()}")
 
         # Skip fetching data if today is a market holiday or early closure
@@ -98,11 +98,8 @@ while True:
                 start_date -= timedelta(days=1)
                 end_date -= timedelta(days=1)
 
-            # Display the updated date header
-            print(f"Today's data in Eastern Time (ET): {get_current_time()}")
-
-            # continue the program to the next section after adjusting the start_date and end_date
-            continue
+            # Break out of the loop after adjusting the dates
+            break
         else:
             # Read the list of stock symbols from the text file
             with open("list-of-stock-symbols-to-scan.txt", "r") as file:
