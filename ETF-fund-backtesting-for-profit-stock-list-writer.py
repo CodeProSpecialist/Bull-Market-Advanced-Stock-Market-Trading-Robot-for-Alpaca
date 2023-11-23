@@ -104,8 +104,9 @@ while True:
             # Calculate the time until the next market close
             time_until_next_run = (end_time - current_time).seconds
 
-            # Display the time of the next run
-            print(f"Next run in {time_until_next_run} seconds. Sleeping until then...\n")
+            hours, remainder = divmod(time_until_next_run, 3600)
+            minutes, _ = divmod(remainder, 60)
+            print(f"Next run in {hours} hours and {minutes} minutes. Sleeping until then...\n")
 
             # Sleep for 30 seconds
             time.sleep(30)
