@@ -76,14 +76,6 @@ def calculate_end_date(today):
 
 while True:
     try:
-        # Skip fetching data if today is a market holiday or early closure
-        today = date.today()
-        if is_market_holiday(today):
-            print("Today is a market holiday or early closure. Skipping data fetching.")
-            # Wait for 30 seconds before repeating the loop
-            time.sleep(30)
-            continue
-
         # Read the list of stock symbols from the text file
         with open("list-of-stock-symbols-to-scan.txt", "r") as file:
             stock_symbols = file.read().splitlines()
@@ -93,7 +85,7 @@ while True:
         print("")
 
         # Calculate the end date as today's date or the last weekday if it's a Saturday, Sunday, or a market holiday
-        end_date = calculate_end_date(today)
+        end_date = calculate_end_date(date.today())
 
         # Calculate the start date as 2 weeks (10 trading days) before the end date
         start_date = end_date - timedelta(days=10)
@@ -103,8 +95,17 @@ while True:
             start_date -= timedelta(days=1)
 
         # Ensure that the end date is not in the future
-        if end_date > today:
-            end_date = today
+        if end_date > date.today():
+            end_date = date.today()
+
+        # Skip fetching data if today is a market holiday or early closure
+        if is_market_holiday(date.today()):
+            print("Today is a market holiday or early closure. Adjusting dates for data fetching.")
+            print(f"Adjusted Start Date: {start_date}")
+            print(f"Adjusted End Date: {end_date}\n")
+            # Wait for 30 seconds before repeating the loop
+            time.sleep(30)
+            continue
 
         # Perform backtesting for each stock symbol
         for symbol in stock_symbols:
@@ -158,11 +159,13 @@ while True:
                 print(f"An error occurred for stock {symbol}: {stock_error}")
                 print("Moving on to the next stock...\n")
 
-        # Print a message to inform the user that the 10% or greater profit stocks are being written to the list
-        print("The following stocks with 10% or greater profit are being written to the list of stocks to buy:\n")
-        # Print the list of stocks to buy from the output file
+        # Print a message to inform the user that the 10% or greater profit stocks are being written to the list of stocks to buy
+        print("The following stocks with 10% or greater profit are being written to the list of stocks to buy:")
         with open("electricity-or-utility-stocks-to-buy-list.txt", "r") as output_file:
-            print(output_file.read())
+            stocks_to_buy = output_file.read().splitlines()
+            for stock in stocks_to_buy:
+                print(stock)
+        print("")
 
         # Wait for 30 seconds before repeating the loop
         time.sleep(30)
