@@ -74,6 +74,7 @@ def handle_error():
 # Initialize start_date and end_date outside the loop
 end_date = date.today() - timedelta(days=1)  # Set end date to yesterday
 start_date = end_date - timedelta(days=14)  # Set start date to 14 days ago
+adjusted_for_holiday = False  # Flag to track if adjustment has been made
 
 while True:
     try:
@@ -83,17 +84,22 @@ while True:
         # Check if today is a market holiday or early closure
         today = date.today()
         if is_market_holiday(today):
-            print("Today is a market holiday or early closure. Adjusting dates for data fetching.")
-            print(f"Adjusted Start Date: {start_date}")
-            print(f"Adjusted End Date: {end_date}\n")
+            if not adjusted_for_holiday:
+                print("Today is a market holiday or early closure. Adjusting dates for data fetching.")
+                print(f"Adjusted Start Date: {start_date}")
+                print(f"Adjusted End Date: {end_date}\n")
 
-            # Change start_date and end_date to non-holiday dates
-            while is_market_holiday(start_date) or is_market_holiday(end_date):
-                start_date -= timedelta(days=1)
-                end_date -= timedelta(days=1)
+                # Change start_date and end_date to non-holiday dates
+                while is_market_holiday(start_date) or is_market_holiday(end_date):
+                    start_date -= timedelta(days=1)
+                    end_date -= timedelta(days=1)
 
-            # Continue to the next iteration of the main loop after adjusting the dates
-            continue
+                adjusted_for_holiday = True  # Set the flag to True after adjustment
+                # Continue to the next iteration of the main loop after adjusting the dates
+                continue
+        else:
+            # Reset the flag when the market is not closed
+            adjusted_for_holiday = False
 
         # Read the list of stock symbols from the text file
         with open("list-of-stock-symbols-to-scan.txt", "r") as file:
