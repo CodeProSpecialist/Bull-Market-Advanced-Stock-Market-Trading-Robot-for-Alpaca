@@ -72,12 +72,20 @@ def calculate_end_date(today):
 
     return end_date
 
+# Function to handle errors and restart the program
+def handle_error():
+    print("An error occurred. Restarting the program in 5 seconds...")
+    time.sleep(5)
+
 # Initialize start_date and end_date outside the loop
 end_date = date.today() - timedelta(days=1)  # Set end date to yesterday
 start_date = end_date - timedelta(days=14)  # Set start date to 14 days ago
 
 while True:
     try:
+        # Display the date header that was accidentally removed
+        print(f"Today's data in Eastern Time (ET): {get_current_time()}")
+
         # Skip fetching data if today is a market holiday or early closure
         today = date.today()
         if is_market_holiday(today):
@@ -89,6 +97,12 @@ while True:
             while is_market_holiday(start_date) or is_market_holiday(end_date):
                 start_date -= timedelta(days=1)
                 end_date -= timedelta(days=1)
+
+            # Display the updated date header
+            print(f"Today's data in Eastern Time (ET): {get_current_time()}")
+
+            # Break the program after adjusting the start_date and end_date
+            break
         else:
             # Read the list of stock symbols from the text file
             with open("list-of-stock-symbols-to-scan.txt", "r") as file:
@@ -142,23 +156,20 @@ while True:
                     print(f"Stock Symbol: {symbol}")
                     print(f"Start Price Value: {start_value}")
                     print(f"End Price Value: {end_value}")
-                    print(f"Total Price Change: {total_price_change:.2f} dollars")
-                    print(f"Percentage Change: {percentage_change:.2f}%")
-                    print("")
+                    print(f"Total Price Change: {total_price_change}")
+                    print(f"Percentage Change: {percentage_change:.2f}%\n")
 
                     # Check if the stock has increased in value by 10%
                     if has_increased_by_10_percent(start_value, end_value):
-                        # Print a message to inform the user before writing the stock symbol to the output file
-                        print("Stock symbol with 10% or greater profit:")
-                        print(symbol)
-                        print("")
-
                         # Append the stock symbol to the output file
                         with open("electricity-or-utility-stocks-to-buy-list.txt", "a") as output_file:
                             output_file.write(symbol + "\n")
 
-                        # Introduce a 2-second delay before moving on to the next stock symbol
-                        time.sleep(2)
+                        # Print a message indicating that the stock is being added to the list
+                        print(f"{symbol} has increased by 10% or more. Adding to the list of stocks to buy.\n")
+
+                    # Introduce a 2-second delay before moving on to the next stock symbol
+                    time.sleep(2)
 
                 except Exception as stock_error:
                     print(f"An error occurred for stock {symbol}: {stock_error}")
@@ -172,9 +183,12 @@ while True:
                     print(stock)
             print("")
 
-        # Wait for 30 seconds before repeating the loop
-        time.sleep(30)
+            # Wait for 30 seconds before repeating the loop
+            time.sleep(30)
 
     except KeyboardInterrupt:
         print("Program terminated by user.")
         break
+    except Exception as e:
+        handle_error()
+        continue
