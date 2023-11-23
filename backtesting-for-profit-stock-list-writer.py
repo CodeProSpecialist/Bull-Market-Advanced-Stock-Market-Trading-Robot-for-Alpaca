@@ -8,44 +8,48 @@ import calendar
 def has_increased_by_10_percent(start_value, end_value):
     return (end_value - start_value) / start_value >= 0.1
 
+
 # Function to check if today is a market holiday or an early market closure
-def is_market_holiday():
-    # Get the current year
-    current_year = date.today().year
-
-    # Generate the list of holidays for the current year
-    holidays = []
-    for month in range(1, 13):
-        month_cal = calendar.monthcalendar(current_year, month)
-        # Check if the month has at least two weeks
-        if len(month_cal) >= 2:
-            # Get the last week of the month
-            last_week = month_cal[-1]
-            # Check if the last week has days belonging to the next month
-            if last_week[0] != 0:
-                holidays.append((month, last_week[0]))
-            if last_week[1] != 0:
-                holidays.append((month, last_week[1]))
-
-    # Additional dates for early closures
-    early_closure_dates = [
-        (11, 24),  # The day after Thanksgiving (closes at 1 pm)
-        (12, 24),  # Christmas Eve (closes early if it falls on a weekday)
-        (7, 3)     # July 3 (closes early if both it and July 4 fall on a weekday)
+def is_market_holiday(today):
+    # Define market holidays and early closure days
+    market_holidays = [
+        date(today.year, 1, 2),    # New Year's Day (Observed)
+        date(today.year, 1, 16),   # Martin Luther King, Jr. Day
+        date(today.year, 2, 20),   # Presidents' Day/Washington's Birthday
+        date(today.year, 4, 7),    # Good Friday
+        date(today.year, 5, 26),   # Friday Before Memorial Day
+        date(today.year, 5, 29),   # Memorial Day
+        date(today.year, 6, 19),   # Juneteenth National Independence Day
+        date(today.year, 7, 3),    # Monday Before Independence Day
+        date(today.year, 7, 4),    # Independence Day
+        date(today.year, 9, 4),    # Labor Day
+        date(today.year, 10, 9),   # Columbus Day
+        date(today.year, 11, 10),  # Veterans Day (Observed)
+        date(today.year, 11, 23),  # Thanksgiving Day
+        date(today.year, 11, 24),  # Day After Thanksgiving
+        date(today.year, 12, 25),  # Christmas Day
     ]
 
-    today = date.today()
-
     # Check if today is a market holiday
-    is_holiday = (today.month, today.day) in holidays
+    if today in market_holidays:
+        return True
 
-    # Check if today is an early closure date
-    is_early_closure = (today.month, today.day) in early_closure_dates
+    # Check for early market closure days
+    if today.weekday() == 4:  # Friday
+        # The day after Thanksgiving
+        if today + timedelta(days=1) in market_holidays:
+            return True
 
-    # Check if the current time is after 1 pm on an early closure day
-    is_after_1pm_on_early_closure = is_early_closure and datetime.now().time() >= datetime.strptime("13:00", "%H:%M").time()
+    # Check for early closure on Maundy Thursday
+    if today == date(today.year, 4, 6):
+        return True
 
-    return is_holiday or is_after_1pm_on_early_closure
+    # Check for early closure on the day before Independence Day
+    if today == date(today.year, 7, 3):
+        return True
+
+    return False
+
 
 # Function to get the current date and time in Eastern Time (ET)
 def get_current_time():
@@ -55,19 +59,20 @@ def get_current_time():
 
 # Function to calculate the end date considering weekends and holidays
 def calculate_end_date(today):
+    # Initialize end date as today
     end_date = today
 
-    # If today is a Saturday or Sunday, set end date to the last weekday (Friday)
-    if today.weekday() >= 5:
-        days_to_subtract = today.weekday() - 4
-        end_date = today - timedelta(days=days_to_subtract)
+    # Skip weekends and market holidays
+    while end_date.weekday() >= 5 or is_market_holiday(end_date):
+        end_date -= timedelta(days=1)
 
     return end_date
 
 while True:
     try:
         # Skip fetching data if today is a market holiday or early closure
-        if is_market_holiday():
+        today = date.today()
+        if is_market_holiday(today):
             print("Today is a market holiday or early closure. Skipping data fetching.")
             # Wait for 30 seconds before repeating the loop
             time.sleep(30)
@@ -81,8 +86,7 @@ while True:
         print(f"Today's data in Eastern Time (ET): {get_current_time()}")
         print("")
 
-        # Calculate the end date as today's date or the last weekday if it's a Saturday or Sunday
-        today = date.today()
+        # Calculate the end date as today's date or the last weekday if it's a Saturday, Sunday, or a market holiday
         end_date = calculate_end_date(today)
 
         # Calculate the start date as 2 weeks (10 trading days) before the end date
@@ -101,6 +105,10 @@ while True:
             try:
                 # Fetch historical data using yfinance
                 data = yf.download(symbol, start=start_date, end=end_date)
+
+                if data.empty:
+                    print(f"No data available for {symbol}. Moving on to the next stock...\n")
+                    continue
 
                 # Calculate the cash allocation per stock
                 cash_per_stock = 300
