@@ -74,7 +74,7 @@ while True:
                 stock_symbols = file.read().splitlines()
 
             # Fetch stock data and write symbols that have increased by 10% or more to the output file
-            with open("electricity-or-utility-stocks-to-buy-list.txt", "a") as output_file:
+            with open("electricity-or-utility-stocks-to-buy-list.txt", "w") as output_file:
                 for symbol in stock_symbols:
                     stock = yf.Ticker(symbol)
                     print(f"Downloading the historical data for {symbol}...")
