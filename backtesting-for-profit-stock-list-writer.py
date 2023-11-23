@@ -4,27 +4,27 @@ import time
 import pytz
 import calendar
 
+global end_date
 
 # Function to check if a stock has increased in value by 10%
 def has_increased_by_10_percent(start_value, end_value):
     return (end_value - start_value) / start_value >= 0.1
 
-
 # Function to check if today is a market holiday or an early market closure
 def is_market_holiday(today):
     # Define market holidays and early closure days
     market_holidays = [
-        date(today.year, 1, 2),  # New Year's Day (Observed)
-        date(today.year, 1, 16),  # Martin Luther King, Jr. Day
-        date(today.year, 2, 20),  # Presidents' Day/Washington's Birthday
-        date(today.year, 4, 7),  # Good Friday
-        date(today.year, 5, 26),  # Friday Before Memorial Day
-        date(today.year, 5, 29),  # Memorial Day
-        date(today.year, 6, 19),  # Juneteenth National Independence Day
-        date(today.year, 7, 3),  # Monday Before Independence Day
-        date(today.year, 7, 4),  # Independence Day
-        date(today.year, 9, 4),  # Labor Day
-        date(today.year, 10, 9),  # Columbus Day
+        date(today.year, 1, 2),    # New Year's Day (Observed)
+        date(today.year, 1, 16),   # Martin Luther King, Jr. Day
+        date(today.year, 2, 20),   # Presidents' Day/Washington's Birthday
+        date(today.year, 4, 7),    # Good Friday
+        date(today.year, 5, 26),   # Friday Before Memorial Day
+        date(today.year, 5, 29),   # Memorial Day
+        date(today.year, 6, 19),   # Juneteenth National Independence Day
+        date(today.year, 7, 3),    # Monday Before Independence Day
+        date(today.year, 7, 4),    # Independence Day
+        date(today.year, 9, 4),    # Labor Day
+        date(today.year, 10, 9),   # Columbus Day
         date(today.year, 11, 10),  # Veterans Day (Observed)
         date(today.year, 11, 23),  # Thanksgiving Day
         date(today.year, 11, 24),  # Day After Thanksgiving
@@ -51,13 +51,11 @@ def is_market_holiday(today):
 
     return False
 
-
 # Function to get the current date and time in Eastern Time (ET)
 def get_current_time():
     eastern_tz = pytz.timezone('US/Eastern')
     current_time = datetime.now(eastern_tz)
     return current_time.strftime("%A, %B %d, %Y %I:%M:%S %p")
-
 
 # Function to calculate the end date considering weekends and holidays
 def calculate_end_date(today):
@@ -76,38 +74,15 @@ def calculate_end_date(today):
 
     return end_date
 
-
-# Function to calculate the start date considering weekends
-def calculate_start_date(end_date):
-    # Initialize start date as 2 weeks (10 trading days) before the end date
-    start_date = end_date - timedelta(days=10)
-
-    # Skip weekends
-    while start_date.weekday() >= 5:
-        start_date -= timedelta(days=1)
-
-    return start_date
-
-
 while True:
     try:
         # Skip fetching data if today is a market holiday or early closure
         today = date.today()
         if is_market_holiday(today):
-            print("Today is a market holiday or early closure. Adjusting dates for data fetching.")
-
-            # Calculate the end date as the next available trading day
-            end_date = calculate_end_date(today)
-
-            # Calculate the start date as 2 weeks (10 trading days) before the adjusted end date
-            start_date = calculate_start_date(end_date)
-
-            print(f"Adjusted Start Date: {start_date}")
-            print(f"Adjusted End Date: {end_date}")
-            print("")
-
-            # Break out of the loop after adjusting the dates
-            break
+            print("Today is a market holiday or early closure. Skipping data fetching.")
+            # Wait for 30 seconds before repeating the loop
+            time.sleep(30)
+            continue
 
         # Read the list of stock symbols from the text file
         with open("list-of-stock-symbols-to-scan.txt", "r") as file:
@@ -117,9 +92,82 @@ while True:
         print(f"Today's data in Eastern Time (ET): {get_current_time()}")
         print("")
 
-        # ... (Rest of the code remains unchanged)
+        # Calculate the end date as today's date or the last weekday if it's a Saturday, Sunday, or a market holiday
+        end_date = calculate_end_date(today)
+
+        # Calculate the start date as 2 weeks (10 trading days) before the end date
+        start_date = end_date - timedelta(days=10)
+
+        # Adjust start date if it falls on a weekend
+        while start_date.weekday() >= 5:
+            start_date -= timedelta(days=1)
+
+        # Ensure that the end date is not in the future
+        if end_date > today:
+            end_date = today
+
+        # Perform backtesting for each stock symbol
+        for symbol in stock_symbols:
+            try:
+                # Fetch historical data using yfinance
+                data = yf.download(symbol, start=start_date, end=end_date)
+
+                if data.empty:
+                    print(f"No data available for {symbol}. Moving on to the next stock...\n")
+                    continue
+
+                # Calculate the cash allocation per stock
+                cash_per_stock = 300
+
+                # Calculate the start value of each stock by multiplying the cash allocation by the opening price on the start date
+                start_value = data.loc[start_date]['Open'] * cash_per_stock
+
+                # Calculate the end value of each stock by multiplying the cash allocation by the closing price on the end date
+                end_value = data.loc[end_date]['Close'] * cash_per_stock
+
+                # Calculate the total price change in dollars
+                total_price_change = end_value - start_value
+
+                # Calculate the total percentage of price change
+                percentage_change = (total_price_change / start_value) * 100
+
+                # Print the backtesting details to inform the user
+                print(f"Backtesting Dates: {start_date} to {end_date}")
+                print(f"Stock Symbol: {symbol}")
+                print(f"Start Price Value: {start_value}")
+                print(f"End Price Value: {end_value}")
+                print(f"Total Price Change: {total_price_change:.2f} dollars")
+                print(f"Percentage Change: {percentage_change:.2f}%")
+                print("")
+
+                # Check if the stock has increased in value by 10%
+                if has_increased_by_10_percent(start_value, end_value):
+                    # Print a message to inform the user before writing the stock symbol to the output file
+                    print("Stock symbol with 10% or greater profit:")
+                    print(symbol)
+                    print("")
+
+                    # Append the stock symbol to the output file
+                    with open("electricity-or-utility-stocks-to-buy-list.txt", "a") as output_file:
+                        output_file.write(symbol + "\n")
+
+                # Introduce a 2-second delay before moving on to the next stock symbol
+                time.sleep(2)
+
+            except Exception as stock_error:
+                print(f"An error occurred for stock {symbol}: {stock_error}")
+                print("Moving on to the next stock...\n")
+
+        # Print a message to inform the user that the 10% or greater profit stocks are being written to the list
+        print("The following stocks with 10% or greater profit are being written to the list of stocks to buy:\n")
+        # Print the list of stocks to buy from the output file
+        with open("electricity-or-utility-stocks-to-buy-list.txt", "r") as output_file:
+            print(output_file.read())
+
+        # Wait for 30 seconds before repeating the loop
+        time.sleep(30)
 
     except Exception as e:
         print(f"An error occurred: {e}")
-        print("Restarting in 5 seconds...")
-        time.sleep(5)
+        # Wait for 30 seconds before repeating the loop
+        time.sleep(30)
