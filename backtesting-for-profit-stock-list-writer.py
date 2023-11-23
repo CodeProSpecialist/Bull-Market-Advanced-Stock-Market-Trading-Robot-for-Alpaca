@@ -73,8 +73,8 @@ def calculate_end_date(today):
     return end_date
 
 # Initialize start_date and end_date outside the loop
-start_date = date.today() - timedelta(days=14)  # Set start date to 14 days ago
-end_date = calculate_end_date(start_date)
+end_date = date.today() - timedelta(days=1)  # Set end date to yesterday
+start_date = end_date - timedelta(days=14)  # Set start date to 14 days ago
 
 while True:
     try:
@@ -102,7 +102,7 @@ while True:
             end_date = calculate_end_date(today)
 
             # Calculate the start date as 14 days ago
-            start_date = today - timedelta(days=14)
+            start_date = end_date - timedelta(days=14)
 
             # Adjust start date if it falls on a weekend
             while start_date.weekday() >= 5:
@@ -157,8 +157,8 @@ while True:
                         with open("electricity-or-utility-stocks-to-buy-list.txt", "a") as output_file:
                             output_file.write(symbol + "\n")
 
-                    # Introduce a 2-second delay before moving on to the next stock symbol
-                    time.sleep(2)
+                        # Introduce a 2-second delay before moving on to the next stock symbol
+                        time.sleep(2)
 
                 except Exception as stock_error:
                     print(f"An error occurred for stock {symbol}: {stock_error}")
