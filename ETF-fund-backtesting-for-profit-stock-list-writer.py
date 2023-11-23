@@ -73,30 +73,41 @@ while True:
             with open("list-of-stock-symbols-to-scan.txt", "r") as file:
                 stock_symbols = file.read().splitlines()
 
-            # Fetch stock data and write symbols that have increased by 10% or more to the output file
+            # Initialize a list to store symbols that meet the criteria
+            symbols_to_write = []
+
+            # Fetch stock data and append symbols that have increased by 10% or more to the list
+            for symbol in stock_symbols:
+                stock = yf.Ticker(symbol)
+                print(f"Downloading the historical data for {symbol}...")
+
+                # Download last 14 days of data for the stock
+                stock_data = stock.history(start=start_time, end=end_time)
+
+                # Example backtesting logic (replace with your own)
+                if not stock_data.empty:
+                    start_price = stock_data["Close"].iloc[0]
+                    end_price = stock_data["Close"].iloc[-1]
+
+                    # Check if the stock has increased in value by 10%
+                    if has_increased_by_10_percent(start_price, end_price):
+                        # Print the symbol before adding it to the list
+                        print(f"{symbol} has increased by 10% or more. Adding to the list...\n")
+
+                        # Append the symbol to the list
+                        symbols_to_write.append(symbol)
+
+                # Introduce a delay before moving on to the next stock symbol
+                time.sleep(2)
+
+            # Write all symbols to the output file
             with open("electricity-or-utility-stocks-to-buy-list.txt", "w") as output_file:
-                for symbol in stock_symbols:
-                    stock = yf.Ticker(symbol)
-                    print(f"Downloading the historical data for {symbol}...")
+                # Erase the output file before writing to it
+                pass
 
-                    # Download last 14 days of data for the stock
-                    stock_data = stock.history(start=start_time, end=end_time)
-
-                    # Example backtesting logic (replace with your own)
-                    if not stock_data.empty:
-                        start_price = stock_data["Close"].iloc[0]
-                        end_price = stock_data["Close"].iloc[-1]
-
-                        # Check if the stock has increased in value by 10%
-                        if has_increased_by_10_percent(start_price, end_price):
-                            # Print the symbol before adding it to the output file
-                            print(f"{symbol} has increased by 10% or more. Adding to the list...\n")
-
-                            # Write the symbol to the output file
-                            output_file.write(f"{symbol}\n")
-
-                    # Introduce a delay before moving on to the next stock symbol
-                    time.sleep(2)
+                # Write all symbols to the output file
+                for symbol in symbols_to_write:
+                    output_file.write(f"{symbol}\n")
 
             # Calculate the next market close time
             end_time = calculate_end_time(current_time)
