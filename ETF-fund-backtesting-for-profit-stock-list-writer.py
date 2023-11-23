@@ -55,8 +55,8 @@ while True:
         print(formatted_current_time)
 
         # Check if it's within the specified market hours
-        # if is_market_hours(current_time):
-        if 1 == 1:  # debug code to run the program outside of market hours
+        # if is_market_hours(current_time):     # uncomment this line to only run during market hours.
+        if 1 == 1:     # comment out this line if you uncomment the line above.
 
             print("Running the program...\n")
 
