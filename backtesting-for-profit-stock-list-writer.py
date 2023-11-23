@@ -4,8 +4,6 @@ import time
 import pytz
 import calendar
 
-global end_date
-
 # Function to check if a stock has increased in value by 10%
 def has_increased_by_10_percent(start_value, end_value):
     return (end_value - start_value) / start_value >= 0.1
@@ -74,103 +72,109 @@ def calculate_end_date(today):
 
     return end_date
 
+# Initialize start_date and end_date outside the loop
+start_date = date.today()
+end_date = calculate_end_date(start_date)
+
 while True:
     try:
-        # Read the list of stock symbols from the text file
-        with open("list-of-stock-symbols-to-scan.txt", "r") as file:
-            stock_symbols = file.read().splitlines()
-
-        # Print today's date and time in Eastern Time (ET)
-        print(f"Today's data in Eastern Time (ET): {get_current_time()}")
-        print("")
-
-        # Calculate the end date as today's date or the last weekday if it's a Saturday, Sunday, or a market holiday
-        end_date = calculate_end_date(date.today())
-
-        # Calculate the start date as 2 weeks (10 trading days) before the end date
-        start_date = end_date - timedelta(days=10)
-
-        # Adjust start date if it falls on a weekend
-        while start_date.weekday() >= 5:
-            start_date -= timedelta(days=1)
-
-        # Ensure that the end date is not in the future
-        if end_date > date.today():
-            end_date = date.today()
-
         # Skip fetching data if today is a market holiday or early closure
-        if is_market_holiday(date.today()):
+        today = date.today()
+        if is_market_holiday(today):
             print("Today is a market holiday or early closure. Adjusting dates for data fetching.")
             print(f"Adjusted Start Date: {start_date}")
             print(f"Adjusted End Date: {end_date}\n")
-            # Wait for 30 seconds before repeating the loop
-            time.sleep(30)
-            continue
 
-        # Perform backtesting for each stock symbol
-        for symbol in stock_symbols:
-            try:
-                # Fetch historical data using yfinance
-                data = yf.download(symbol, start=start_date, end=end_date)
+            # Change start_date and end_date to non-holiday dates
+            while is_market_holiday(start_date) or is_market_holiday(end_date):
+                start_date -= timedelta(days=1)
+                end_date -= timedelta(days=1)
+        else:
+            # Read the list of stock symbols from the text file
+            with open("list-of-stock-symbols-to-scan.txt", "r") as file:
+                stock_symbols = file.read().splitlines()
 
-                if data.empty:
-                    print(f"No data available for {symbol}. Moving on to the next stock...\n")
-                    continue
+            # Print today's date and time in Eastern Time (ET)
+            print(f"Today's data in Eastern Time (ET): {get_current_time()}")
+            print("")
 
-                # Calculate the cash allocation per stock
-                cash_per_stock = 300
+            # Calculate the end date as today's date or the last weekday if it's a Saturday, Sunday, or a market holiday
+            end_date = calculate_end_date(today)
 
-                # Calculate the start value of each stock by multiplying the cash allocation by the opening price on the start date
-                start_value = data.loc[start_date]['Open'] * cash_per_stock
+            # Calculate the start date as 2 weeks (10 trading days) before the end date
+            start_date = end_date - timedelta(days=10)
 
-                # Calculate the end value of each stock by multiplying the cash allocation by the closing price on the end date
-                end_value = data.loc[end_date]['Close'] * cash_per_stock
+            # Adjust start date if it falls on a weekend
+            while start_date.weekday() >= 5:
+                start_date -= timedelta(days=1)
 
-                # Calculate the total price change in dollars
-                total_price_change = end_value - start_value
+            # Ensure that the end date is not in the future
+            if end_date > today:
+                end_date = today
 
-                # Calculate the total percentage of price change
-                percentage_change = (total_price_change / start_value) * 100
+            # Perform backtesting for each stock symbol
+            for symbol in stock_symbols:
+                try:
+                    # Fetch historical data using yfinance
+                    data = yf.download(symbol, start=start_date, end=end_date)
 
-                # Print the backtesting details to inform the user
-                print(f"Backtesting Dates: {start_date} to {end_date}")
-                print(f"Stock Symbol: {symbol}")
-                print(f"Start Price Value: {start_value}")
-                print(f"End Price Value: {end_value}")
-                print(f"Total Price Change: {total_price_change:.2f} dollars")
-                print(f"Percentage Change: {percentage_change:.2f}%")
-                print("")
+                    if data.empty:
+                        print(f"No data available for {symbol}. Moving on to the next stock...\n")
+                        continue
 
-                # Check if the stock has increased in value by 10%
-                if has_increased_by_10_percent(start_value, end_value):
-                    # Print a message to inform the user before writing the stock symbol to the output file
-                    print("Stock symbol with 10% or greater profit:")
-                    print(symbol)
+                    # Calculate the cash allocation per stock
+                    cash_per_stock = 300
+
+                    # Calculate the start value of each stock by multiplying the cash allocation by the opening price on the start date
+                    start_value = data.loc[start_date]['Open'] * cash_per_stock
+
+                    # Calculate the end value of each stock by multiplying the cash allocation by the closing price on the end date
+                    end_value = data.loc[end_date]['Close'] * cash_per_stock
+
+                    # Calculate the total price change in dollars
+                    total_price_change = end_value - start_value
+
+                    # Calculate the total percentage of price change
+                    percentage_change = (total_price_change / start_value) * 100
+
+                    # Print the backtesting details to inform the user
+                    print(f"Backtesting Dates: {start_date} to {end_date}")
+                    print(f"Stock Symbol: {symbol}")
+                    print(f"Start Price Value: {start_value}")
+                    print(f"End Price Value: {end_value}")
+                    print(f"Total Price Change: {total_price_change:.2f} dollars")
+                    print(f"Percentage Change: {percentage_change:.2f}%")
                     print("")
 
-                    # Append the stock symbol to the output file
-                    with open("electricity-or-utility-stocks-to-buy-list.txt", "a") as output_file:
-                        output_file.write(symbol + "\n")
+                    # Check if the stock has increased in value by 10%
+                    if has_increased_by_10_percent(start_value, end_value):
+                        # Print a message to inform the user before writing the stock symbol to the output file
+                        print("Stock symbol with 10% or greater profit:")
+                        print(symbol)
+                        print("")
 
-                # Introduce a 2-second delay before moving on to the next stock symbol
-                time.sleep(2)
+                        # Append the stock symbol to the output file
+                        with open("electricity-or-utility-stocks-to-buy-list.txt", "a") as output_file:
+                            output_file.write(symbol + "\n")
 
-            except Exception as stock_error:
-                print(f"An error occurred for stock {symbol}: {stock_error}")
-                print("Moving on to the next stock...\n")
+                    # Introduce a 2-second delay before moving on to the next stock symbol
+                    time.sleep(2)
 
-        # Print a message to inform the user that the 10% or greater profit stocks are being written to the list of stocks to buy
-        print("The following stocks with 10% or greater profit are being written to the list of stocks to buy:")
-        with open("electricity-or-utility-stocks-to-buy-list.txt", "r") as output_file:
-            stocks_to_buy = output_file.read().splitlines()
-            for stock in stocks_to_buy:
-                print(stock)
-        print("")
+                except Exception as stock_error:
+                    print(f"An error occurred for stock {symbol}: {stock_error}")
+                    print("Moving on to the next stock...\n")
+
+            # Print a message to inform the user that the 10% or greater profit stocks are being written to the list of stocks to buy
+            print("The following stocks with 10% or greater profit are being written to the list of stocks to buy:")
+            with open("electricity-or-utility-stocks-to-buy-list.txt", "r") as output_file:
+                stocks_to_buy = output_file.read().splitlines()
+                for stock in stocks_to_buy:
+                    print(stock)
+            print("")
 
         # Wait for 30 seconds before repeating the loop
         time.sleep(30)
 
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        # Wait for 30 seconds before repeating the loop
-        time.sleep(30)
+    except KeyboardInterrupt:
+        print("Program terminated by user.")
+        break
