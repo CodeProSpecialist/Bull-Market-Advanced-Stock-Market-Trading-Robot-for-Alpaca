@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 import time
 import pytz
 
-
 # Function to check if it's within the specified market hours
 def is_market_hours(current_time):
     market_open_time = current_time.replace(hour=9, minute=0, second=0, microsecond=0)
@@ -11,18 +10,15 @@ def is_market_hours(current_time):
 
     return current_time.weekday() < 5 and market_open_time <= current_time <= market_close_time
 
-
 # Function to check if a stock has increased in value by 10%
 def has_increased_by_10_percent(start_value, end_value):
     return (end_value - start_value) / start_value >= 0.1
-
 
 # Function to get the current date and time in US/Eastern timezone
 def get_current_time():
     eastern_tz = pytz.timezone('US/Eastern')
     now = datetime.now(eastern_tz)
     return now
-
 
 # Function to calculate the end time considering weekdays and market hours
 def calculate_end_time(current_time):
@@ -37,17 +33,14 @@ def calculate_end_time(current_time):
 
     return end_time
 
-
 # Function to calculate the start time as 14 days before the end time
 def calculate_start_time(end_time):
     return end_time - timedelta(days=14)
-
 
 # Function to handle errors and restart the program
 def handle_error():
     print("An error occurred. Restarting the program in 5 seconds...")
     time.sleep(5)
-
 
 # Initialize end_time outside the loop
 end_time = calculate_end_time(get_current_time())
@@ -62,9 +55,8 @@ while True:
         print(formatted_current_time)
 
         # Check if it's within the specified market hours
-        #if is_market_hours(current_time):
-
-        if 1 == 1:     # debug code to run the program outside of market hours
+        # if is_market_hours(current_time):
+        if 1 == 1:  # debug code to run the program outside of market hours
 
             print("Running the program...\n")
 
@@ -106,17 +98,26 @@ while True:
                     # Introduce a delay before moving on to the next stock symbol
                     time.sleep(2)
 
+            # Calculate the next market close time
+            end_time = calculate_end_time(current_time)
+
+            # Calculate the time until the next market close
+            time_until_next_run = (end_time - current_time).seconds
+
+            # Display the time of the next run
+            print(f"Next run in {time_until_next_run} seconds. Sleeping until then...\n")
+
+            # Sleep for 30 seconds
+            time.sleep(30)
+
+            # Optionally, you can remove the line below if you want to display the time again after waking up
+            # print(f"Next run scheduled at {end_time}. Resuming program...\n")
+
             # Print a message to inform the user that the program has completed for the current iteration
             print("Program completed for the current iteration.\n")
 
         else:
             print("The program is not running outside market hours. Waiting for the next market open...\n")
-
-        # Calculate the next market close time
-        end_time = calculate_end_time(current_time)
-
-        # Wait until the next market close time before repeating the loop
-        time.sleep((end_time - current_time).seconds)
 
     except KeyboardInterrupt:
         print("Program terminated by user.")
