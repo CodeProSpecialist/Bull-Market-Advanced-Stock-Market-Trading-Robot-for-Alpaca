@@ -2,10 +2,43 @@ import yfinance as yf
 from datetime import date, timedelta, datetime
 import time
 import pytz
+import calendar
 
 # Function to check if a stock has increased in value by 10%
 def has_increased_by_10_percent(start_value, end_value):
     return (end_value - start_value) / start_value >= 0.1
+
+# Function to check if today is a market holiday or an early market closure
+def is_market_holiday():
+    # Get the current year
+    current_year = date.today().year
+
+    # Generate the list of holidays for the current year
+    holidays = []
+    for month in range(1, 13):
+        for day in calendar.monthcalendar(current_year, month):
+            if day[month - 1] != 0:
+                holidays.append((month, day[month - 1]))
+
+    # Additional dates for early closures
+    early_closure_dates = [
+        (11, 24),  # The day after Thanksgiving (closes at 1 pm)
+        (12, 24),  # Christmas Eve (closes early if it falls on a weekday)
+        (7, 3)     # July 3 (closes early if both it and July 4 fall on a weekday)
+    ]
+
+    today = date.today()
+
+    # Check if today is a market holiday
+    is_holiday = (today.month, today.day) in holidays
+
+    # Check if today is an early closure date
+    is_early_closure = (today.month, today.day) in early_closure_dates
+
+    # Check if the current time is after 1 pm on an early closure day
+    is_after_1pm_on_early_closure = is_early_closure and datetime.now().time() >= datetime.strptime("13:00", "%H:%M").time()
+
+    return is_holiday or is_after_1pm_on_early_closure
 
 # Function to get the current date and time in Eastern Time (ET)
 def get_current_time():
@@ -13,8 +46,26 @@ def get_current_time():
     current_time = datetime.now(eastern_tz)
     return current_time.strftime("%A, %B %d, %Y %I:%M:%S %p")
 
+# Function to calculate the end date considering weekends and holidays
+def calculate_end_date(today):
+    end_date = today
+
+    # If today is a Saturday or Sunday, set end date to the last weekday (Friday)
+    if today.weekday() >= 5:
+        days_to_subtract = today.weekday() - 4
+        end_date = today - timedelta(days=days_to_subtract)
+
+    return end_date
+
 while True:
     try:
+        # Skip fetching data if today is a market holiday or early closure
+        if is_market_holiday():
+            print("Today is a market holiday or early closure. Skipping data fetching.")
+            # Wait for 30 seconds before repeating the loop
+            time.sleep(30)
+            continue
+
         # Read the list of stock symbols from the text file
         with open("list-of-stock-symbols-to-scan.txt", "r") as file:
             stock_symbols = file.read().splitlines()
@@ -25,19 +76,14 @@ while True:
 
         # Calculate the end date as today's date or the last weekday if it's a Saturday or Sunday
         today = date.today()
-        if today.weekday() >= 5:  # Saturday or Sunday
-            days_to_subtract = today.weekday() - 4
-            end_date = today - timedelta(days=days_to_subtract)
-        else:
-            end_date = today
+        end_date = calculate_end_date(today)
 
         # Calculate the start date as 2 weeks (10 trading days) before the end date
         start_date = end_date - timedelta(days=10)
 
         # Adjust start date if it falls on a weekend
-        if start_date.weekday() >= 5:
-            days_to_subtract = start_date.weekday() - 4
-            start_date -= timedelta(days=days_to_subtract)
+        while start_date.weekday() >= 5:
+            start_date -= timedelta(days=1)
 
         # Ensure that the end date is not in the future
         if end_date > today:
