@@ -73,7 +73,7 @@ def calculate_end_date(today):
     return end_date
 
 # Initialize start_date and end_date outside the loop
-start_date = date.today()
+start_date = date.today() - timedelta(days=14)  # Set start date to 14 days ago
 end_date = calculate_end_date(start_date)
 
 while True:
@@ -101,8 +101,8 @@ while True:
             # Calculate the end date as today's date or the last weekday if it's a Saturday, Sunday, or a market holiday
             end_date = calculate_end_date(today)
 
-            # Calculate the start date as 2 weeks (10 trading days) before the end date
-            start_date = end_date - timedelta(days=10)
+            # Calculate the start date as 14 days ago
+            start_date = today - timedelta(days=14)
 
             # Adjust start date if it falls on a weekend
             while start_date.weekday() >= 5:
