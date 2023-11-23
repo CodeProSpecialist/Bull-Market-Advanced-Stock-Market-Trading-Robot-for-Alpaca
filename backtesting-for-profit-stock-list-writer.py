@@ -34,6 +34,15 @@ while True:
         # Calculate the start date as 2 weeks (10 trading days) before the end date
         start_date = end_date - timedelta(days=10)
 
+        # Adjust start date if it falls on a weekend
+        if start_date.weekday() >= 5:
+            days_to_subtract = start_date.weekday() - 4
+            start_date -= timedelta(days=days_to_subtract)
+
+        # Ensure that the end date is not in the future
+        if end_date > today:
+            end_date = today
+
         # Perform backtesting for each stock symbol
         for symbol in stock_symbols:
             try:
