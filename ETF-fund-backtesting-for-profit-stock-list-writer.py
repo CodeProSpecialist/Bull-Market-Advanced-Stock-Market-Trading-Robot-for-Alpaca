@@ -94,7 +94,7 @@ while True:
                     # Check if the stock has increased in value by 10%
                     if has_increased_by_10_percent(start_price, end_price):
                         # Print the symbol before adding it to the list
-                        print(f"{symbol} has increased by 10% or more. Adding to the stocks list...\n")
+                        print(f"{symbol} has increased by 10% or more. Adding to the stocks list.....\n")
 
                         # Append the symbol to the list
                         symbols_to_write.append(symbol)
