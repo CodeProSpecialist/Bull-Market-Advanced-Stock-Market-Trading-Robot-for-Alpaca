@@ -66,8 +66,10 @@ while True:
             # Calculate the start time as 14 days before the end time
             start_time = calculate_start_time(end_time)
 
+            print("")
             print(f"Start Time: {start_time}")
             print(f"End Time: {end_time}")
+            print("")
 
             # Read the list of stock symbols from the input file
             with open("list-of-stock-symbols-to-scan.txt", "r") as file:
@@ -105,9 +107,14 @@ while True:
                 # Erase the output file before writing to it
                 pass
 
+                print("")
+                print("Writing the list of stocks: ")
+
                 # Write all symbols to the output file
                 for symbol in symbols_to_write:
                     output_file.write(f"{symbol}\n")
+                    print(f"{symbol}")
+            print("")
 
             # Calculate the next market close time
             end_time = calculate_end_time(current_time)
