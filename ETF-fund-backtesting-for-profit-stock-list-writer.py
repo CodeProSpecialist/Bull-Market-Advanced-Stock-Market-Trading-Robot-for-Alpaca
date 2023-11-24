@@ -39,7 +39,7 @@ def calculate_start_time(end_time):
 
 # Function to handle errors and restart the program
 def handle_error():
-    print("An error occurred. Restarting the program in 5 seconds...")
+    print("An error occurred. Restarting the program in 5 seconds.....")
     time.sleep(5)
 
 # Initialize end_time outside the loop
@@ -58,7 +58,7 @@ while True:
         # if is_market_hours(current_time):     # uncomment this line to only run during market hours.
         if 1 == 1:     # comment out this line if you uncomment the line above.
 
-            print("Running the program...\n")
+            print("Running the program.....\n")
 
             # Calculate the end time considering weekdays and market hours
             end_time = calculate_end_time(current_time)
@@ -81,7 +81,7 @@ while True:
             # Fetch stock data and append symbols that have increased by 10% or more to the list
             for symbol in stock_symbols:
                 stock = yf.Ticker(symbol)
-                print(f"Downloading the historical data for {symbol}...")
+                print(f"Downloading the historical data for {symbol}.....")
 
                 # Download last 14 days of data for the stock
                 stock_data = stock.history(start=start_time, end=end_time)
@@ -138,7 +138,7 @@ while True:
             print("Program completed for the current iteration.\n")
 
         else:
-            print("The program is not running outside market hours. Waiting for the next market open...\n")
+            print("The program is not running outside market hours. Waiting for the next market open.....\n")
 
     except KeyboardInterrupt:
         print("Program terminated by user.")
