@@ -49,11 +49,11 @@ while True:
     try:
         # Get the current time
         current_time = get_current_time()
-
+        print("")
         # Display the date header
         formatted_current_time = current_time.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
         print(formatted_current_time)
-
+        print("")
         # Check if it's within the specified market hours
         # if is_market_hours(current_time):     # uncomment this line to only run during market hours.
         if 1 == 1:     # comment out this line if you uncomment the line above.
@@ -114,7 +114,6 @@ while True:
                 for symbol in symbols_to_write:
                     output_file.write(f"{symbol}\n")
                     print(f"{symbol}")
-            print("")
 
             # Calculate the next market close time
             end_time = calculate_end_time(current_time)
@@ -126,8 +125,9 @@ while True:
             #minutes, _ = divmod(remainder, 60)
             #print(f"Next run in {hours} hours and {minutes} minutes. Sleeping until then.....\n")
 
+            print("")
             print("Sleeping for 30 seconds.....")
-
+            print("")
             # Sleep for 30 seconds
             time.sleep(30)
 
