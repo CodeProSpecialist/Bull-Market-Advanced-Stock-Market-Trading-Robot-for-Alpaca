@@ -74,8 +74,8 @@ while True:
             start_time = calculate_start_time(end_time)
 
             print("")
-            print(f"Start Time: {start_time}")
-            print(f"End Time: {end_time}")
+            print(f"Start Time: {start_time.strftime('%Y-%m-%d %H:%M')}")
+            print(f"End Time: {end_time.strftime('%Y-%m-%d %H:%M')}")
             print("")
 
             # Read the list of stock symbols from the input file
