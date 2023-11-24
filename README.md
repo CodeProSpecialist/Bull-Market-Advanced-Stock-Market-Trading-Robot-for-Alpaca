@@ -120,6 +120,10 @@ Run the commands below:
 
 python3 stock-list-writer-for-list-of-stock-symbols-to-scan.py
 
+python3 ETF-fund-backtesting-for-profit-stock-list-writer.py
+
+or 
+
 python3 performance-stock-list-writer.py
 
 or
@@ -129,6 +133,8 @@ python3 new-performance-stock-list-writer.py
 open an additional command line terminal and run the following command: 
 
 python3 stock-market-robot.py
+
+( My personal new favorite stock list writer is: ETF-fund-backtesting-for-profit-stock-list-writer.py )
 
 The performance-stock-list-writer.py python program will make sure that only 
 successful stocks are purchased by the Advanced Stock Market Trading Robot. 
