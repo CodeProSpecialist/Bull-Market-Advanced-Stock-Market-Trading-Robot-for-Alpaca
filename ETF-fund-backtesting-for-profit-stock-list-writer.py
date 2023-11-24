@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import time
 import pytz
 
+
 # Function to check if it's within the specified market hours
 def is_market_hours(current_time):
     market_open_time = current_time.replace(hour=9, minute=0, second=0, microsecond=0)
@@ -10,15 +11,18 @@ def is_market_hours(current_time):
 
     return current_time.weekday() < 5 and market_open_time <= current_time <= market_close_time
 
+
 # Function to check if a stock has increased in value by 10%
 def has_increased_by_10_percent(start_value, end_value):
     return (end_value - start_value) / start_value >= 0.1
+
 
 # Function to get the current date and time in US/Eastern timezone
 def get_current_time():
     eastern_tz = pytz.timezone('US/Eastern')
     now = datetime.now(eastern_tz)
     return now
+
 
 # Function to calculate the end time considering weekdays and market hours
 def calculate_end_time(current_time):
@@ -33,14 +37,17 @@ def calculate_end_time(current_time):
 
     return end_time
 
+
 # Function to calculate the start time as 14 days before the end time
 def calculate_start_time(end_time):
     return end_time - timedelta(days=14)
+
 
 # Function to handle errors and restart the program
 def handle_error():
     print("An error occurred. Restarting the program in 5 seconds.....")
     time.sleep(5)
+
 
 # Initialize end_time outside the loop
 end_time = calculate_end_time(get_current_time())
@@ -56,7 +63,7 @@ while True:
         print("")
         # Check if it's within the specified market hours
         # if is_market_hours(current_time):     # uncomment this line to only run during market hours.
-        if 1 == 1:     # comment out this line if you uncomment the line above.
+        if 1 == 1:  # comment out this line if you uncomment the line above.
 
             print("Running the program.....\n")
 
@@ -93,8 +100,19 @@ while True:
 
                     # Check if the stock has increased in value by 10%
                     if has_increased_by_10_percent(start_price, end_price):
-                        # Print the symbol before adding it to the list
-                        print(f"{symbol} has increased by 10% or more. Adding to the stocks list.....\n")
+                        # Print the backtesting details with formatted dates and 2 digits after the decimal point
+                        print(
+                            f"Backtesting Dates: {start_time.strftime('%Y-%m-%d %H:%M')} to {end_time.strftime('%Y-%m-%d %H:%M')}")
+                        print(f"Stock Symbol: {symbol}")
+                        print(f"Start Price Value: {start_price:.2f}")
+                        print(f"End Price Value: {end_price:.2f}")
+
+                        # Calculate total price change and percentage change
+                        total_price_change = end_price - start_price
+                        percentage_change = (total_price_change / start_price) * 100
+
+                        print(f"Total Price Change: {total_price_change:.2f}")
+                        print(f"Percentage Change: {percentage_change:.2f}%\n")
 
                         # Append the symbol to the list
                         symbols_to_write.append(symbol)
@@ -117,13 +135,6 @@ while True:
 
             # Calculate the next market close time
             end_time = calculate_end_time(current_time)
-
-            # Calculate the time until the next market close
-            #time_until_next_run = (end_time - current_time).seconds
-
-            #hours, remainder = divmod(time_until_next_run, 3600)
-            #minutes, _ = divmod(remainder, 60)
-            #print(f"Next run in {hours} hours and {minutes} minutes. Sleeping until then.....\n")
 
             print("")
             print("Sleeping for 30 seconds.....")
