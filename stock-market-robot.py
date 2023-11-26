@@ -130,7 +130,7 @@ def stop_if_stock_market_is_closed():
         print("\n")
         print('''
 
-            2023 Edition of the Advanced Stock Market Trading Robot, Version 3 
+            2023 Edition of the Bull Market Advanced Stock Market Trading Robot, Version 3 
            _____   __                   __             ____            __            __ 
           / ___/  / /_  ____   _____   / /__          / __ \  ____    / /_   ____   / /_
           \__ \  / __/ / __ \ / ___/  / //_/         / /_/ / / __ \  / __ \ / __ \ / __/
@@ -765,7 +765,7 @@ def main():
     bought_stocks = load_positions_from_database()
     buy_sell_lock = threading.Lock()
 
-    while True:  # keep this under the m in main
+    while True:    # keep this under the m in main
         try:
             stop_if_stock_market_is_closed()  # comment this line to debug the Python code
             now = datetime.now(pytz.timezone('US/Eastern'))
@@ -773,7 +773,7 @@ def main():
 
             cash_balance = round(float(api.get_account().cash), 2)
             print("------------------------------------------------------------------------------------")
-            print("2023 Edition of the Advanced Stock Market Trading Robot, Version 3 ")
+            print("2023 Edition of the Bull Market Advanced Stock Market Trading Robot, Version 3 ")
             print("by https://github.com/CodeProSpecialist")
             print("------------------------------------------------------------------------------------")
             print(f"  {current_time_str} Cash Balance: ${cash_balance}")
