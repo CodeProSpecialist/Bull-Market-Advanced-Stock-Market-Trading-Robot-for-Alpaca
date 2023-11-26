@@ -1,10 +1,10 @@
 
 -----------------------------------------------------------------------------------------------
-        Welcome to the Future of Trading with the Advanced Stock Market Trading Robot! 
+        Welcome to the Future of Trading with the Bull Market Advanced Stock Market Trading Robot! 
 
                     Why Trade Manually When You Can Automate It? 
 
-        Introducing the 2023 Edition of the Advanced Stock Market Trading Robot, Version 3   
+        Introducing the 2023 Edition of the Bull Market Advanced Stock Market Trading Robot, Version 3   
 -----------------------------------------------------------------------------------------------
 
 ***** Upgrade to the newest version of this Python Robot today because some Python code updates were finished and some errors were recently fixed on 11-20-2023. *****
