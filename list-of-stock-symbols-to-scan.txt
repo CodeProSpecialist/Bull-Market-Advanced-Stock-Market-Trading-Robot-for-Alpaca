@@ -1,2 +1,4 @@
 SPXL
 SGOL
+SPY
+VOO
