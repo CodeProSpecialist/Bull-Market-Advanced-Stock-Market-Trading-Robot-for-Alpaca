@@ -1,3 +1,4 @@
 SPXL
 SGOL
 SPY
+VOO
