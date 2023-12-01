@@ -1,2 +1,3 @@
 SPXL
 SGOL
+SPY
