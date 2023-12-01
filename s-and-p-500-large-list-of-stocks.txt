@@ -1,4 +1,2 @@
 SPXL
 SGOL
-UGL
-GLD
