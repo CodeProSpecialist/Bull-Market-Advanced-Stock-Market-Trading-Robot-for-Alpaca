@@ -7,7 +7,7 @@
         Introducing the 2023 Edition of the Bull Market Advanced Stock Market Trading Robot, Version 3   
 -----------------------------------------------------------------------------------------------
 
-***** Upgrade to the newest version of this Python Robot today because some Python code updates were finished and some errors were recently fixed on 11-20-2023. *****
+***** Upgrade to the newest version of this Python Robot today because some Python code updates were finished and some errors were recently fixed on 12-10-2023. *****
 
 The wisest stock market investors resist the human impulse to buy stocks from human emotion related thought processes. Stocks should never be purchased based upon human emotions and should always be purchased with carefully planned out rules of logic. 
 I am confident to announce that the newest version of this Advanced Stock Market Trading Robot is capable of resisting the human impulse to buy stocks at the wrong times because it will carefully weigh the price decreases against the price increases to prevent costly mistakes from buying stocks at the wrong times in excessive stock share numbers. For this reason, stock purchases are limited to some extent per sock purchase and this can be modified in the python code function named "def allocate_cash_equally" and with the variable named "max_allocation_per_symbol." This is a great achievement for myself as a computer programmer because it means that this is finally becoming a really effective and successful stock trading robot. I was using the new-performance-stock-list-writer.py python code with exchange traded funds or ETF funds when achieving success with this Advanced Stock Market Robot. Results may vary, although seem very successful in general. 
