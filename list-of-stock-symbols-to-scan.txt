@@ -1,1 +1,4 @@
-VTI
+VOOG
+SH
+SCO
+UCO
