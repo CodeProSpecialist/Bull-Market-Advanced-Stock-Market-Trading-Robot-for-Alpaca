@@ -114,7 +114,7 @@ Base.metadata.create_all(engine)
 def stop_if_stock_market_is_closed():
     # Check if the current time is within the stock market hours
     # Set the stock market open and close times
-    market_open_time = time2(9, 30)
+    market_open_time = time2(9, 27)
     market_close_time = time2(16, 0)
 
     while True:
@@ -144,6 +144,7 @@ def stop_if_stock_market_is_closed():
          ''')
         print(f'Current date & time (Eastern Time): {now.strftime("%A, %B %d, %Y, %I:%M:%S %p")}')
         print("Stockbot only works Monday through Friday: 9:30 am - 4:00 pm Eastern Time.")
+        print("Stockbot begins watching stock prices early at 9:27 am Eastern Time.")
         print("Waiting until Stock Market Hours to begin the Stockbot Trading Program.")
         print("\n")
         print("\n")
@@ -385,7 +386,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=5, minute=30, second=0, microsecond=0)
 
     # Define the target time as 9:30am Eastern Time to begin looking for stocks to buy
-    start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=9, minute=30, second=0, microsecond=0)
+    start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=9, minute=28, second=0, microsecond=0)
 
     # print("datetime.now as compared to start_trading_time: ",datetime.now(pytz.timezone('US/Eastern')))     # uncomment this line to debug the code
     # print("start_trading_time to start buying stocks: ",start_trading_time)      # uncomment this line to debug the code
