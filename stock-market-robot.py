@@ -412,7 +412,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # The most successful settings are to buy if price increases 3 times within 3 minutes
     # when using MACD, RSI, and VOLUME conditions to buy stocks at the correct times.
     # ( buying stocks after 9:30am Eastern time )
-    end_time = start_time + 3 * 60  # 3 minutes multiplied by 60 seconds per minute
+    end_time = start_time + 3 * 60   # 3 minutes multiplied by 60 seconds per minute
 
     # Define the target time as 15:56 Eastern Time ( to stop the buy_stocks function )
     target_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=15, minute=56, second=0, microsecond=0)
