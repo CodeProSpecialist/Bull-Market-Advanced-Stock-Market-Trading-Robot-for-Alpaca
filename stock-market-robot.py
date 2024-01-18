@@ -395,7 +395,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
     # Check if the current time is before the start trading time
     if datetime.now(pytz.timezone('US/Eastern')) < start_trading_time:
-        return  # Exit the function if the current time is before 10:35 Eastern Time
+        return   # Exit the function if the current time is before 10:35 Eastern Time
 
     # Define the start_time variable
     start_time = time.time()
