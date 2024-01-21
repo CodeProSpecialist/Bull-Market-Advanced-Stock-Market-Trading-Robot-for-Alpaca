@@ -11,7 +11,7 @@ api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
 def place_trailing_stop_sell_order(symbol, sell_quantity, current_price):
     try:
-        stop_loss_percent = 0.75   # You can adjust this percentage based on your strategy
+        stop_loss_percent = 1.00   # You can adjust this percentage based on your strategy
         stop_loss_price = current_price * (1 - stop_loss_percent / 100)
 
         stop_order = api.submit_order(
