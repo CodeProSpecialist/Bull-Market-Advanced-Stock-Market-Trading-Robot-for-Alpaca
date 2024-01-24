@@ -385,10 +385,12 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # debugging code below to run the robot at different times
     # start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=5, minute=30, second=0, microsecond=0)
 
-    # Define the target time as 10:30am Eastern Time to begin looking for stocks to buy
-    # 10:30 am is a wise start trading target time because the trading volume has built up for 1 hour.
+    # Define the target time as 10:02am Eastern Time to begin looking for stocks to buy
+    # 10:02 am is a wise start trading target time because the trading volume has built up for 30 minutes
+    # and 10:02 am is the time to buy at a low price during the daily price reversals between
+    # approximately 10:00am - 10:15am every single market trading day.
     # Professional stock market traders on Wall St. often wait 1 hour before buying stocks.
-    start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=10, minute=30, second=0, microsecond=0)
+    start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=10, minute=2, second=0, microsecond=0)
 
     # print("datetime.now as compared to start_trading_time: ",datetime.now(pytz.timezone('US/Eastern')))     # uncomment this line to debug the code
     # print("start_trading_time to start buying stocks: ",start_trading_time)      # uncomment this line to debug the code
