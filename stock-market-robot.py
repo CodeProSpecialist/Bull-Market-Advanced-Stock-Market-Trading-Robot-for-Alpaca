@@ -657,21 +657,21 @@ def refresh_after_buy():
 
 
 # Function to place trailing stop sell order
-def place_trailing_stop_sell_order(symbol, qty, current_price):
+def place_trailing_stop_sell_order(symbol, qty_of_one_stock, current_price):
     try:
         stop_loss_percent = 1.0  # You can adjust this percentage based on your strategy
         stop_loss_price = current_price * (1 - stop_loss_percent / 100)
 
         stop_order = api.submit_order(
             symbol=symbol,
-            qty=qty,
+            qty=qty_of_one_stock,
             side='sell',
             type='trailing_stop',
             trail_percent=stop_loss_percent,
             time_in_force='gtc'  # 'gtc' or 'day'
         )
 
-        print(f"Placed trailing stop sell order for {qty} shares of {symbol} at {stop_loss_price}")
+        print(f"Placed trailing stop sell order for {qty_of_one_stock} shares of {symbol} at {stop_loss_price}")
 
         # Check if the symbol exists in bought_stocks before deleting
         with buy_sell_lock:
