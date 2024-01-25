@@ -374,7 +374,9 @@ def end_time_reached():
 
 def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     stocks_to_remove = []
-    global start_time, end_time, original_start_time, price_changes, symbol  # Access the global end_time variable
+    global start_time, end_time, original_start_time, price_changes, symbol, buy_stock_green_light
+
+    buy_stock_green_light = 0  # Initialize the global variable
 
     extracted_date_from_today_date = datetime.today().date()
     today_date_str = extracted_date_from_today_date.strftime("%Y-%m-%d")
@@ -573,6 +575,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                         # this append tuple will provide the date=date and the purchase_date = date
                         # in the correct datetime format for the database. This is the date
                         # in the below "with buy_sell_lock:" code block.
+                        buy_stock_green_light = 1    # Set the variable to 1 in the buy condition
 
                     # the below else needs to be under the "I" in if qty_of_one_stock
                     else:
@@ -580,6 +583,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                         print("Price increases are favorable to buy stocks. Quantity of One Stock is 0. Not buying "
                               "stocks right now. Perhaps we need more cash before buying. ")
                         print("")
+                        buy_stock_green_light = 0    # Set the variable to 0 in the not buying condition
                     # keep the below else under the "if" that is above the else
                 else:
                     print("")
@@ -629,7 +633,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             day_trade_count = account_info.daytrade_count
 
             # keep the if day_trade_count below the "q" in qty_of_one_stock
-            if day_trade_count < 3:
+            if buy_stock_green_light == 1 and day_trade_count < 3:
                 print("")
                 print("Waiting 2 minutes before placing a trailing stop sell order.....")
                 print("")
