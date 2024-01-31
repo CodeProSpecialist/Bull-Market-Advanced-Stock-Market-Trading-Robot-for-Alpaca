@@ -1,4 +1,3 @@
-NSPI
 CVY
 DISO
 SDIV
