@@ -1,3 +1,5 @@
 VGT
+VUG
 SPY
 VTI
+VIS
