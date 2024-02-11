@@ -68,10 +68,6 @@ now with even more features and precision than ever before!
 
     React instantly to market changes with real-time data processing.
     Witness your portfolio grow as the bot executes trades with careful precision. 
-    
- Get Started Today! Unleash the Future of Trading with the Advanced Stock Market Trading Robot. 
-
- Don't just trade. Dominate. 
 
 ![Screen-1](https://github.com/CodeProSpecialist/Advanced-Stock-Market-Trading-Robot-for-Alpaca/assets/111866070/9d4094d2-9a48-4936-8361-6a6fd9f74e33)
 
@@ -86,7 +82,7 @@ This is a feature to protect you and anyone else from buying stocks at the wrong
 you should always remember: 
     Remember that all trading involves risks. The ability to successfully implement these strategies depends on both market conditions and individual skills and knowledge. As such, trading should only be done with funds that you can afford to lose. Always do thorough research before making investment decisions, and consider consulting with a financial advisor. This is use at your own risk software. This software does not include any warranty or guarantees other than the useful tasks that may or may not work as intended for the software application end user. The software developer shall not be held liable for any financial losses or damages that occur as a result of using this software for any reason to the fullest extent of the law. Using this software is your agreement to these terms. This software is designed to be helpful and useful to the end user.
 
- Are you ready to take your stock trading game to the next level? The Advanced Stock Market Trading Robot is here to help you navigate the complexities of the stock market and make informed trading decisions. This cutting-edge trading software is designed to maximize profits in recession market conditions, focusing on electric utility and energy stocks. I will mention that every stock sector has its favorable "buy stocks" months. 
+ I will mention that every stock sector has its favorable "buy stocks" months. 
  For example: business stocks are the most favorable in October and November just before the Friday that follows Thanksgiving. Electricity stocks can do best May 21 through July 31. 
  During the Winter, Natural Gas Utility Stocks are likely to be performing better than average. 
 
