@@ -30,19 +30,19 @@ You can clearly see that investing in the Nasdaq 100 is obviously the most profi
 
 Recent facts of the US Stock Market risk assesment: 
 Within the past 15 years, the US Stock Market only crashed in 2022 and in 2009. 
-The stock market crashed the 1st year that an extreme Leftist Democrat was president in 2009 and the 2nd year a close friend and former Vice President of the 2009 extreme Leftist democrat was president in 2022.
+The stock market crashed the 1st year that an Extreme Leftist Democrat was president in 2009 and the 2nd year a similarly Extreme Leftist Democrat,  close friend, and former Vice President of the 2009 extreme Leftist democrat was president in 2022. 
 
 ( The 2009 & 2022 US Stock Market crashes that caused much sadness and many Trillions of lost investment money ) 
 
-Possibly 12 Trillion dollars lost between the two market crashes of 2009 and 2022. 
+Possibly 12 Trillion dollars or more was sadly and quickly lost between the two market crashes of 2009 and 2022. 
 Not Billion. Trillion. 
  -$12,000,000,000,000
 
 To explain, the 2009 Stock Market Crash was a decrease of the Dow Jones Industrial Average Index by 50% and in comparison, the 1929 Great Depression was a 53% decrease in the Dow Jones Industrial Average Index.
 ( Just as much of a problem as the 1929 Great Depression. )
 
-I clearly see a market crash risk pattern definitely developed here that was associated with far Leftist democratic leadership in the USA. 
-( not just once, but twice the USA Stock Market Crashed under this type of a US President ) This is a 100% accurate historical Fact of US history. 
+I clearly see a market crash risk pattern definitely developed here that was associated with Extreme  Leftist Democratic leadership in the USA. 
+( not just once, but twice the USA Stock Market Crashed under this type of a Democratic US President ) This is a 100% accurate historical Fact of US history. 
 
 The Large List of S&P 500 stocks has been has been changed to include at least one US Stock Market Major Index ETF fund because I recommend that you primarily invest in Index ETF funds to be defensive against loss of profit when holding overnight stock positions. More often than not, it has been a disaster to hold custom hand-picked overnight positions in the Stock Market.  In general, business stocks will be doing well during the November shopping season. Ignore most of the financial news because the fake news tells dishonest exciting stories of fiction. 
     The very first mistake that stock market investors make is to try and hand pick stocks 1 by 1. Listen to me when I say that Billionaire stock investors have spent most of their lives trying to hand pick winning stocks, only to learn that they were almost never able to pick the right stocks. The lesson of wisdom is to buy large groups of stocks in ETF funds. Then after buying your stock, place a trailing stop sell market order for 1% below the current stock price during the daytime stock market hours. At 4:00pm Eastern time, the trailing stop sell order automatically disappears, and then you need to place a sell stop order that is GTC and 1% below the current stock price for all overnight positions. The sell orders will not work if your Daytrade count number is 3. Vanguard has some of the best ETF funds in the entire stock market that Billionaires like to trade all of the time. This is due to the fact that not even professional stock investors that are Millionaires or Billionaires are able to tell you or themselves what stocks are going to be more successful today or tomorrow. They have their favorite stocks, although they still do not know if the stocks will decrease or increase in value in the future. 
