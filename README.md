@@ -33,6 +33,11 @@ The US Stock Market only crashed the most recently in 2022 and in 2009.
 The stock market crashed the 1st year that an extreme Leftist Democrat was president in 2009 and the 2nd year a close friend and former Vice President of the 2009 extreme Leftist democrat was president in 2022.
 
 ( The 2009 & 2022 US Stock Market crashes that caused much sadness and many Trillions of lost investment money ) 
+
+Possibly 12 Trillion dollars lost between the two market crashes of 2009 and 2022. 
+Not Billion. Trillion. 
+ -$12,000,000,000,000
+
 To explain, the 2009 Stock Market Crash was a decrease of the Dow Jones Industrial Average Index by 50% and in comparison, the 1929 Great Depression was a 53% decrease in the Dow Jones Industrial Average Index.
 ( Just as much of a problem as the 1929 Great Depression. )
 
