@@ -78,10 +78,7 @@ now with even more features and precision than ever before!
 -------------------------------------------------------------------------------------------------
 
 Important to remember: No stock list of stocks to buy will be written by the "performance stock list writer" python script if the stocks are determined to be in a current status of losing money. 
-This is a feature to protect you and anyone else from buying stocks at the wrong times. The specific situations described would be obvious wrong times to buy stock, and 
-you should always remember: 
-    Remember that all trading involves risks. The ability to successfully implement these strategies depends on both market conditions and individual skills and knowledge. As such, trading should only be done with funds that you can afford to lose. Always do thorough research before making investment decisions, and consider consulting with a financial advisor. This is use at your own risk software. This software does not include any warranty or guarantees other than the useful tasks that may or may not work as intended for the software application end user. The software developer shall not be held liable for any financial losses or damages that occur as a result of using this software for any reason to the fullest extent of the law. Using this software is your agreement to these terms. This software is designed to be helpful and useful to the end user.
-
+This is a feature to protect you and anyone else from buying stocks at the wrong times. The specific situations described would be obvious wrong times to buy stocks. 
  I will mention that every stock sector has its favorable "buy stocks" months. 
  For example: business stocks are the most favorable in October and November just before the Friday that follows Thanksgiving. Electricity stocks can do best May 21 through July 31. 
  During the Winter, Natural Gas Utility Stocks are likely to be performing better than average. 
