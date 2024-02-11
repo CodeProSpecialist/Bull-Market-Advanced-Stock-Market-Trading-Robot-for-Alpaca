@@ -29,7 +29,7 @@ These returns assume dividends are reinvested and are not adjusted for inflation
 You can clearly see that investing in the Nasdaq 100 is obviously the most profitable major index to invest with. 
 
 Recent facts of the US Stock Market risk assesment: 
-The US Stock Market only crashed the most recently in 2022 and in 2009. 
+Within the past 15 years, the US Stock Market only crashed in 2022 and in 2009. 
 The stock market crashed the 1st year that an extreme Leftist Democrat was president in 2009 and the 2nd year a close friend and former Vice President of the 2009 extreme Leftist democrat was president in 2022.
 
 ( The 2009 & 2022 US Stock Market crashes that caused much sadness and many Trillions of lost investment money ) 
