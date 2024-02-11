@@ -18,9 +18,11 @@ The three major U.S. stock market indexes are the S&P 500, the Dow Jones Industr
 
 The average rate of return for each index for the past 20 years (as of December 2023) is:
 
-S&P 500: 9.69%123
-Dow Jones: 8.27%45
-Nasdaq: 11.42%45
+S&P 500: 9.69% 
+
+Dow Jones: 8.27%
+
+Nasdaq: 11.42%
 
 These returns assume dividends are reinvested and are not adjusted for inflation. 
 
