@@ -7,9 +7,9 @@
         Introducing the 2023 Edition of the Bull Market Advanced Stock Market Trading Robot, Version 3   
 -----------------------------------------------------------------------------------------------
 
-I recommend running this robot on the strongest trading days like Thursday and Friday.
+I recommend running this robot on the strongest trading days like Wednesday, Thursday, and Friday.
 
-On the slower trading days: Monday, Tuesday, and Wednesday, when prices do not move much, the low price buying, Billionaire Stock Market Robot will usually perform really well. 
+On the slower trading days: Monday and Tuesday, or days when prices do not move much, the low price buying, Billionaire Stock Market Robot will usually perform really well. 
 
 ***** Upgrade to the newest version of this Python Robot today because some Python code updates were finished and some errors were recently fixed on 1-26-2024. *****
 
