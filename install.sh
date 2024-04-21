@@ -56,3 +56,6 @@ rm ta-lib-0.4.0-src.tar.gz
 deactivate
 
 echo "All done! You can now run your Python script."
+
+# Inform the user about the virtual environment
+echo "Your Python commands in the directory named My-Python-Virtual-Environment-Packages will be the Python commands that run this installed virtual environment's Python programs."
