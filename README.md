@@ -134,7 +134,7 @@ Only place one stock symbol on each line.
 
 To install:
 
-You should be the root user when installing the Python software. 
+You should not be the root user when installing the Python software in a virtual environment.  
 ***** The below install commands are ONLY for a Desktop or Laptop Computer x86_64 type of install. ***** 
 Open a command line terminal from this folder location and type: 
 
