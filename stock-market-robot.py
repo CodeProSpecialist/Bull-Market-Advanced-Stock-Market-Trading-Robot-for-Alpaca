@@ -667,7 +667,9 @@ def place_trailing_stop_sell_order(symbol, qty_of_one_stock, current_price):
     try:
         stop_loss_percent = 1.0  # You can adjust this percentage based on your strategy
         stop_loss_price = current_price * (1 - stop_loss_percent / 100)
-
+        # Convert symbol from BRK-B to BRK.B
+        symbol = symbol.replace('-', '.')
+        
         stop_order = api.submit_order(
             symbol=symbol,
             qty=qty_of_one_stock,
