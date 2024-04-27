@@ -135,6 +135,9 @@ Only place one stock symbol on each line.
 To install:
 
 You should not be the root user when installing the Python software in a virtual environment.  
+
+( First install the Anaconda python3 virtual environment. )
+
 ***** The below install commands are ONLY for a Desktop or Laptop Computer x86_64 type of install. ***** 
 Open a command line terminal from this folder location and type: 
 
@@ -158,6 +161,15 @@ because they work together to keep up to date on the latest stock market data. *
 The second command for the python file "performance-stock-list-writer.py" 
 will require some amount of waiting time as well, depending on how many 
 stocks are in the list "list-of-stock-symbols-to-scan.txt". 
+
+( in a Python Anaconda environment )
+
+( first activate Anaconda )
+
+conda init
+
+conda activate
+
 Run the commands below:
 
 python3 stock-list-writer-for-list-of-stock-symbols-to-scan.py
