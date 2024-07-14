@@ -130,7 +130,7 @@ def stop_if_stock_market_is_closed():
         print("\n")
         print('''
 
-            2023 Edition of the Bull Market Advanced Stock Market Trading Robot, Version 3 
+            2024 Edition of the Bull Market Advanced Stock Market Trading Robot, Version 5 
            _____   __                   __             ____            __            __ 
           / ___/  / /_  ____   _____   / /__          / __ \  ____    / /_   ____   / /_
           \__ \  / __/ / __ \ / ___/  / //_/         / /_/ / / __ \  / __ \ / __ \ / __/
@@ -864,7 +864,7 @@ def main():
 
             cash_balance = round(float(api.get_account().cash), 2)
             print("------------------------------------------------------------------------------------")
-            print("2023 Edition of the Bull Market Advanced Stock Market Trading Robot, Version 3 ")
+            print("2024 Edition of the Bull Market Advanced Stock Market Trading Robot, Version 5 ")
             print("by https://github.com/CodeProSpecialist")
             print("------------------------------------------------------------------------------------")
             print(f"  {current_time_str} Cash Balance: ${cash_balance}")
