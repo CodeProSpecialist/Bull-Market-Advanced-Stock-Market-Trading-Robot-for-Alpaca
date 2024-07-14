@@ -361,15 +361,15 @@ def track_price_changes(symbol):
     if current_price > previous_price:
         price_changes[symbol]['increased'] += 1
         print(f"{symbol} price just increased | current price: {current_price}")
-        time.sleep(2)
+        time.sleep(5)
     elif current_price < previous_price:
         price_changes[symbol]['decreased'] += 1
         print(f"{symbol} price just decreased | current price: {current_price}")
-        time.sleep(2)
+        time.sleep(5)
     else:
         print(f"{symbol} price has not changed | current price: {current_price}")
-        time.sleep(2)
-    time.sleep(1)  # Wait 1 - 3 seconds per price check
+        time.sleep(5)
+    time.sleep(1)  # Wait 1 more second per price check
 
 
 def end_time_reached():
@@ -422,7 +422,8 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # ( buying stocks after 9:30am Eastern time )
     end_time = start_time + 3 * 60  # 3 minutes multiplied by 60 seconds per minute
 
-    # Define the target time as 15:56 Eastern Time ( to stop the buy_stocks function )
+    # Define the target time as 15:56 Eastern Time ( to stop the buy_stocks price increase
+    # or decrease checking function that is named track_price_changes )
     target_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=15, minute=56, second=0, microsecond=0)
 
     # print("datetime.now as compared to target_time: ",datetime.now(pytz.timezone('US/Eastern')))     # uncomment this line to debug the code
@@ -432,7 +433,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     # Exit the buy_stocks function if the current time is after target_time
     if datetime.now(pytz.timezone('US/Eastern')) > target_time:
         print("")
-        print("Returning and Exiting from the Buy Stocks function.")
+        print("Returning and Exiting from the Buy Stocks function because we are outside of the buy strategy times. ")
         print("")
         return
     else:
@@ -459,7 +460,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
                 # Schedule the task only once (right here within for symbol in stocks to buy)
                 if not hasattr(buy_stocks, 'scheduled_task'):
-                    buy_stocks.scheduled_task = schedule.every(1).seconds.do(track_price_changes, symbol)
+                    buy_stocks.scheduled_task = schedule.every(5).seconds.do(track_price_changes, symbol)
 
                     # Start the background thread to run the schedule
                     schedule_thread = threading.Thread(target=run_schedule)
@@ -480,7 +481,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
 
                 # I might not need the extra sleep command below
                 # keep the below time.sleep(1) below the s in "for symbol"
-                time.sleep(2)  # wait 1.7 to 3 seconds to not move too fast for the stock price data rate limit.
+                time.sleep(5)  # wait 1.7 to 5 seconds to not move too fast for the stock price data rate limit.
 
         # Print overall total price increases and decreases after reaching end_time_reached()
         if end_time_reached():
@@ -948,9 +949,9 @@ def main():
             print("Placing trades without this Robot will also require ")
             print("deleting the trading_bot.db database file and starting over again with an empty database. ")
             print("")
-            print("Waiting 30 seconds before checking price data again........")
+            print("Waiting 60 seconds before checking price data again........")
             print("")
-            time.sleep(30)  # keep this under the i in if
+            time.sleep(60)  # keep this under the i in if
 
         except Exception as e:
             logging.error(f"Error encountered: {e}")
