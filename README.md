@@ -4,7 +4,7 @@
 
                     Why Trade Manually When You Can Automate It? 
 
-        Introducing the 2023 Edition of the Bull Market Advanced Stock Market Trading Robot, Version 3   
+        Introducing the 2024 Edition of the Bull Market Advanced Stock Market Trading Robot, Version 5   
 -----------------------------------------------------------------------------------------------
 
 I recommend running this robot on the strongest trading days like Wednesday, Thursday, and Friday.
@@ -32,26 +32,6 @@ Nasdaq: 11.42%
 
 These returns assume dividends are reinvested and are not adjusted for inflation. 
 
-You can clearly see that investing in the Nasdaq 100 is obviously the most profitable major index to invest with. 
-
-Recent facts of the US Stock Market risk assessment: 
-Within the past 15 years, the US Stock Market only crashed in 2022 and in 2009. 
-The stock market crashed the 1st year that an Extreme Leftist Democrat was president in 2009 and the 2nd year a similarly Extreme Leftist Democrat,  close friend, and former Vice President of the 2009 Extreme Leftist Democrat was president in 2022. 
-
-( The 2009 & 2022 US Stock Market crashes that caused much sadness and many Trillions of lost investment money ) 
-
-Possibly 12 Trillion dollars or more was sadly and quickly lost between the two market crashes of 2009 and 2022. 
-Not a Billion. Trillion. 
- -$12,000,000,000,000
-
-To explain, the 2009 Stock Market Crash was a decrease of the Dow Jones Industrial Average Index by 50% and in comparison, the 1929 Great Depression was a 53% decrease in the Dow Jones Industrial Average Index.
-( Just as much of a problem as the 1929 Great Depression. )
-
-I clearly see a market crash risk pattern definitely developed here that was associated with Extreme  Leftist Democratic leadership in the USA. 
-( not just once, but twice the USA Stock Market Crashed under this type of Democratic US President ) This is a 100% accurate historical Fact of US history. It is what it is. Facts are facts. 
-
-The Large List of S&P 500 stocks has been changed to include at least one US Stock Market Major Index ETF fund because I recommend that you primarily invest in Index ETF funds to be defensive against loss of profit when holding overnight stock positions. More often than not, it has been a disaster to hold custom hand-picked overnight positions in the Stock Market.  In general, business stocks will be doing well during the November shopping season. Ignore most of the financial news because the fake news tells dishonest exciting stories of fiction. 
-    The very first mistake that stock market investors make is to try and hand pick stocks 1 by 1. Listen to me when I say that Billionaire stock investors have spent most of their lives trying to hand pick winning stocks, only to learn that they were almost never able to pick the right stocks. The lesson of wisdom is to buy large groups of stocks in ETF funds. Then after buying your stock, place a trailing stop sell market order for 1% below the current stock price during the daytime stock market hours. At 4:00pm Eastern time, the trailing stop sell order automatically disappears, and then you need to place a sell stop order that is GTC and 1% below the current stock price for all overnight positions. The sell orders will not work if your Daytrade count number is 3. Vanguard has some of the best ETF funds in the entire stock market. Billionaires like to wait until the market has a drop in prices before buying stocks and they do not sell stocks unless the prices drop drastically enough to cause serious concern. This is due to the fact that not even professional stock investors that are Millionaires or Billionaires are able to tell you or themselves what stocks are going to be more successful today or tomorrow. They have their favorite stocks, although they still do not know if the stocks will decrease or increase in value in the future. 
 
 ***** A loss of profit when holding stock positions overnight is known as a Bear Market. It is extremely important to know if the market is currently a Bull Market or a Bear Market before deciding to hold stock positions overnight. 
 
@@ -63,16 +43,26 @@ https://github.com/CodeProSpecialist/Stock-Market-Status-Check-for-a-Bear-Market
 
 *****
 
-I have included my most successful stocks in the list of stocks to scan. 
 
-During a recession, investing in a larger, diversified portfolio of stocks is generally considered a safer strategy than investing in individual stocks. These diversified portfolios include ETF funds like SPY, QQQ, and VTI. Most of the time in recent years QQQ would increase in value more than SPY and the other S&P 500 index ETF funds. For stock trading accounts with less than 25,000 dollars, I recommend VGT and SPY because holding these ETF funds overnight is not a problem. Diversification can help spread risk and reduce the impact of any one stock's poor performance. It's important to choose a mix of stocks across different sectors and industries to further minimize risk. However, it's also crucial to conduct thorough research or consult a financial advisor to select stocks that are relatively stable and have a history of weathering economic downturns. This strategy can provide a more balanced approach to navigate turbulent market conditions. In turbulent market conditions, it often works best to choose SPY or VTI and then hold onto it for at least 2 years. Billionaires do not recommend day trading and they recommend holding onto your ETF funds like SPY or VTI for many years. 
+During a recession, investing in a larger, diversified portfolio of stocks is generally considered a safer strategy than investing in individual stocks.
+These diversified portfolios include ETF funds like SPY and VTI. 
+
+For stock trading accounts with less than 25,000 dollars, I recommend VOO or SPY because holding these ETF funds overnight is not a problem. 
+Diversification can help spread risk and reduce the impact of any one stock's poor performance. 
+It's important to choose a mix of stocks across different sectors and industries to further minimize risk. 
+
+However, it's also crucial to conduct thorough research or consult a financial advisor to select stocks that are 
+relatively stable and have a history of weathering economic downturns. 
+This strategy can provide a more balanced approach to navigate turbulent market conditions. 
+In turbulent market conditions, it often works best to choose SPY or VTI and then hold onto it for at least 2 years. 
+Billionaires do not recommend day trading, and they recommend holding onto your ETF funds like SPY or VTI for many years. 
 
 -------------------------------------------------------------------------------------------------
- Revolutionize Your Trading Game with the Advanced Stock Market Trading Robot 2023 Edition!  
+ Revolutionize Your Trading Game with the Advanced Stock Market Trading Robot 2024 Edition!  
 
 Are you ready to take your stock market trading to the next level?
 Introducing the cutting-edge Advanced Stock Market Trading Robot, 
-Version 3 – a powerful Python code designed to dominate the markets, 
+Version 5 – a powerful Python code designed to dominate the markets, 
 now with even more features and precision than ever before!
 
  Unleash the Power of Technical Analysis:
