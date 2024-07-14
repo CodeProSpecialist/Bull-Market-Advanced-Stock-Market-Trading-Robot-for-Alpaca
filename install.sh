@@ -55,8 +55,6 @@ cd ..
 sudo rm -r -f -I ta-lib
 rm ta-lib-0.4.0-src.tar.gz
 
-# Initialize conda
-conda init bash
 
 # Activate Anaconda environment
 conda activate
