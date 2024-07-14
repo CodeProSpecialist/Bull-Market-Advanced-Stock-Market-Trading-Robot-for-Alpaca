@@ -109,9 +109,7 @@ Important to remember: No stock list of stocks to buy will be written by the "pe
 This is a feature to protect you and anyone else from buying stocks at the wrong times. The specific situations described would be obvious wrong times to buy stocks. 
  I will mention that every stock sector has its favorable "buy stocks" months. 
  For example: business stocks are the most favorable in May, June, July, November, and December. 
- Electricity stocks can do best May 21 through July 31. 
- During the Winter, Natural Gas Utility Stocks are likely to be performing better than average. 
-
+ 
  This Stock Trading Robot has a strategy to buy stocks today for selling tomorrow because this allows for much more stock trading activity to take place within the stock trading rules of day trading 3 maximum times in 5 business days. 
 
 Any stocks purchased today will not begin to sell until tomorrow or until a future day when the stock price increases during stock market 
