@@ -139,15 +139,18 @@ After placing your alpaca keys at the bottom of /home/nameofyourhomefolderhere/.
 You will need three command line terminals open to fully operate the Advanced Stock Market Trading Robot
 because one terminal window is the robot and the other terminal windows are for 
 updating the list of stocks to buy with the most successful stocks from the S&P 500.  
+
 To select different stocks to buy and allow up to 24 hours for the stocks list to update, edit the list of stocks 
 in the files named "s-and-p-500-large-list-of-stocks.txt" and "list-of-stock-symbols-to-scan.txt". 
 To immediately select different stock symbols to buy, then edit the list of stocks 
 in the file named "electricity-or-utility-stocks-to-buy-list.txt" and also 
 in the files named "s-and-p-500-large-list-of-stocks.txt" and "list-of-stock-symbols-to-scan.txt". 
+
 ***** The first command for the python file "stock-list-writer-for-list-of-stock-symbols-to-scan.py" 
 will need about 7 to 10 hours to process the S&P 500 stock symbols. 
 All three python commands should continue working Monday through Friday 
 because they work together to keep up to date on the latest stock market data. *****
+
 The second command for the python file "performance-stock-list-writer.py" 
 will require some amount of waiting time as well, depending on how many 
 stocks are in the list "list-of-stock-symbols-to-scan.txt". 
@@ -155,8 +158,6 @@ stocks are in the list "list-of-stock-symbols-to-scan.txt".
 ( in a Python Anaconda environment )
 
 ( first activate Anaconda )
-
-conda init
 
 conda activate
 
