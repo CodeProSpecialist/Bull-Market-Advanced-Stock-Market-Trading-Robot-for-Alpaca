@@ -175,8 +175,8 @@ or
 
 python3 new-performance-stock-list-writer.py 
 
-You will need to install anaconda3 before running this Python robot. 
-Just search google for how to download and install anaconda3. 
+You will need to install anaconda before running this Python robot. 
+Just search google for how to download and install anaconda. 
 
 Your Python commands in the directory named anaconda3 
 will be the Python commands that run this installed virtual environment's Python programs. 
