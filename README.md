@@ -175,12 +175,12 @@ or
 
 python3 new-performance-stock-list-writer.py 
 
-Your Python commands in the directory named My-Python-Virtual-Environment-Packages 
+You will need to install anaconda3 before running this Python robot. 
+Just search google for how to download and install anaconda3. 
+
+Your Python commands in the directory named anaconda3 
 will be the Python commands that run this installed virtual environment's Python programs. 
 This is usually located in your Linux home directory. 
-
-If your virtual environment is Anaconda, then your Python commands are in the 
-directory named anaconda3. This is usually located in your Linux home directory. 
 
 open an additional command line terminal and run the following command: 
 
