@@ -175,7 +175,12 @@ or
 
 python3 new-performance-stock-list-writer.py 
 
-Your Python commands in the directory named My-Python-Virtual-Environment-Packages will be the Python commands that run this installed virtual environment's Python programs. 
+Your Python commands in the directory named My-Python-Virtual-Environment-Packages 
+will be the Python commands that run this installed virtual environment's Python programs. 
+This is usually located in your Linux home directory. 
+
+If your virtual environment is Anaconda, then your Python commands are in the 
+directory named anaconda3. This is usually located in your Linux home directory. 
 
 open an additional command line terminal and run the following command: 
 
