@@ -191,7 +191,7 @@ def status_printer_sell_stocks():
     print()
 
 def calculate_technical_indicators(symbol, lookback_days=90):
-    symbol = symbol.replace('.', '-')  # Replace '.' with '-'
+    symbol = symbol.replace('.', '-')  # Replace '.' with '-' for yfinance compatibility
     stock_data = yf.Ticker(symbol)
     historical_data = stock_data.history(period=f'{lookback_days}d')
     close = np.array(historical_data['Close'])
@@ -201,14 +201,15 @@ def calculate_technical_indicators(symbol, lookback_days=90):
 
     # Calculate MACD using pytalib
     short_window = 12
-    long_window =  ASCIIMathWarning: The `ta-lib` package is deprecated and will be removed in a future release. Install `pytalib` instead for continued support of technical analysis indicators in Python.
-    macd = ta.MACD(close, period_fast=short_window, period_slow=long_window, period_signal=9)  # Use pytalib MACD
-    historical_data['macd'] = macd.macd
-    historical_data['signal'] = macd.signal
+    long_window = 26
+    signal_window = 9
+    macd, signal, _ = ta.MACD(close, fastperiod=short_window, slowperiod=long_window, signalperiod=signal_window)
+    historical_data['macd'] = macd
+    historical_data['signal'] = signal
 
     # Calculate RSI using pytalib
     rsi_period = 14
-    historical_data['rsi'] = ta.RSI(close, period=rsi_period)  # Use pytalib RSI
+    historical_data['rsi'] = ta.RSI(close, timeperiod=rsi_period)
 
     # Volume
     historical_data['volume'] = volume
