@@ -33,28 +33,8 @@ sudo apt install -y libhdf5-dev
 echo "Installing TA-Lib dependencies ..."
 sudo apt-get install libatlas-base-dev gfortran -y
 
-# Download and install TA-Lib
-echo "Downloading TA-Lib..."
-wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
-tar -xzvf ta-lib-0.4.0-src.tar.gz
-
-cd ta-lib/
-echo "Configuring TA-Lib..."
-./configure --prefix=/usr/local --build=x86_64-unknown-linux-gnu
-echo "Building TA-Lib..."
-sudo make -s ARCH=x86_64
-echo "Installing TA-Lib..."
-sudo make -s ARCH=x86_64 install
-
-# For Raspberry Pi 4 (aarch64):
-# ./configure --prefix=/usr/local --build=aarch64-unknown-linux-gnu
-# sudo make -s ARCH=aarch64
-# sudo make -s ARCH=aarch64 install
-
-cd ..
-sudo rm -r -f -I ta-lib
-rm ta-lib-0.4.0-src.tar.gz
-
+# Download and install pytalib
+pip3 install pytalib
 
 # Activate Anaconda environment
 conda activate
@@ -66,9 +46,7 @@ pip3 install alpaca-trade-api
 
 pip3 install sqlalchemy 
 
-pip3 install pytz 
-
-pip3 install ta-lib 
+pip3 install pytz  
 
 pip3 install schedule
 
@@ -83,7 +61,7 @@ echo "You can activate Anaconda by running 'conda activate' and then install any
 
 echo "type:   conda activate  " 
 
-echo "type:    pip3 install yfinance alpaca-trade-api sqlalchemy pytz ta-lib schedule"
+echo "type:    pip3 install yfinance alpaca-trade-api sqlalchemy pytz pytalib schedule"
 
 echo "View the installed pip3 packages with the command: pip3 list  "
 
