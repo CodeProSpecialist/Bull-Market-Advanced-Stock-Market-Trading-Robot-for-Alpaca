@@ -1,16 +1,18 @@
 import threading
 import logging
 import csv
-import os, sys
+import os
 import time
 import schedule
-from datetime import datetime, timedelta, date
-from datetime import time as time2
-import alpaca_trade_api as tradeapi
+from datetime import datetime, timedelta, time as time2
 import pytz
-import pytalib as ta  # Replaced talib with pytalib
+import alpaca_trade_api as tradeapi
 import yfinance as yf
-import numpy as np  # Required for pytalib
+import numpy as np
+import pandas as pd
+from ta.momentum import RSIIndicator
+from ta.trend import MACD
+from ta.volatility import AverageTrueRange
 import sqlalchemy
 from sqlalchemy import create_engine, Column, Integer, String, Float
 from sqlalchemy.orm import sessionmaker
@@ -26,13 +28,21 @@ APIBASEURL = os.getenv('APCA_API_BASE_URL')
 # Initialize the Alpaca API
 api = tradeapi.REST(APIKEYID, APISECRETKEY, APIBASEURL)
 
-global stocks_to_buy, today_date, today_datetime, csv_writer, csv_filename, fieldnames, price_changes, end_time
+# Global variables
+stocks_to_buy = []
+today_date = None
+today_datetime = None
+csv_writer = None
+csv_filename = 'log-file-of-buy-and-sell-signals.csv'
+fieldnames = ['Date', 'Buy', 'Sell', 'Quantity', 'Symbol', 'Price Per Share']
+price_changes = {}
+end_time = 0
 
 # Configuration flags
 PRINT_STOCKS_TO_BUY = False  # Keep False for faster execution
 PRINT_ROBOT_STORED_BUY_AND_SELL_LIST_DATABASE = True  # Keep False for faster execution
 PRINT_DATABASE = True  # Keep True to view stocks to sell
-DEBUG = False  # Keep False for faster execution
+DEBUG = True  # Keep False for faster execution
 POSITION_DATES_AS_YESTERDAY_OPTION = False  # Keep False to not change dates of owned stocks
 
 # Set timezone to Eastern
@@ -41,16 +51,12 @@ eastern = pytz.timezone('US/Eastern')
 # Dictionaries for tracking prices
 stock_data = {}
 previous_prices = {}
-end_time = 0  # Initialize end_time
-api_time_format = '%Y-%m-%dT%H:%M:%S.%f-04:00'
 buy_sell_lock = threading.Lock()
 
 # Logging setup
 logging.basicConfig(filename='trading-bot-program-logging-messages.txt', level=logging.INFO)
 
 # CSV setup
-csv_filename = 'log-file-of-buy-and-sell-signals.csv'
-fieldnames = ['Date', 'Buy', 'Sell', 'Quantity', 'Symbol', 'Price Per Share']
 with open(csv_filename, mode='w', newline='') as csv_file:
     csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
     csv_writer.writeheader()
@@ -114,7 +120,7 @@ def print_database_tables():
         print("\nStock | Buy or Sell | Quantity | Avg. Price | Date \n")
         for record in session.query(TradeHistory).all():
             print(f"{record.symbol} | {record.action} | {record.quantity} | {record.price:.2f} | {record.date}")
-        print("----------------------------------------------------------------")
+        print("-------------------------------------------------------")
         print("\nPositions in the Database To Sell 1 or More Days After the Date Shown:")
         print("\nStock | Quantity | Avg. Price | Date or The 1st Day This Robot Began Working \n")
         for record in session.query(Position).all():
@@ -132,16 +138,16 @@ def get_stocks_to_trade():
         with open('electricity-or-utility-stocks-to-buy-list.txt', 'r') as file:
             stock_symbols = [line.strip() for line in file.readlines()]
         if not stock_symbols:
-            print("\n********************************************************************************************************")
+            print("\n**********************************************************************")
             print("*   Error: The file electricity-or-utility-stocks-to-buy-list.txt doesn't contain any stock symbols.   *")
-            print("*   This Robot does not work until you place stock symbols in the file named:                          *")
-            print("*       electricity-or-utility-stocks-to-buy-list.txt                                                  *")
-            print("********************************************************************************************************\n")
+            print("*   This Robot does not work until you place stock symbols in the file named:                  *")
+            print("*       electricity-or-utility-stocks-to-buy-list.txt                                          *")
+            print("**********************************************************************\n")
         return stock_symbols
     except FileNotFoundError:
-        print("\n****************************************************************************")
+        print("\n********************************************")
         print("*   Error: File not found: electricity-or-utility-stocks-to-buy-list.txt   *")
-        print("****************************************************************************\n")
+        print("********************************************\n")
         return []
 
 def remove_symbol_from_trade_list(symbol):
@@ -153,12 +159,12 @@ def remove_symbol_from_trade_list(symbol):
                 file.write(line)
 
 def get_opening_price(symbol):
-    symbol = symbol.replace('.', '-')  # Replace '.' with '-'
+    symbol = symbol.replace('.', '-')  # Replace '.' with '-' for yfinance
     stock_data = yf.Ticker(symbol)
     return round(stock_data.history(period="1d")["Open"].iloc[0], 4)
 
 def get_current_price(symbol):
-    symbol = symbol.replace('.', '-')  # Replace '.' with '-'
+    symbol = symbol.replace('.', '-')  # Replace '.' with '-' for yfinance
     stock_data = yf.Ticker(symbol)
     return round(stock_data.history(period='1d')['Close'].iloc[0], 4)
 
@@ -173,14 +179,14 @@ def get_atr_low_price(symbol):
     return round(current_price - 0.10 * atr_value, 4)
 
 def get_average_true_range(symbol):
-    symbol = symbol.replace('.', '-')  # Replace '.' with '-'
+    symbol = symbol.replace('.', '-')  # Replace '.' with '-' for yfinance
     ticker = yf.Ticker(symbol)
     data = ticker.history(period='30d')
-    high = np.array(data['High'])
-    low = np.array(data['Low'])
-    close = np.array(data['Close'])
-    atr = ta.ATR(high, low, close, period=22)  # Use pytalib ATR
-    return atr[-1]
+    high = data['High']
+    low = data['Low']
+    close = data['Close']
+    atr = AverageTrueRange(high, low, close, window=22)
+    return atr.average_true_range().iloc[-1]
 
 def status_printer_buy_stocks():
     print(f"\rBuy stocks function is working correctly right now. Checking stocks to buy.....", end='', flush=True)
@@ -194,22 +200,22 @@ def calculate_technical_indicators(symbol, lookback_days=90):
     symbol = symbol.replace('.', '-')  # Replace '.' with '-' for yfinance compatibility
     stock_data = yf.Ticker(symbol)
     historical_data = stock_data.history(period=f'{lookback_days}d')
-    close = np.array(historical_data['Close'])
-    high = np.array(historical_data['High'])
-    low = np.array(historical_data['Low'])
-    volume = np.array(historical_data['Volume'])
+    close = historical_data['Close']
+    high = historical_data['High']
+    low = historical_data['Low']
+    volume = historical_data['Volume']
 
-    # Calculate MACD using pytalib
+    # Calculate MACD using ta library
     short_window = 12
     long_window = 26
     signal_window = 9
-    macd, signal, _ = ta.MACD(close, fastperiod=short_window, slowperiod=long_window, signalperiod=signal_window)
-    historical_data['macd'] = macd
-    historical_data['signal'] = signal
+    macd_indicator = MACD(close, fast=short_window, slow=long_window, signal=signal_window)
+    historical_data['macd'] = macd_indicator.macd()
+    historical_data['signal'] = macd_indicator.macd_signal()
 
-    # Calculate RSI using pytalib
+    # Calculate RSI using ta library
     rsi_period = 14
-    historical_data['rsi'] = ta.RSI(close, timeperiod=rsi_period)
+    historical_data['rsi'] = RSIIndicator(close, window=rsi_period).rsi()
 
     # Volume
     historical_data['volume'] = volume
@@ -230,7 +236,7 @@ def calculate_total_symbols(stocks_to_buy):
 
 def allocate_cash_equally(cash_available, total_symbols):
     max_allocation_per_symbol = 600
-    allocation_per_symbol = min(max_allocation_per_symbol, cash_available) / total_symbols
+    allocation_per_symbol = min(max_allocation_per_symbol, cash_available) / total_symbols if total_symbols > 0 else 0
     return allocation_per_symbol
 
 def get_previous_price(symbol):
@@ -268,7 +274,7 @@ def track_price_changes(symbol):
         print(f"{symbol} price has not changed | current price: {current_price}")
         time.sleep(5)
     time.sleep(1)
-    update_previous_price(symbol, current_price)  # Update previous price
+    update_previous_price(symbol, current_price)
     return 'increase' if current_price > previous_price else 'decrease' if current_price < previous_price else 'no_change'
 
 def end_time_reached():
@@ -308,7 +314,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 total_symbols = calculate_total_symbols(stocks_to_buy)
                 allocation_per_symbol = allocate_cash_equally(cash_available, total_symbols)
                 current_price = get_current_price(symbol)
-                qty_of_one_stock = int(allocation_per_symbol / current_price)
+                qty_of_one_stock = int(allocation_per_symbol / current_price) if current_price > 0 else 0
 
                 if not hasattr(buy_stocks, 'scheduled_task'):
                     buy_stocks.scheduled_task = schedule.every(5).seconds.do(track_price_changes, symbol)
@@ -331,7 +337,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 total_symbols = calculate_total_symbols(stocks_to_buy)
                 allocation_per_symbol = allocate_cash_equally(cash_available, total_symbols)
                 current_price = get_current_price(symbol)
-                qty_of_one_stock = int(allocation_per_symbol / current_price)
+                qty_of_one_stock = int(allocation_per_symbol / current_price) if current_price > 0 else 0
                 total_cost_for_qty = current_price * qty_of_one_stock
 
                 print("\n")
@@ -373,18 +379,75 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                         price_changes[symbol]['increased'] > price_changes[symbol]['decreased'] and
                         favorable_macd_condition and favorable_rsi_condition and favorable_volume_condition):
                     if qty_of_one_stock > 0:
-                        print(f"\n ******** Buying stocks for {symbol}... ************************************************************* \n")
+                        print(f"\n ******** Buying stocks for {symbol} with limit order... *************************************** \n")
                         print_technical_indicators(symbol, calculate_technical_indicators(symbol))
-                        symbol = symbol.replace('-', '.')
-                        api.submit_order(symbol=symbol, qty=qty_of_one_stock, side='buy', type='market', time_in_force='day')
-                        print(f"\n {current_time_str} , Bought {qty_of_one_stock} shares of {symbol} at {current_price}\n")
-                        with open(csv_filename, mode='a', newline='') as csv_file:
-                            csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-                            csv_writer.writerow(
-                                {'Date': current_time_str, 'Buy': 'Buy', 'Quantity': qty_of_one_stock, 'Symbol': symbol,
-                                 'Price Per Share': current_price})
-                        stocks_to_remove.append((symbol, current_price, today_date_str))
-                        buy_stock_green_light = 1
+                        symbol_for_order = symbol.replace('-', '.')  # Adjust symbol for Alpaca API
+                        try:
+                            # Place limit order at current price
+                            limit_order = api.submit_order(
+                                symbol=symbol_for_order,
+                                qty=qty_of_one_stock,
+                                side='buy',
+                                type='limit',
+                                limit_price=current_price,
+                                time_in_force='day'
+                            )
+                            print(f"\n {current_time_str} , Placed limit buy order for {qty_of_one_stock} shares of {symbol_for_order} at {current_price}\n")
+                            
+                            # Wait 1 minute and 30 seconds
+                            print(f"\nWaiting 1 minute and 30 seconds to confirm if {symbol_for_order} is in owned positions...\n")
+                            time.sleep(90)
+
+                            # Check if symbol is in owned positions
+                            positions = api.list_positions()
+                            symbol_owned = any(pos.symbol == symbol_for_order for pos in positions)
+                            
+                            if not symbol_owned:
+                                print(f"\n{symbol_for_order} not found in owned positions. Placing market order...\n")
+                                try:
+                                    # Place market order
+                                    market_order = api.submit_order(
+                                        symbol=symbol_for_order,
+                                        qty=qty_of_one_stock,
+                                        side='buy',
+                                        type='market',
+                                        time_in_force='day'
+                                    )
+                                    print(f"\n {current_time_str} , Placed market buy order for {qty_of_one_stock} shares of {symbol_for_order} at market price\n")
+                                except Exception as e:
+                                    print(f"Error placing market buy order for {symbol_for_order}: {str(e)}")
+                                    logging.error(f"Error placing market buy order for {symbol_for_order}: {str(e)}")
+                                    continue  # Skip to next symbol if market order fails
+                            else:
+                                print(f"\n{symbol_for_order} found in owned positions after limit order.\n")
+
+                            # Log the buy order (limit or market) to CSV
+                            with open(csv_filename, mode='a', newline='') as csv_file:
+                                csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+                                csv_writer.writerow(
+                                    {'Date': current_time_str, 'Buy': 'Buy', 'Quantity': qty_of_one_stock, 'Symbol': symbol_for_order,
+                                     'Price Per Share': current_price})
+                            stocks_to_remove.append((symbol, current_price, today_date_str))
+                            buy_stock_green_light = 1
+
+                            # Wait 1 minute and 30 seconds before placing trailing stop sell order
+                            print(f"\nWaiting 1 minute and 30 seconds before checking for open sell orders and placing trailing stop sell order for {symbol_for_order}...\n")
+                            time.sleep(90)
+
+                            # Check for open sell orders before placing trailing stop
+                            open_sell_orders = api.list_orders(status='open', side='sell', symbol=symbol_for_order)
+                            if not open_sell_orders:
+                                stop_order_id = place_trailing_stop_sell_order(symbol_for_order, qty_of_one_stock, current_price)
+                                if stop_order_id:
+                                    print(f"Trailing stop sell order placed for {symbol_for_order} with ID: {stop_order_id}\n")
+                                else:
+                                    print(f"Failed to place trailing stop sell order for {symbol_for_order}\n")
+                            else:
+                                print(f"Open sell order(s) exist for {symbol_for_order}. Skipping trailing stop sell order.\n")
+                        except Exception as e:
+                            print(f"Error placing limit buy order for {symbol_for_order}: {str(e)}")
+                            logging.error(f"Error placing limit buy order for {symbol_for_order}: {str(e)}")
+                            buy_stock_green_light = 0
                     else:
                         print("\nPrice increases are favorable to buy stocks. Quantity of One Stock is 0. Not buying "
                               "stocks right now. Perhaps we need more cash before buying.\n")
@@ -397,7 +460,8 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             time.sleep(2)
 
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        print(f"An error occurred in buy_stocks: {str(e)}")
+        logging.error(f"Error in buy_stocks: {str(e)}")
         start_time = original_start_time
         end_time = start_time + 102 * 60
         schedule_thread = threading.Thread(target=run_schedule)
@@ -406,26 +470,25 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     try:
         with buy_sell_lock:
             for symbol, price, date in stocks_to_remove:
-                bought_stocks[symbol] = (round(price, 4), date)
+                symbol_for_db = symbol.replace('-', '.')  # Ensure consistent symbol format
+                bought_stocks[symbol_for_db] = (round(price, 4), date)
                 stocks_to_buy.remove(symbol)
                 remove_symbol_from_trade_list(symbol)
-                trade_history = TradeHistory(symbol=symbol, action='buy', quantity=qty_of_one_stock, price=price, date=date)
+                trade_history = TradeHistory(symbol=symbol_for_db, action='buy', quantity=qty_of_one_stock, price=price, date=date)
                 session.add(trade_history)
-                db_position = Position(symbol=symbol, quantity=qty_of_one_stock, avg_price=price, purchase_date=date)
+                db_position = Position(symbol=symbol_for_db, quantity=qty_of_one_stock, avg_price=price, purchase_date=date)
                 session.add(db_position)
             session.commit()
             refresh_after_buy()
             account_info = api.get_account()
             day_trade_count = account_info.daytrade_count
             if buy_stock_green_light == 1 and day_trade_count < 3:
-                print("\nWaiting 2 minutes before placing a trailing stop sell order.....\n")
-                time.sleep(120)
-                stop_order_id = place_trailing_stop_sell_order(symbol, qty_of_one_stock, current_price)
-                if stop_order_id:
-                    print(f"Trailing stop sell order placed for {symbol} with ID: {stop_order_id}\n")
-                else:
-                    print(f"Failed to place trailing stop sell order for {symbol}\n")
+                print(f"\nDay trade count: {day_trade_count} out of 3 in 5 business days\n")
+            else:
+                print(f"\nDay trade limit reached or no buy executed. Day trade count: {day_trade_count}\n")
     except SQLAlchemyError as e:
+        print(f"Database error in buy_stocks: {str(e)}")
+        logging.error(f"Database error in buy_stocks: {str(e)}")
         session.rollback()
 
 def refresh_after_buy():
@@ -436,9 +499,16 @@ def refresh_after_buy():
 
 def place_trailing_stop_sell_order(symbol, qty_of_one_stock, current_price):
     try:
+        # Check for open sell orders
+        open_sell_orders = api.list_orders(status='open', side='sell', symbol=symbol)
+        if open_sell_orders:
+            print(f"Cannot place trailing stop sell order for {symbol}: Existing open sell order(s) found.")
+            logging.info(f"Cannot place trailing stop sell order for {symbol}: Existing open sell order(s) found.")
+            return None
+
         stop_loss_percent = 1.0
         stop_loss_price = current_price * (1 - stop_loss_percent / 100)
-        symbol = symbol.replace('-', '.')
+        symbol = symbol.replace('-', '.')  # Ensure correct symbol format
         stop_order = api.submit_order(
             symbol=symbol,
             qty=qty_of_one_stock,
@@ -448,6 +518,7 @@ def place_trailing_stop_sell_order(symbol, qty_of_one_stock, current_price):
             time_in_force='gtc'
         )
         print(f"Placed trailing stop sell order for {qty_of_one_stock} shares of {symbol} at {stop_loss_price}")
+        logging.info(f"Placed trailing stop sell order for {qty_of_one_stock} shares of {symbol} at {stop_loss_price}")
         with buy_sell_lock:
             if symbol in bought_stocks:
                 del bought_stocks[symbol]
@@ -458,6 +529,7 @@ def place_trailing_stop_sell_order(symbol, qty_of_one_stock, current_price):
         return stop_order.id
     except Exception as e:
         print(f"Error placing trailing stop sell order for {symbol}: {str(e)}")
+        logging.error(f"Error placing trailing stop sell order for {symbol}: {str(e)}")
         return None
 
 def update_bought_stocks_from_api():
@@ -504,23 +576,27 @@ def sell_stocks(bought_stocks, buy_sell_lock):
         bought_date_str = purchase_date
         if bought_date_str < today_date_str:
             current_price = get_current_price(symbol)
-            position = api.get_position(symbol)
-            bought_price = float(position.avg_entry_price)
-            open_orders = api.list_orders(status='open', symbol=symbol)
-            if open_orders:
-                print(f"There is an open sell order for {symbol}. Skipping sell order.")
-                continue
-            if current_price >= bought_price * 1.001:
-                qty = api.get_position(symbol).qty
-                api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
-                print(f" {current_time_str}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price. ")
-                with open(csv_filename, mode='a', newline='') as csv_file:
-                    csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-                    csv_writer.writerow(
-                        {'Date': current_time_str, 'Sell': 'Sell', 'Quantity': qty, 'Symbol': symbol, 'Price Per Share': current_price})
-                stocks_to_remove.append(symbol)
+            try:
+                position = api.get_position(symbol)
+                bought_price = float(position.avg_entry_price)
+                open_orders = api.list_orders(status='open', symbol=symbol)
+                if open_orders:
+                    print(f"There is an open sell order for {symbol}. Skipping sell order.")
+                    continue
+                if current_price >= bought_price * 1.001:
+                    qty = int(position.qty)
+                    api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
+                    print(f" {current_time_str}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price. ")
+                    with open(csv_filename, mode='a', newline='') as csv_file:
+                        csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+                        csv_writer.writerow(
+                            {'Date': current_time_str, 'Sell': 'Sell', 'Quantity': qty, 'Symbol': symbol, 'Price Per Share': current_price})
+                    stocks_to_remove.append(symbol)
+                    time.sleep(2)
                 time.sleep(2)
-            time.sleep(2)
+            except Exception as e:
+                print(f"Error accessing position for {symbol}: {str(e)}")
+                logging.error(f"Error accessing position for {symbol}: {str(e)}")
     try:
         with buy_sell_lock:
             for symbol in stocks_to_remove:
@@ -531,6 +607,8 @@ def sell_stocks(bought_stocks, buy_sell_lock):
             session.commit()
             refresh_after_sell()
     except SQLAlchemyError as e:
+        print(f"Database error in sell_stocks: {str(e)}")
+        logging.error(f"Database error in sell_stocks: {str(e)}")
         session.rollback()
 
 def refresh_after_sell():
@@ -559,14 +637,14 @@ def main():
             now = datetime.now(pytz.timezone('US/Eastern'))
             current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
             cash_balance = round(float(api.get_account().cash), 2)
-            print("------------------------------------------------------------------------------------")
+            print("-------------------------------------------------------")
             print("2024 Edition of the Bull Market Advanced Stock Market Trading Robot, Version 5 ")
             print("by https://github.com/CodeProSpecialist")
-            print("------------------------------------------------------------------------------------")
+            print("-------------------------------------------------------")
             print(f"  {current_time_str} Cash Balance: ${cash_balance}")
             day_trade_count = api.get_account().daytrade_count
             print(f"\nCurrent day trade number: {day_trade_count} out of 3 in 5 business days\n")
-            print("------------------------------------------------------------------------------------\n")
+            print("-------------------------------------------------------\n")
             stocks_to_buy = get_stocks_to_trade()
             if not bought_stocks:
                 bought_stocks = update_bought_stocks_from_api()
@@ -577,23 +655,23 @@ def main():
             sell_thread.join()
             buy_thread.join()
             if PRINT_STOCKS_TO_BUY:
-                print("\n------------------------------------------------------------------------------------\n")
+                print("\n-------------------------------------------------------\n")
                 print("Stocks to Purchase:\n")
                 for symbol in stocks_to_buy:
                     current_price = get_current_price(symbol)
                     print(f"Symbol: {symbol} | Current Price: {current_price} ")
                     time.sleep(1)
-                print("\n------------------------------------------------------------------------------------\n")
+                print("\n-------------------------------------------------------\n")
             if PRINT_ROBOT_STORED_BUY_AND_SELL_LIST_DATABASE:
                 print_database_tables()
             if DEBUG:
-                print("\n------------------------------------------------------------------------------------\n")
+                print("\n-------------------------------------------------------\n")
                 print("Stocks to Purchase:\n")
                 for symbol in stocks_to_buy:
                     current_price = get_current_price(symbol)
                     atr_low_price = get_atr_low_price(symbol)
                     print(f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
-                print("\n------------------------------------------------------------------------------------\n")
+                print("\n-------------------------------------------------------\n")
                 print("\nStocks to Sell:\n")
                 for symbol, _ in bought_stocks.items():
                     current_price = get_current_price(symbol)
@@ -607,12 +685,14 @@ def main():
             print("\nWaiting 60 seconds before checking price data again........\n")
             time.sleep(60)
         except Exception as e:
-            logging.error(f"Error encountered: {e}")
+            print(f"Error in main: {str(e)}")
+            logging.error(f"Error in main: {str(e)}")
             time.sleep(120)
 
 if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        logging.error(f"Error encountered: {e}")
+        print(f"Error in main: {str(e)}")
+        logging.error(f"Error in main: {str(e)}")
         session.close()
