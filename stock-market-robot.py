@@ -306,16 +306,186 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     target_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=15, minute=56, second=0, microsecond=0)
 
     if datetime.now(pytz.timezone('US/Eastern')) > target_time:
-        print("\nReturning and Exiting from the Buy Stocks{mmol, qty_of_one_stock, current_price)
+        print("\nReturning and Exiting from the Buy Stocks function because we are outside of the buy strategy times.\n")
+        return
+    else:
+        print("\nContinuing with the Buy Stocks function.\n")
+
+    price_changes = {symbol: {'increased': 0, 'decreased': 0} for symbol in stocks_to_buy}
+
+    try:
+        while not end_time_reached():
+            for symbol in stocks_to_buy:
+                cash_available = calculate_cash_on_hand()
+                total_symbols = calculate_total_symbols(stocks_to_buy)
+                allocation_per_symbol = allocate_cash_equally(cash_available, total_symbols)
+                current_price = get_current_price(symbol)
+                qty_of_one_stock = int(allocation_per_symbol / current_price) if current_price > 0 else 0
+
+                if not hasattr(buy_stocks, 'scheduled_task'):
+                    buy_stocks.scheduled_task = schedule.every(5).seconds.do(track_price_changes, symbol)
+                    schedule_thread = threading.Thread(target=run_schedule)
+                    schedule_thread.start()
+
+                change_type = track_price_changes(symbol)
+                if change_type == 'increase':
+                    price_changes[symbol]['increased'] += 1
+                elif change_type == 'decrease':
+                    price_changes[symbol]['decreased'] += 1
+
+                print(f"\nTotal Price Increases for {symbol}: {price_changes[symbol]['increased']}")
+                print(f"Total Price Decreases for {symbol}: {price_changes[symbol]['decreased']}\n")
+                time.sleep(5)
+
+        if end_time_reached():
+            for symbol in stocks_to_buy:
+                cash_available = calculate_cash_on_hand()
+                total_symbols = calculate_total_symbols(stocks_to_buy)
+                allocation_per_symbol = allocate_cash_equally(cash_available, total_symbols)
+                current_price = get_current_price(symbol)
+                qty_of_one_stock = int(allocation_per_symbol / current_price) if current_price > 0 else 0
+                total_cost_for_qty = current_price * qty_of_one_stock
+
+                print("\n")
+                status_printer_buy_stocks()
+                print(f"\nSymbol: {symbol}")
+                print(f"Current Price: {current_price}")
+                print(f"Qty of One Stock: {qty_of_one_stock}")
+                print(f"Total Cost for Qty: {total_cost_for_qty}")
+                print(f"Cash Available: {cash_available}")
+                print(f"Increased: {price_changes[symbol]['increased']}")
+                print(f"Decreased: {price_changes[symbol]['decreased']}")
+                print(f"End Time Reached for waiting 30 seconds: {end_time_reached()}\n")
+
+                total_increases = price_changes[symbol]['increased']
+                total_decreases = price_changes[symbol]['decreased']
+                print(f"Total Price Increases for {symbol}: {total_increases}")
+                print(f"Total Price Decreases for {symbol}: {total_decreases}\n")
+
+                overall_total_increases = sum(price_changes[symbol]['increased'] for symbol in stocks_to_buy)
+                overall_total_decreases = sum(price_changes[symbol]['decreased'] for symbol in stocks_to_buy)
+                print(f"Overall Total Price Increases: {overall_total_increases}")
+                print(f"Overall Total Price Decreases: {overall_total_decreases}\n")
+
+                historical_data = calculate_technical_indicators(symbol, lookback_days=90)
+                macd_value = historical_data['macd'].iloc[-1]
+                rsi_value = historical_data['rsi'].iloc[-1]
+                volume_value = historical_data['volume'].iloc[-1]
+
+                print(f"MACD: {macd_value}")
+                print(f"RSI: {rsi_value}")
+                print(f"Volume: {volume_value}\n")
+
+                favorable_macd_condition = historical_data['signal'].iloc[-1] > 0.15
+                favorable_rsi_condition = historical_data['rsi'].iloc[-1] > 70
+                favorable_volume_condition = historical_data['volume'].iloc[-1] > 0.85 * historical_data['volume'].mean()
+
+                if (cash_available >= total_cost_for_qty and
+                        price_changes[symbol]['increased'] >= 3 and
+                        price_changes[symbol]['increased'] > price_changes[symbol]['decreased'] and
+                        favorable_macd_condition and favorable_rsi_condition and favorable_volume_condition):
+                    if qty_of_one_stock > 0 and total_cost_for_qty >= 1 and cash_available - total_cost_for_qty > 1:
+                        print(f"\n ******** Buying stocks for {symbol} with limit order... *************************************** \n")
+                        print_technical_indicators(symbol, calculate_technical_indicators(symbol))
+                        symbol_for_order = symbol.replace('-', '.')  # Adjust symbol for Alpaca API
+                        try:
+                            # Place limit order at current price
+                            limit_order = api.submit_order(
+                                symbol=symbol_for_order,
+                                qty=qty_of_one_stock,
+                                side='buy',
+                                type='limit',
+                                limit_price=current_price,
+                                time_in_force='day'
+                            )
+                            print(f"\n {current_time_str} , Placed limit buy order for {qty_of_one_stock} shares of {symbol_for_order} at {current_price}\n")
+                            
+                            # Wait 1 minute and 30 seconds
+                            print(f"\nWaiting 1 minute and 30 seconds to confirm if {symbol_for_order} is in owned positions...\n")
+                            time.sleep(90)
+
+                            # Check if symbol is in owned positions
+                            positions = api.list_positions()
+                            symbol_owned = any(pos.symbol == symbol_for_order for pos in positions)
+                            
+                            if not symbol_owned:
+                                print(f"\n{symbol_for_order} not found in owned positions. Placing market order...\n")
+                                try:
+                                    # Check cash balance and minimum order amount for market order
+                                    notional_amount = min(0.2 * cash_available, allocation_per_symbol)
+                                    if notional_amount >= 1 and cash_available - notional_amount > 1:
+                                        # Place market order
+                                        market_order = api.submit_order(
+                                            symbol=symbol_for_order,
+                                            notional=notional_amount,
+                                            side='buy',
+                                            type='market',
+                                            time_in_force='day'
+                                        )
+                                        # Get the actual quantity filled from the order
+                                        order = api.get_order(market_order.id)
+                                        qty_filled = float(order.filled_qty) if order.filled_qty else 0
+                                        print(f"\n {current_time_str} , Placed market buy order for {qty_filled:.4f} shares of {symbol_for_order} using ${notional_amount:.2f}\n")
+                                        
+                                        # Log the buy order to CSV
+                                        with open(csv_filename, mode='a', newline='') as csv_file:
+                                            csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+                                            csv_writer.writerow(
+                                                {'Date': current_time_str, 'Buy': 'Buy', 'Quantity': qty_filled, 'Symbol': symbol_for_order,
+                                                 'Price Per Share': current_price})
+                                        stocks_to_remove.append((symbol, current_price, today_date_str))
+                                        buy_stock_green_light = 1
+
+                                        # Wait 1 minute and 30 seconds before placing trailing stop sell order
+                                        print(f"\nWaiting 1 minute and 30 seconds before checking for open sell orders and placing trailing stop sell order for {symbol_for_order}...\n")
+                                        time.sleep(90)
+
+                                        # Check for open sell orders before placing trailing stop
+                                        open_sell_orders = api.list_orders(status='open', side='sell', symbol=symbol_for_order)
+                                        if not open_sell_orders and qty_filled > 0:
+                                            stop_order_id = place_trailing_stop_sell_order(symbol_for_order, qty_filled, current_price)
+                                            if stop_order_id:
+                                                print(f"Trailing stop sell order placed for {symbol_for_order} with ID: {stop_order_id}\n")
+                                            else:
+                                                print(f"Failed to place trailing stop sell order for {symbol_for_order}\n")
+                                        else:
+                                            print(f"Open sell order(s) exist for {symbol_for_order} or no shares filled. Skipping trailing stop sell order.\n")
+                                    else:
+                                        print(f"\nSkipping market buy order for {symbol_for_order}: Notional amount ${notional_amount:.2f} < $1 or insufficient cash to leave $1 balance (available: ${cash_available:.2f}).\n")
+                                        buy_stock_green_light = 0
+                                except Exception as e:
+                                    print(f"Error placing market buy order for {symbol_for_order}: {str(e)}")
+                                    logging.error(f"Error placing market buy order for {symbol_for_order}: {str(e)}")
+                                    continue  # Skip to next symbol if market order fails
+                            else:
+                                print(f"\n{symbol_for_order} found in owned positions after limit order.\n")
+
+                            # Log the buy order (limit or market) to CSV
+                            with open(csv_filename, mode='a', newline='') as csv_file:
+                                csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+                                csv_writer.writerow(
+                                    {'Date': current_time_str, 'Buy': 'Buy', 'Quantity': qty_of_one_stock, 'Symbol': symbol_for_order,
+                                     'Price Per Share': current_price})
+                            stocks_to_remove.append((symbol, current_price, today_date_str))
+                            buy_stock_green_light = 1
+
+                            # Wait 1 minute and 30 seconds before placing trailing stop sell order
+                            print(f"\nWaiting 1 minute and 30 seconds before checking for open sell orders and placing trailing stop sell order for {symbol_for_order}...\n")
+                            time.sleep(90)
+
+                            # Check for open sell orders before placing trailing stop
+                            open_sell_orders = api.list_orders(status='open', side='sell', symbol=symbol_for_order)
+                            if not open_sell_orders:
+                                stop_order_id = place_trailing_stop_sell_order(symbol_for_order, qty_of_one_stock, current_price)
                                 if stop_order_id:
                                     print(f"Trailing stop sell order placed for {symbol_for_order} with ID: {stop_order_id}\n")
                                 else:
                                     print(f"Failed to place trailing stop sell order for {symbol_for_order}\n")
                             else:
-                                print(f"Open sell order(s) exist for {symbol_for_order} or no shares filled. Skipping trailing stop sell order.\n")
+                                print(f"Open sell order(s) exist for {symbol_for_order}. Skipping trailing stop sell order.\n")
                         except Exception as e:
-                            print(f"Error placing market buy order for {symbol_for_order}: {str(e)}")
-                            logging.error(f"Error placing market buy order for {symbol_for_order}: {str(e)}")
+                            print(f"Error placing limit buy order for {symbol_for_order}: {str(e)}")
+                            logging.error(f"Error placing limit buy order for {symbol_for_order}: {str(e)}")
                             buy_stock_green_light = 0
                     else:
                         print(f"\nSkipping buy order for {symbol}: Total cost ${total_cost_for_qty:.2f} < $1 or insufficient cash to leave $1 balance (available: ${cash_available:.2f}).\n")
