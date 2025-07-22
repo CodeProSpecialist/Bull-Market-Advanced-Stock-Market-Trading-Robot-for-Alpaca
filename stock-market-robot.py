@@ -69,14 +69,14 @@ class TradeHistory(Base):
     id = Column(Integer, primary_key=True)
     symbol = Column(String)
     action = Column(String)
-    quantity = Column(Integer)
+    quantity = Column(Float)  # Changed from Integer to Float to support fractional shares
     price = Column(Float)
     date = Column(String)
 
 class Position(Base):
     __tablename__ = 'positions'
     symbol = Column(String, primary_key=True)
-    quantity = Column(Integer)
+    quantity = Column(Float)  # Changed from Integer to Float to support fractional shares
     avg_price = Column(Float)
     purchase_date = Column(String)
 
@@ -119,7 +119,7 @@ def print_database_tables():
         print("\nTrade History In This Robot's Database:")
         print("\nStock | Buy or Sell | Quantity | Avg. Price | Date \n")
         for record in session.query(TradeHistory).all():
-            print(f"{record.symbol} | {record.action} | {record.quantity} | {record.price:.2f} | {record.date}")
+            print(f"{record.symbol} | {record.action} | {record.quantity:.4f} | {record.price:.2f} | {record.date}")
         print("-------------------------------------------------------")
         print("\nPositions in the Database To Sell 1 or More Days After the Date Shown:")
         print("\nStock | Quantity | Avg. Price | Date or The 1st Day This Robot Began Working \n")
@@ -128,9 +128,9 @@ def print_database_tables():
             if show_price_percentage_change:
                 current_price = get_current_price(symbol)
                 percentage_change = ((current_price - avg_price) / avg_price) * 100
-                print(f"{symbol} | {quantity} | {avg_price:.2f} | {purchase_date} | Price Change: {percentage_change:.2f}%")
+                print(f"{record.symbol} | {record.quantity:.4f} | {record.avg_price:.2f} | {record.purchase_date} | Price Change: {percentage_change:.2f}%")
             else:
-                print(f"{symbol} | {quantity} | {avg_price:.2f} | {purchase_date}")
+                print(f"{record.symbol} | {record.quantity:.4f} | {record.avg_price:.2f} | {record.purchase_date}")
         print("\n")
 
 def get_stocks_to_trade():
@@ -209,7 +209,7 @@ def calculate_technical_indicators(symbol, lookback_days=90):
     short_window = 12
     long_window = 26
     signal_window = 9
-    macd_indicator = MACD(close, fast=short_window, slow=long_window, signal=signal_window)
+    macd_indicator = MACD(close, window_fast=short_window, window_slow=long_window, window_sign=signal_window)
     historical_data['macd'] = macd_indicator.macd()
     historical_data['signal'] = macd_indicator.macd_signal()
 
@@ -449,9 +449,56 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                             logging.error(f"Error placing limit buy order for {symbol_for_order}: {str(e)}")
                             buy_stock_green_light = 0
                     else:
-                        print("\nPrice increases are favorable to buy stocks. Quantity of One Stock is 0. Not buying "
-                              "stocks right now. Perhaps we need more cash before buying.\n")
-                        buy_stock_green_light = 0
+                        # Insufficient cash to buy one share, use market order with 20% of available cash
+                        notional_amount = min(0.2 * cash_available, allocation_per_symbol)
+                        if notional_amount >= 0.01:  # Alpaca requires minimum $0.01 for notional orders
+                            print(f"\n ******** Insufficient cash to buy one share of {symbol}. Buying with market order using ${notional_amount:.2f} (up to 20% of available cash)... *************************************** \n")
+                            print_technical_indicators(symbol, calculate_technical_indicators(symbol))
+                            symbol_for_order = symbol.replace('-', '.')  # Adjust symbol for Alpaca API
+                            try:
+                                # Place market order with notional amount
+                                market_order = api.submit_order(
+                                    symbol=symbol_for_order,
+                                    notional=notional_amount,
+                                    side='buy',
+                                    type='market',
+                                    time_in_force='day'
+                                )
+                                # Get the actual quantity filled from the order
+                                order = api.get_order(market_order.id)
+                                qty_filled = float(order.filled_qty) if order.filled_qty else 0
+                                print(f"\n {current_time_str} , Placed market buy order for {qty_filled:.4f} shares of {symbol_for_order} using ${notional_amount:.2f}\n")
+                                
+                                # Log the buy order to CSV
+                                with open(csv_filename, mode='a', newline='') as csv_file:
+                                    csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+                                    csv_writer.writerow(
+                                        {'Date': current_time_str, 'Buy': 'Buy', 'Quantity': qty_filled, 'Symbol': symbol_for_order,
+                                         'Price Per Share': current_price})
+                                stocks_to_remove.append((symbol, current_price, today_date_str))
+                                buy_stock_green_light = 1
+
+                                # Wait 1 minute and 30 seconds before placing trailing stop sell order
+                                print(f"\nWaiting 1 minute and 30 seconds before checking for open sell orders and placing trailing stop sell order for {symbol_for_order}...\n")
+                                time.sleep(90)
+
+                                # Check for open sell orders before placing trailing stop
+                                open_sell_orders = api.list_orders(status='open', side='sell', symbol=symbol_for_order)
+                                if not open_sell_orders and qty_filled > 0:
+                                    stop_order_id = place_trailing_stop_sell_order(symbol_for_order, qty_filled, current_price)
+                                    if stop_order_id:
+                                        print(f"Trailing stop sell order placed for {symbol_for_order} with ID: {stop_order_id}\n")
+                                    else:
+                                        print(f"Failed to place trailing stop sell order for {symbol_for_order}\n")
+                                else:
+                                    print(f"Open sell order(s) exist for {symbol_for_order} or no shares filled. Skipping trailing stop sell order.\n")
+                            except Exception as e:
+                                print(f"Error placing market buy order for {symbol_for_order}: {str(e)}")
+                                logging.error(f"Error placing market buy order for {symbol_for_order}: {str(e)}")
+                                buy_stock_green_light = 0
+                        else:
+                            print(f"\nInsufficient cash to buy {symbol} even with 20% of available cash (${notional_amount:.2f}). Skipping.\n")
+                            buy_stock_green_light = 0
                 else:
                     print("\nNot buying stocks based on the technical indicators: MACD, RSI, VOLUME, or based on price decreases.\n")
                     print_technical_indicators(symbol, calculate_technical_indicators(symbol))
@@ -474,9 +521,9 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 bought_stocks[symbol_for_db] = (round(price, 4), date)
                 stocks_to_buy.remove(symbol)
                 remove_symbol_from_trade_list(symbol)
-                trade_history = TradeHistory(symbol=symbol_for_db, action='buy', quantity=qty_of_one_stock, price=price, date=date)
+                trade_history = TradeHistory(symbol=symbol_for_db, action='buy', quantity=qty_of_one_stock if qty_of_one_stock > 0 else qty_filled, price=price, date=date)
                 session.add(trade_history)
-                db_position = Position(symbol=symbol_for_db, quantity=qty_of_one_stock, avg_price=price, purchase_date=date)
+                db_position = Position(symbol=symbol_for_db, quantity=qty_of_one_stock if qty_of_one_stock > 0 else qty_filled, avg_price=price, purchase_date=date)
                 session.add(db_position)
             session.commit()
             refresh_after_buy()
@@ -517,8 +564,8 @@ def place_trailing_stop_sell_order(symbol, qty_of_one_stock, current_price):
             trail_percent=stop_loss_percent,
             time_in_force='gtc'
         )
-        print(f"Placed trailing stop sell order for {qty_of_one_stock} shares of {symbol} at {stop_loss_price}")
-        logging.info(f"Placed trailing stop sell order for {qty_of_one_stock} shares of {symbol} at {stop_loss_price}")
+        print(f"Placed trailing stop sell order for {qty_of_one_stock:.4f} shares of {symbol} at {stop_loss_price:.2f}")
+        logging.info(f"Placed trailing stop sell order for {qty_of_one_stock:.4f} shares of {symbol} at {stop_loss_price:.2f}")
         with buy_sell_lock:
             if symbol in bought_stocks:
                 del bought_stocks[symbol]
@@ -548,16 +595,17 @@ def update_bought_stocks_from_api():
     for position in positions:
         symbol = position.symbol
         avg_entry_price = float(position.avg_entry_price)
+        quantity = float(position.qty)  # Convert to float to handle fractional shares
         try:
             db_position = session.query(Position).filter_by(symbol=symbol).one()
-            db_position.quantity = position.qty
+            db_position.quantity = quantity
             db_position.avg_price = avg_entry_price
             if POSITION_DATES_AS_YESTERDAY_OPTION and run_counter < 1:
                 db_position.purchase_date = yesterday.strftime("%Y-%m-%d")
         except NoResultFound:
             purchase_date = yesterday if POSITION_DATES_AS_YESTERDAY_OPTION and run_counter < 1 else datetime.today()
             purchase_date_str = purchase_date.strftime("%Y-%m-%d")
-            db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price, purchase_date=purchase_date_str)
+            db_position = Position(symbol=symbol, quantity=quantity, avg_price=avg_entry_price, purchase_date=purchase_date_str)
             session.add(db_position)
         bought_stocks[symbol] = (avg_entry_price, db_position.purchase_date)
     with open(run_counter_file, "w") as f:
@@ -584,9 +632,9 @@ def sell_stocks(bought_stocks, buy_sell_lock):
                     print(f"There is an open sell order for {symbol}. Skipping sell order.")
                     continue
                 if current_price >= bought_price * 1.001:
-                    qty = int(position.qty)
+                    qty = float(position.qty)  # Use float to handle fractional shares
                     api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
-                    print(f" {current_time_str}, Sold {qty} shares of {symbol} at {current_price} based on a higher selling price. ")
+                    print(f" {current_time_str}, Sold {qty:.4f} shares of {symbol} at {current_price:.2f} based on a higher selling price.")
                     with open(csv_filename, mode='a', newline='') as csv_file:
                         csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                         csv_writer.writerow(
