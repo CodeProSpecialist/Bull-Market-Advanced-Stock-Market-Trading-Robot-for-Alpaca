@@ -42,7 +42,7 @@ end_time = 0
 PRINT_STOCKS_TO_BUY = False  # Keep False for faster execution
 PRINT_ROBOT_STORED_BUY_AND_SELL_LIST_DATABASE = True  # Keep False for faster execution
 PRINT_DATABASE = True  # Keep True to view stocks to sell
-DEBUG = True  # Keep False for faster execution
+DEBUG = False  # Keep False for faster execution
 POSITION_DATES_AS_YESTERDAY_OPTION = False  # Keep False to not change dates of owned stocks
 
 # Set timezone to Eastern
