@@ -33,8 +33,8 @@ sudo apt install -y libhdf5-dev
 echo "Installing TA-Lib dependencies ..."
 sudo apt-get install libatlas-base-dev gfortran -y
 
-# Download and install pytalib
-pip3 install pytalib
+# Download and install ta
+pip3 install ta
 
 # Activate Anaconda environment
 conda activate
@@ -61,7 +61,7 @@ echo "You can activate Anaconda by running 'conda activate' and then install any
 
 echo "type:   conda activate  " 
 
-echo "type:    pip3 install yfinance alpaca-trade-api sqlalchemy pytz pytalib schedule"
+echo "type:    pip3 install yfinance alpaca-trade-api sqlalchemy pytz ta schedule"
 
 echo "View the installed pip3 packages with the command: pip3 list  "
 
