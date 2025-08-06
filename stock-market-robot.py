@@ -1,4 +1,3 @@
-```python
 import threading
 import logging
 import csv
@@ -660,4 +659,3 @@ if __name__ == '__main__':
     except Exception as e:
         logging.error(f"Error encountered: {e}")
         session.close()
-```
