@@ -1,7 +1,7 @@
 import threading
 import logging
 import csv
-import os, sys
+import os
 import time
 import schedule
 from datetime import datetime, timedelta, date
@@ -40,13 +40,12 @@ PRINT_DATABASE = True  # keep this as True to view the stocks to sell. False for
 DEBUG = False  # this robot works faster when this is False.
 
 # the below Permission variable will allow all owned position shares to sell today when True on the first run.
-# Default value POSITION_DATES_AS_YESTERDAY_OPTION = False
 POSITION_DATES_AS_YESTERDAY_OPTION = False  # keep this as False to not change the dates of owned stocks
 
 # set the timezone to Eastern
 eastern = pytz.timezone('US/Eastern')
 
-# Dictionary to maintain previous prices and price increase and price decrease counts
+# Dictionary to maintain previous prices and price increase and decrease counts
 stock_data = {}
 
 # Dictionary to store previous prices for symbols
@@ -69,8 +68,6 @@ fieldnames = ['Date', 'Buy', 'Sell', 'Quantity', 'Symbol', 'Price Per Share']
 # Open the CSV file for writing and set up a CSV writer
 with open(csv_filename, mode='w', newline='') as csv_file:
     csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-
-    # Write the header row
     csv_writer.writeheader()
 
 # Define the Database Models
@@ -103,15 +100,12 @@ Base.metadata.create_all(engine)
 def stop_if_stock_market_is_closed():
     market_open_time = time2(9, 27)
     market_close_time = time2(16, 0)
-
     while True:
         eastern = pytz.timezone('US/Eastern')
         now = datetime.now(eastern)
         current_time = now.time()
-
         if now.weekday() <= 4 and market_open_time <= current_time <= market_close_time:
             break
-
         print("\n")
         print('''
             2024 Edition of the Bull Market Advanced Stock Market Trading Robot, Version 5 
@@ -128,22 +122,18 @@ def stop_if_stock_market_is_closed():
         print("Stockbot begins watching stock prices early at 9:27 am Eastern Time.")
         print("Waiting until Stock Market Hours to begin the Stockbot Trading Program.")
         print("\n")
-        print("\n")
         time.sleep(60)
 
 def print_database_tables():
     if PRINT_DATABASE:
         positions = api.list_positions()
         show_price_percentage_change = True
-
         print("\nTrade History In This Robot's Database:")
         print("\n")
         print("Stock | Buy or Sell | Quantity | Avg. Price | Date ")
         print("\n")
-
         for record in session.query(TradeHistory).all():
             print(f"{record.symbol} | {record.action} | {record.quantity} | {record.price:.2f} | {record.date}")
-
         print("----------------------------------------------------------------")
         print("\n")
         print("Positions in the Database To Sell 1 or More Days After the Date Shown:")
@@ -153,7 +143,6 @@ def print_database_tables():
         for record in session.query(Position).all():
             symbol, quantity, avg_price, purchase_date = record.symbol, record.quantity, record.avg_price, record.purchase_date
             purchase_date_str = purchase_date
-
             if show_price_percentage_change:
                 current_price = get_current_price(symbol)
                 percentage_change = ((current_price - avg_price) / avg_price) * 100
@@ -166,7 +155,6 @@ def get_stocks_to_trade():
     try:
         with open('electricity-or-utility-stocks-to-buy-list.txt', 'r') as file:
             stock_symbols = [line.strip() for line in file.readlines()]
-
         if not stock_symbols:
             print("\n")
             print("********************************************************************************************************")
@@ -176,7 +164,6 @@ def get_stocks_to_trade():
             print("********************************************************************************************************")
             print("\n")
         return stock_symbols
-
     except FileNotFoundError:
         print("\n")
         print("****************************************************************************")
@@ -275,32 +262,23 @@ def get_previous_price(symbol):
 def update_previous_price(symbol, current_price):
     previous_prices[symbol] = current_price
 
-def run_schedule():
-    while not end_time_reached():
-        schedule.run_pending()
-        time.sleep(1)
-
 def track_price_changes(symbol):
-    current_price = get_current_price(symbol)
-    previous_price = get_previous_price(symbol)
-
-    print("")
-    print_technical_indicators(symbol, calculate_technical_indicators(symbol))
-    print("")
-
-    if current_price > previous_price:
-        price_changes[symbol]['increased'] += 1
-        print(f"{symbol} price just increased | current price: {current_price}")
+    while not end_time_reached():
+        current_price = get_current_price(symbol)
+        previous_price = get_previous_price(symbol)
+        print("")
+        print_technical_indicators(symbol, calculate_technical_indicators(symbol))
+        print("")
+        if current_price > previous_price:
+            price_changes[symbol]['increased'] += 1
+            print(f"{symbol} price just increased | current price: {current_price}")
+        elif current_price < previous_price:
+            price_changes[symbol]['decreased'] += 1
+            print(f"{symbol} price just decreased | current price: {current_price}")
+        else:
+            print(f"{symbol} price has not changed | current price: {current_price}")
+        update_previous_price(symbol, current_price)
         time.sleep(5)
-    elif current_price < previous_price:
-        price_changes[symbol]['decreased'] += 1
-        print(f"{symbol} price just decreased | current price: {current_price}")
-        time.sleep(5)
-    else:
-        print(f"{symbol} price has not changed | current price: {current_price}")
-        time.sleep(5)
-    time.sleep(1)
-    update_previous_price(symbol, current_price)
 
 def end_time_reached():
     return time.time() >= end_time
@@ -308,26 +286,18 @@ def end_time_reached():
 def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     stocks_to_remove = []
     global start_time, end_time, original_start_time, price_changes, buy_stock_green_light
-
     buy_stock_green_light = 0
-
     extracted_date_from_today_date = datetime.today().date()
     today_date_str = extracted_date_from_today_date.strftime("%Y-%m-%d")
-
     now = datetime.now(pytz.timezone('US/Eastern'))
     current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
-
     start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=10, minute=2, second=0, microsecond=0)
-
     if datetime.now(pytz.timezone('US/Eastern')) < start_trading_time:
         return
-
     start_time = time.time()
     original_start_time = start_time
     end_time = start_time + 3 * 60
-
     target_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=15, minute=56, second=0, microsecond=0)
-
     if datetime.now(pytz.timezone('US/Eastern')) > target_time:
         print("")
         print("Returning and Exiting from the Buy Stocks function because we are outside of the buy strategy times. ")
@@ -337,144 +307,116 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         print("")
         print(" Continuing with the Buy Stocks function. ")
         print("")
-
     price_changes = {symbol: {'increased': 0, 'decreased': 0} for symbol in stocks_to_buy}
-
     try:
-        while not end_time_reached():
-            for symbol in stocks_to_buy:
-                cash_available = calculate_cash_on_hand()
-                total_symbols = calculate_total_symbols(stocks_to_buy)
-                allocation_per_symbol = allocate_cash_equally(cash_available, total_symbols)
-
-                current_price = get_current_price(symbol)
-                qty_of_one_stock = int(allocation_per_symbol / current_price)
-
-                if not hasattr(buy_stocks, 'scheduled_task'):
-                    buy_stocks.scheduled_task = schedule.every(5).seconds.do(track_price_changes, symbol)
-                    schedule_thread = threading.Thread(target=run_schedule)
-                    schedule_thread.start()
-
-                time.sleep(5)
-
-        if end_time_reached():
-            for symbol in stocks_to_buy:
-                cash_available = calculate_cash_on_hand()
-                total_symbols = calculate_total_symbols(stocks_to_buy)
-                allocation_per_symbol = allocate_cash_equally(cash_available, total_symbols)
-
-                current_price = get_current_price(symbol)
-                qty_of_one_stock = int(allocation_per_symbol / current_price)
-                total_cost_for_qty = current_price * qty_of_one_stock
-
-                print("")
-                status_printer_buy_stocks()
-                print("")
-                print(f"Symbol: {symbol}")
-                print(f"Current Price: {current_price}")
-                print(f"Qty of One Stock: {qty_of_one_stock}")
-                print(f"Total Cost for Qty: {total_cost_for_qty}")
-                print("")
-                print(f"Cash Available: {cash_available}")
-                print("")
-                print(f"Increased: {price_changes[symbol]['increased']}")
-                print(f"Decreased: {price_changes[symbol]['decreased']}")
-                print("")
-                print(f"End Time Reached for waiting 30 seconds: {end_time_reached()}")
-                print("")
-
-                total_increases = price_changes[symbol]['increased']
-                total_decreases = price_changes[symbol]['decreased']
-                print("")
-                print(f"Total Price Increases for {symbol}: {total_increases}")
-                print(f"Total Price Decreases for {symbol}: {total_decreases}")
-                print("")
-
-                overall_total_increases = sum(price_changes[symbol]['increased'] for symbol in stocks_to_buy)
-                overall_total_decreases = sum(price_changes[symbol]['decreased'] for symbol in stocks_to_buy)
-                print("")
-                print(f"Overall Total Price Increases: {overall_total_increases}")
-                print(f"Overall Total Price Decreases: {overall_total_decreases}")
-                print("")
-
-                historical_data = calculate_technical_indicators(symbol, lookback_days=90)
-                macd_value = historical_data['macd'].iloc[-1]
-                rsi_value = historical_data['rsi'].iloc[-1]
-                volume_value = historical_data['volume'].iloc[-1]
-
-                print(f"MACD: {macd_value}")
-                print(f"RSI: {rsi_value}")
-                print(f"Volume: {volume_value}")
-                print("")
-
-                favorable_macd_condition = historical_data['signal'].iloc[-1] > 0.15
-                favorable_rsi_condition = historical_data['rsi'].iloc[-1] > 70
-                favorable_volume_condition = historical_data['volume'].iloc[-1] > 0.85 * historical_data['volume'].mean()
-
-                if (cash_available >= total_cost_for_qty and
-                        price_changes[symbol]['increased'] >= 3 and
-                        price_changes[symbol]['increased'] > price_changes[symbol]['decreased'] and
-                        favorable_macd_condition and favorable_rsi_condition and favorable_volume_condition):
-                    if qty_of_one_stock > 0:
-                        print(f" ******** Buying stocks for {symbol}... ")
-                        print_technical_indicators(symbol, calculate_technical_indicators(symbol))
-                        api_symbol = symbol.replace('-', '.')
-                        buy_order = api.submit_order(
-                            symbol=api_symbol,
-                            qty=qty_of_one_stock,
-                            side='buy',
-                            type='market',
-                            time_in_force='day'
-                        )
-                        print(f" {current_time_str}, Bought {qty_of_one_stock} shares of {api_symbol} at {current_price}")
-
-                        with open(csv_filename, mode='a', newline='') as csv_file:
-                            csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-                            csv_writer.writerow({
-                                'Date': current_time_str,
-                                'Buy': 'Buy',
-                                'Quantity': qty_of_one_stock,
-                                'Symbol': api_symbol,
-                                'Price Per Share': current_price
-                            })
-
-                        stocks_to_remove.append((api_symbol, current_price, today_date_str))
-                        buy_stock_green_light = 1
-
-                        order_filled = False
-                        for _ in range(30):
-                            order_status = api.get_order(buy_order.id)
-                            if order_status.status == 'filled':
-                                order_filled = True
-                                break
-                            time.sleep(2)
-
-                        if order_filled and api.get_account().daytrade_count < 3:
-                            stop_order_id = place_trailing_stop_sell_order(api_symbol, qty_of_one_stock, current_price)
-                            if stop_order_id:
-                                print(f"Trailing stop sell order placed for {api_symbol} with ID: {stop_order_id}")
-                            else:
-                                print(f"Failed to place trailing stop sell order for {api_symbol}")
-                        else:
-                            print(f"Buy order not filled or day trade limit reached for {api_symbol}")
-                    else:
-                        print("Price increases are favorable, but quantity is 0. Not buying.")
-                        buy_stock_green_light = 0
-                else:
-                    print("Not buying based on technical indicators or price decreases.")
+        # Start threads to track price changes for all symbols concurrently
+        threads = []
+        for symbol in stocks_to_buy:
+            thread = threading.Thread(target=track_price_changes, args=(symbol,))
+            threads.append(thread)
+            thread.start()
+        # Wait for all threads to complete or until end_time is reached
+        for thread in threads:
+            thread.join(timeout=(end_time - time.time()) if time.time() < end_time else 0)
+        # Process buy decisions after tracking
+        for symbol in stocks_to_buy:
+            cash_available = calculate_cash_on_hand()
+            total_symbols = calculate_total_symbols(stocks_to_buy)
+            allocation_per_symbol = allocate_cash_equally(cash_available, total_symbols)
+            current_price = get_current_price(symbol)
+            qty_of_one_stock = int(allocation_per_symbol / current_price)
+            total_cost_for_qty = current_price * qty_of_one_stock
+            print("")
+            status_printer_buy_stocks()
+            print("")
+            print(f"Symbol: {symbol}")
+            print(f"Current Price: {current_price}")
+            print(f"Qty of One Stock: {qty_of_one_stock}")
+            print(f"Total Cost for Qty: {total_cost_for_qty}")
+            print("")
+            print(f"Cash Available: {cash_available}")
+            print("")
+            print(f"Increased: {price_changes[symbol]['increased']}")
+            print(f"Decreased: {price_changes[symbol]['decreased']}")
+            print("")
+            print(f"End Time Reached for monitoring: {end_time_reached()}")
+            print("")
+            total_increases = price_changes[symbol]['increased']
+            total_decreases = price_changes[symbol]['decreased']
+            print("")
+            print(f"Total Price Increases for {symbol}: {total_increases}")
+            print(f"Total Price Decreases for {symbol}: {total_decreases}")
+            print("")
+            overall_total_increases = sum(price_changes[symbol]['increased'] for symbol in stocks_to_buy)
+            overall_total_decreases = sum(price_changes[symbol]['decreased'] for symbol in stocks_to_buy)
+            print("")
+            print(f"Overall Total Price Increases: {overall_total_increases}")
+            print(f"Overall Total Price Decreases: {overall_total_decreases}")
+            print("")
+            historical_data = calculate_technical_indicators(symbol, lookback_days=90)
+            macd_value = historical_data['macd'].iloc[-1]
+            rsi_value = historical_data['rsi'].iloc[-1]
+            volume_value = historical_data['volume'].iloc[-1]
+            print(f"MACD: {macd_value}")
+            print(f"RSI: {rsi_value}")
+            print(f"Volume: {volume_value}")
+            print("")
+            favorable_macd_condition = historical_data['signal'].iloc[-1] > 0.15
+            favorable_rsi_condition = historical_data['rsi'].iloc[-1] > 70
+            favorable_volume_condition = historical_data['volume'].iloc[-1] > 0.85 * historical_data['volume'].mean()
+            if (cash_available >= total_cost_for_qty and
+                    price_changes[symbol]['increased'] >= 3 and
+                    price_changes[symbol]['increased'] > price_changes[symbol]['decreased'] and
+                    favorable_macd_condition and favorable_rsi_condition and favorable_volume_condition):
+                if qty_of_one_stock > 0:
+                    print(f" ******** Buying stocks for {symbol}... ")
                     print_technical_indicators(symbol, calculate_technical_indicators(symbol))
-
-                time.sleep(2)
-
+                    api_symbol = symbol.replace('-', '.')
+                    buy_order = api.submit_order(
+                        symbol=api_symbol,
+                        qty=qty_of_one_stock,
+                        side='buy',
+                        type='market',
+                        time_in_force='day'
+                    )
+                    print(f" {current_time_str}, Bought {qty_of_one_stock} shares of {api_symbol} at {current_price}")
+                    with open(csv_filename, mode='a', newline='') as csv_file:
+                        csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+                        csv_writer.writerow({
+                            'Date': current_time_str,
+                            'Buy': 'Buy',
+                            'Quantity': qty_of_one_stock,
+                            'Symbol': api_symbol,
+                            'Price Per Share': current_price
+                        })
+                    stocks_to_remove.append((api_symbol, current_price, today_date_str))
+                    buy_stock_green_light = 1
+                    order_filled = False
+                    for _ in range(30):
+                        order_status = api.get_order(buy_order.id)
+                        if order_status.status == 'filled':
+                            order_filled = True
+                            break
+                        time.sleep(2)
+                    if order_filled and api.get_account().daytrade_count < 3:
+                        stop_order_id = place_trailing_stop_sell_order(api_symbol, qty_of_one_stock, current_price)
+                        if stop_order_id:
+                            print(f"Trailing stop sell order placed for {api_symbol} with ID: {stop_order_id}")
+                        else:
+                            print(f"Failed to place trailing stop sell order for {api_symbol}")
+                    else:
+                        print(f"Buy order not filled or day trade limit reached for {api_symbol}")
+                else:
+                    print("Price increases are favorable, but quantity is 0. Not buying.")
+                    buy_stock_green_light = 0
+            else:
+                print("Not buying based on technical indicators or price decreases.")
+                print_technical_indicators(symbol, calculate_technical_indicators(symbol))
             time.sleep(2)
-
     except Exception as e:
         print(f"An error occurred: {str(e)}")
         start_time = original_start_time
         end_time = start_time + 102 * 60
-        schedule_thread = threading.Thread(target=run_schedule)
-        schedule_thread.start()
-
     try:
         with buy_sell_lock:
             for symbol, price, date in stocks_to_remove:
@@ -498,7 +440,6 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 session.add(db_position)
             session.commit()
             refresh_after_buy()
-
     except SQLAlchemyError as e:
         session.rollback()
         print(f"Database error: {str(e)}")
@@ -515,7 +456,6 @@ def place_trailing_stop_sell_order(symbol, qty_of_one_stock, current_price):
         stop_loss_price = current_price * (1 - stop_loss_percent / 100)
         print(f"Attempting to place trailing stop sell order for {qty_of_one_stock} shares of {symbol} "
               f"with trail percent {stop_loss_percent}% (initial stop price: {stop_loss_price})")
-
         stop_order = api.submit_order(
             symbol=symbol,
             qty=qty_of_one_stock,
@@ -524,12 +464,9 @@ def place_trailing_stop_sell_order(symbol, qty_of_one_stock, current_price):
             trail_percent=stop_loss_percent,
             time_in_force='gtc'
         )
-
         print(f"Successfully placed trailing stop sell order for {qty_of_one_stock} shares of {symbol} "
               f"with ID: {stop_order.id}")
-
         return stop_order.id
-
     except Exception as e:
         print(f"Error placing trailing stop sell order for {symbol}: {str(e)}")
         return None
@@ -537,10 +474,8 @@ def place_trailing_stop_sell_order(symbol, qty_of_one_stock, current_price):
 def update_bought_stocks_from_api():
     positions = api.list_positions()
     bought_stocks = {}
-
     yesterday = datetime.today() - timedelta(days=1)
     run_counter_file = "trading_bot_run_counter.txt"
-
     if not os.path.exists(run_counter_file):
         with open(run_counter_file, "w") as f:
             f.write("0")
@@ -549,16 +484,13 @@ def update_bought_stocks_from_api():
         with open(run_counter_file, "r") as f:
             run_counter = int(f.read())
         run_counter += 1
-
     for position in positions:
         symbol = position.symbol
         avg_entry_price = float(position.avg_entry_price)
-
         try:
             db_position = session.query(Position).filter_by(symbol=symbol).one()
             db_position.quantity = position.qty
             db_position.avg_price = avg_entry_price
-
             if POSITION_DATES_AS_YESTERDAY_OPTION and run_counter < 1:
                 db_position.purchase_date = yesterday.strftime("%Y-%m-%d")
         except NoResultFound:
@@ -567,12 +499,9 @@ def update_bought_stocks_from_api():
             db_position = Position(symbol=symbol, quantity=position.qty, avg_price=avg_entry_price,
                                    purchase_date=purchase_date_str)
             session.add(db_position)
-
         bought_stocks[symbol] = (avg_entry_price, db_position.purchase_date)
-
     with open(run_counter_file, "w") as f:
         f.write(str(run_counter))
-
     session.commit()
     return bought_stocks
 
@@ -581,22 +510,18 @@ def sell_stocks(bought_stocks, buy_sell_lock):
     now = datetime.now(pytz.timezone('US/Eastern'))
     current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
     extracted_date_from_today_date = datetime.today().date()
-
     for symbol, (bought_price, purchase_date) in bought_stocks.items():
         status_printer_sell_stocks()
         today_date_str = extracted_date_from_today_date.strftime("%Y-%m-%d")
         bought_date_str = purchase_date
-
         if bought_date_str < today_date_str:
             current_price = get_current_price(symbol)
             position = api.get_position(symbol)
             bought_price = float(position.avg_entry_price)
-
             open_orders = api.list_orders(status='open', symbol=symbol)
             if open_orders:
                 print(f"There is an open sell order for {symbol}. Skipping sell order.")
                 continue
-
             if current_price >= bought_price * 1.001:
                 qty = api.get_position(symbol).qty
                 api.submit_order(symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day')
@@ -613,7 +538,6 @@ def sell_stocks(bought_stocks, buy_sell_lock):
                 stocks_to_remove.append(symbol)
                 time.sleep(2)
             time.sleep(2)
-
     try:
         with buy_sell_lock:
             for symbol in stocks_to_remove:
@@ -648,13 +572,11 @@ def main():
     stocks_to_buy = get_stocks_to_trade()
     bought_stocks = load_positions_from_database()
     buy_sell_lock = threading.Lock()
-
     while True:
         try:
             stop_if_stock_market_is_closed()
             now = datetime.now(pytz.timezone('US/Eastern'))
             current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
-
             cash_balance = round(float(api.get_account().cash), 2)
             print("------------------------------------------------------------------------------------")
             print("2024 Edition of the Bull Market Advanced Stock Market Trading Robot, Version 5 ")
@@ -665,24 +587,17 @@ def main():
             print("\n")
             print(f"Current day trade number: {day_trade_count} out of 3 in 5 business days")
             print("\n")
-            print("\n")
             print("------------------------------------------------------------------------------------")
             print("\n")
-
             stocks_to_buy = get_stocks_to_trade()
-
             if not bought_stocks:
                 bought_stocks = update_bought_stocks_from_api()
-
             sell_thread = threading.Thread(target=sell_stocks, args=(bought_stocks, buy_sell_lock))
             buy_thread = threading.Thread(target=buy_stocks, args=(bought_stocks, stocks_to_buy, buy_sell_lock))
-
             sell_thread.start()
             buy_thread.start()
-
             sell_thread.join()
             buy_thread.join()
-
             if PRINT_STOCKS_TO_BUY:
                 print("\n")
                 print("------------------------------------------------------------------------------------")
@@ -696,10 +611,8 @@ def main():
                 print("\n")
                 print("------------------------------------------------------------------------------------")
                 print("\n")
-
             if PRINT_ROBOT_STORED_BUY_AND_SELL_LIST_DATABASE:
                 print_database_tables()
-
             if DEBUG:
                 print("\n")
                 print("------------------------------------------------------------------------------------")
@@ -710,7 +623,6 @@ def main():
                     current_price = get_current_price(symbol)
                     atr_low_price = get_atr_low_price(symbol)
                     print(f"Symbol: {symbol} | Current Price: {current_price} | ATR low buy signal price: {atr_low_price}")
-
                 print("\n")
                 print("------------------------------------------------------------------------------------")
                 print("\n")
@@ -720,9 +632,7 @@ def main():
                     current_price = get_current_price(symbol)
                     atr_high_price = get_atr_high_price(symbol)
                     print(f"Symbol: {symbol} | Current Price: {current_price} | ATR high sell signal profit price: {atr_high_price}")
-
                 print("\n")
-
             print("Do Not Stop this Robot or you will need to ")
             print("delete the trading_bot.db database file and start over again with an empty database. ")
             print("Placing trades without this Robot will also require ")
@@ -731,7 +641,6 @@ def main():
             print("Waiting 60 seconds before checking price data again........")
             print("")
             time.sleep(60)
-
         except Exception as e:
             logging.error(f"Error encountered: {e}")
             time.sleep(120)
