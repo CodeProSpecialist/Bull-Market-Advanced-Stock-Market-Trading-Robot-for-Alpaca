@@ -1,3 +1,4 @@
+```python
 import threading
 import logging
 import csv
@@ -262,21 +263,26 @@ def track_price_changes(symbol, duration=180):
     start_time = time.time()
     end_time = start_time + duration
     while time.time() < end_time:
-        current_price = get_current_price(symbol)
-        previous_price = get_previous_price(symbol)
-        print("")
-        print_technical_indicators(symbol, calculate_technical_indicators(symbol))
-        print("")
-        if current_price > previous_price:
-            price_changes[symbol]['increased'] += 1
-            print(f"{symbol} price just increased | current price: {current_price}")
-        elif current_price < previous_price:
-            price_changes[symbol]['decreased'] += 1
-            print(f"{symbol} price just decreased | current price: {current_price}")
-        else:
-            print(f"{symbol} price has not changed | current price: {current_price}")
-        update_previous_price(symbol, current_price)
-        time.sleep(5)
+        try:
+            current_price = get_current_price(symbol)
+            with buy_sell_lock:  # Ensure thread-safe access to shared data
+                previous_price = get_previous_price(symbol)
+                print("")
+                print_technical_indicators(symbol, calculate_technical_indicators(symbol))
+                print("")
+                if current_price > previous_price:
+                    price_changes[symbol]['increased'] += 1
+                    print(f"{symbol} price just increased | current price: {current_price}")
+                elif current_price < previous_price:
+                    price_changes[symbol]['decreased'] += 1
+                    print(f"{symbol} price just decreased | current price: {current_price}")
+                else:
+                    print(f"{symbol} price has not changed | current price: {current_price}")
+                update_previous_price(symbol, current_price)
+        except Exception as e:
+            print(f"Error monitoring {symbol}: {str(e)}")
+        time.sleep(10)  # Check price every 10 seconds
+    print(f"Completed 3-minute monitoring for {symbol}.")
 
 def end_time_reached():
     return time.time() >= end_time
@@ -301,19 +307,26 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
         print("")
         return
     print("")
-    print(f"Starting buy_stocks: Monitoring {len(stocks_to_buy)} symbols sequentially for 3 minutes each.")
+    print(f"Starting buy_stocks: Monitoring {len(stocks_to_buy)} symbols simultaneously for 3 minutes each.")
     print("")
     start_time = time.time()
     original_start_time = start_time
-    price_changes = {symbol: {'increased': 0, 'decreased': 0} for symbol in stocks_to_buy}
+    with buy_sell_lock:
+        price_changes = {symbol: {'increased': 0, 'decreased': 0} for symbol in stocks_to_buy}
     try:
-        # Monitor each symbol for 3 minutes sequentially
+        # Create and start a thread for each symbol
+        threads = []
         for symbol in stocks_to_buy:
-            print(f"Monitoring {symbol} for 3 minutes...")
-            track_price_changes(symbol, duration=180)  # 3 minutes = 180 seconds
-            print(f"Completed 3-minute monitoring for {symbol}.")
+            thread = threading.Thread(target=track_price_changes, args=(symbol, 180))
+            threads.append(thread)
+            print(f"Starting monitoring thread for {symbol}...")
+            thread.start()
+            time.sleep(10)  # Stagger threads by 10 seconds
+        # Wait for all threads to complete (3 minutes monitoring per thread)
+        for thread in threads:
+            thread.join()
         print("")
-        print(f"Completed monitoring all {len(stocks_to_buy)} symbols for 3 minutes each.")
+        print(f"Completed simultaneous monitoring of all {len(stocks_to_buy)} symbols for 3 minutes each.")
         print("")
         # Process buy decisions for all symbols
         for symbol in stocks_to_buy:
@@ -647,3 +660,4 @@ if __name__ == '__main__':
     except Exception as e:
         logging.error(f"Error encountered: {e}")
         session.close()
+```
