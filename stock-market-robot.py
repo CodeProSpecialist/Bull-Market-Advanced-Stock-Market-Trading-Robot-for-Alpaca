@@ -3,7 +3,6 @@ import logging
 import csv
 import os
 import time
-import schedule
 from datetime import datetime, timedelta, date
 from datetime import time as time2
 import alpaca_trade_api as tradeapi
@@ -262,8 +261,11 @@ def get_previous_price(symbol):
 def update_previous_price(symbol, current_price):
     previous_prices[symbol] = current_price
 
-def track_price_changes(symbol):
-    while not end_time_reached():
+def track_price_changes(symbol, duration=180):
+    global end_time
+    start_time = time.time()
+    end_time = start_time + duration
+    while time.time() < end_time:
         current_price = get_current_price(symbol)
         previous_price = get_previous_price(symbol)
         print("")
@@ -293,32 +295,31 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
     start_trading_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=10, minute=2, second=0, microsecond=0)
     if datetime.now(pytz.timezone('US/Eastern')) < start_trading_time:
+        print("")
+        print("Exiting buy_stocks: Market trading time not yet reached.")
         return
-    start_time = time.time()
-    original_start_time = start_time
-    end_time = start_time + 3 * 60
     target_time = datetime.now(pytz.timezone('US/Eastern')).replace(hour=15, minute=56, second=0, microsecond=0)
     if datetime.now(pytz.timezone('US/Eastern')) > target_time:
         print("")
-        print("Returning and Exiting from the Buy Stocks function because we are outside of the buy strategy times. ")
+        print("Exiting buy_stocks: Outside of buy strategy times.")
         print("")
         return
-    else:
-        print("")
-        print(" Continuing with the Buy Stocks function. ")
-        print("")
+    print("")
+    print(f"Starting buy_stocks: Monitoring {len(stocks_to_buy)} symbols sequentially for 3 minutes each.")
+    print("")
+    start_time = time.time()
+    original_start_time = start_time
     price_changes = {symbol: {'increased': 0, 'decreased': 0} for symbol in stocks_to_buy}
     try:
-        # Start threads to track price changes for all symbols concurrently
-        threads = []
+        # Monitor each symbol for 3 minutes sequentially
         for symbol in stocks_to_buy:
-            thread = threading.Thread(target=track_price_changes, args=(symbol,))
-            threads.append(thread)
-            thread.start()
-        # Wait for all threads to complete or until end_time is reached
-        for thread in threads:
-            thread.join(timeout=(end_time - time.time()) if time.time() < end_time else 0)
-        # Process buy decisions after tracking
+            print(f"Monitoring {symbol} for 3 minutes...")
+            track_price_changes(symbol, duration=180)  # 3 minutes = 180 seconds
+            print(f"Completed 3-minute monitoring for {symbol}.")
+        print("")
+        print(f"Completed monitoring all {len(stocks_to_buy)} symbols for 3 minutes each.")
+        print("")
+        # Process buy decisions for all symbols
         for symbol in stocks_to_buy:
             cash_available = calculate_cash_on_hand()
             total_symbols = calculate_total_symbols(stocks_to_buy)
@@ -338,8 +339,6 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
             print("")
             print(f"Increased: {price_changes[symbol]['increased']}")
             print(f"Decreased: {price_changes[symbol]['decreased']}")
-            print("")
-            print(f"End Time Reached for monitoring: {end_time_reached()}")
             print("")
             total_increases = price_changes[symbol]['increased']
             total_decreases = price_changes[symbol]['decreased']
@@ -414,9 +413,7 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
                 print_technical_indicators(symbol, calculate_technical_indicators(symbol))
             time.sleep(2)
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        start_time = original_start_time
-        end_time = start_time + 102 * 60
+        print(f"An error occurred in buy_stocks: {str(e)}")
     try:
         with buy_sell_lock:
             for symbol, price, date in stocks_to_remove:
@@ -443,6 +440,9 @@ def buy_stocks(bought_stocks, stocks_to_buy, buy_sell_lock):
     except SQLAlchemyError as e:
         session.rollback()
         print(f"Database error: {str(e)}")
+    print("")
+    print("Completed buy_stocks processing for all symbols.")
+    print("")
 
 def refresh_after_buy():
     global stocks_to_buy, bought_stocks
