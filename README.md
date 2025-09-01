@@ -130,7 +130,9 @@ You should not be the root user when installing the Python software in a virtual
 ***** The below install commands are ONLY for a Desktop or Laptop Computer x86_64 type of install. ***** 
 Open a command line terminal from this folder location and type: 
 
-sh install.sh
+bash install.sh
+
+bash install_dependencies.sh
 
 Do the following with a non-root user account: 
 After placing your alpaca keys at the bottom of /home/nameofyourhomefolderhere/.bashrc you simply run the commands on the command line. 
